@@ -18,6 +18,7 @@ package it.cnr.istc.parser;
 
 import it.cnr.istc.parser.Lexer.Token;
 import it.cnr.istc.parser.declarations.CompilationUnit;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class Parser {
     private final List<Token> tks = new ArrayList<>(); // all the tokens parsed so far..
     private int pos = 0; // the current position within 'tks'..
 
-    public CompilationUnit parse(final Reader r) {
+    public CompilationUnit parse(final Reader r) throws IOException {
         Lexer lexer = new Lexer(r);
         throw new UnsupportedOperationException("not supported yet..");
     }

@@ -17,10 +17,7 @@
 package it.cnr.istc.parser;
 
 import it.cnr.istc.common.Rational;
-import static it.cnr.istc.parser.Lexer.Symbol.ID;
-import static it.cnr.istc.parser.Lexer.Symbol.INT;
-import static it.cnr.istc.parser.Lexer.Symbol.REAL;
-import static it.cnr.istc.parser.Lexer.Symbol.STRING;
+import static it.cnr.istc.parser.Lexer.Symbol.*;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -30,19 +27,22 @@ import java.io.Reader;
  */
 public class Lexer {
 
-    private final Reader reader;
-    private int ch;
+    private final StringBuilder sb = new StringBuilder();
+    private int pos = 0;
     private int start_line = 0;
     private int start_pos = 0;
     private int end_line = 0;
     private int end_pos = 0;
 
-    public Lexer(final Reader r) {
-        this.reader = r;
+    public Lexer(final Reader r) throws IOException {
+        char[] buff = new char[1024];
+        int read;
+        while ((read = r.read(buff)) != -1) {
+            sb.append(buff, 0, read);
+        }
     }
 
-    public Token next() throws IOException {
-        ch = reader.read();
+    public Token next() throws ParsingException {
         throw new UnsupportedOperationException("not supported yet..");
     }
 
@@ -67,8 +67,8 @@ public class Lexer {
         return tk;
     }
 
-    private RealToken mkRealToken(final String num, final String den) {
-        RealToken tk = new RealToken(start_line, start_pos, end_line, end_pos, new Rational(Long.parseLong(num), Long.parseLong(den)));
+    private RealToken mkRealToken(final String intgr, final String dec) {
+        RealToken tk = new RealToken(start_line, start_pos, end_line, end_pos, new Rational(Long.parseLong(intgr + dec), (long) Math.pow(10, dec.length())));
         start_line = end_line;
         start_pos = end_pos;
         return tk;
@@ -81,8 +81,53 @@ public class Lexer {
         return tk;
     }
 
-    private void error(final String msg) {
-        System.err.println(msg);
+    private Token finishId(final StringBuilder str) throws ParsingException {
+        while (true) {
+            if (str.length() == 0 && sb.charAt(pos) >= '0' && sb.charAt(pos) <= '9') {
+                throw new ParsingException(start_line, start_pos, "identifiers cannot start with numbers..");
+            } else if (is_id_part(sb.charAt(pos))) {
+                end_pos++;
+                str.append(sb.charAt(pos));
+            } else {
+                return mkIdToken(str.toString());
+            }
+        }
+    }
+
+    private Token finish_whitespaces() throws ParsingException {
+        while (true) {
+            if (pos == sb.length()) {
+                return mkToken(EOF);
+            } else {
+                switch (sb.charAt(pos)) {
+                    case ' ':
+                        start_pos++;
+                        end_pos++;
+                        break;
+                    case '\t':
+                        start_pos += 4 - (start_pos % 4);
+                        end_pos += 4 - (end_pos % 4);
+                        break;
+                    case '\r':
+                        if (pos + 1 == sb.length()) {
+                            return mkToken(EOF);
+                        } else if (sb.charAt(pos + 1) == '\n') {
+                            pos++;
+                        }
+                    case '\n':
+                        end_line++;
+                        end_pos = 0;
+                        break;
+                    default:
+                        return next();
+                }
+                pos++;
+            }
+        }
+    }
+
+    private static boolean is_id_part(final char ch) {
+        return ch == '_' || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9');
     }
 
     public enum Symbol {
