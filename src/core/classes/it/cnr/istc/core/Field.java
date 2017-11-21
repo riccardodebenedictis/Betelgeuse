@@ -14,8 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-module smt.lra {
-    exports it.cnr.istc.smt.lra;
-    requires smt;
-    requires common;
+package it.cnr.istc.core;
+
+import it.cnr.istc.parser.expressions.Expression;
+
+/**
+ *
+ * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
+ */
+public class Field {
+
+    public final Type type;
+    public final String name;
+    public final Expression expression;
+    public final boolean synthetic;
+
+    public Field(final Type type, final String name) {
+        this(type, name, null, false);
+    }
+
+    Field(final Type type, final String name, final Expression expression, final boolean synthetic) {
+        this.type = type;
+        this.name = name;
+        this.expression = expression;
+        this.synthetic = synthetic;
+    }
 }

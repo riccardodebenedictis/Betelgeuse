@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-module smt.lra {
-    exports it.cnr.istc.smt.lra;
+module core {
+    exports it.cnr.istc.core;
     requires smt;
-    requires common;
+    requires smt.lra;
+    requires smt.var;
 }

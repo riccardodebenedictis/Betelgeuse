@@ -14,8 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-module smt.lra {
-    exports it.cnr.istc.smt.lra;
-    requires smt;
-    requires common;
+package it.cnr.istc.core;
+
+/**
+ *
+ * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
+ */
+public interface IScope {
+
+    public Core getCore();
+
+    public IScope getScope();
+
+    public Field getField(final String name);
+
+    public Method getMethod(final String name, final Type... pars);
+
+    public Type getType(final String name);
+
+    public Predicate getPredicate(final String name);
 }
