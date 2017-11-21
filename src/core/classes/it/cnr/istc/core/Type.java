@@ -29,12 +29,18 @@ import java.util.Queue;
  */
 public class Type extends Scope {
 
+    public static final String BOOL = "bool";
+    public static final String INT = "int";
+    public static final String REAL = "real";
+    public static final String STRING = "string";
     public final String name;
     public final boolean primitive;
     final Collection<Type> supertypes = new ArrayList<>();
+    final Collection<Constructor> constructors = new ArrayList<>();
     final Map<String, Collection<Method>> methods = new HashMap<>();
     final Map<String, Type> types = new HashMap<>();
     final Map<String, Predicate> predicates = new HashMap<>();
+    final Collection<Item> instances = new ArrayList<>();
 
     public Type(Core core, IScope scope, final String name) {
         this(core, scope, name, false);
@@ -58,6 +64,24 @@ public class Type extends Scope {
             }
         }
         return false;
+    }
+
+    public Constructor getConstructor(Type... pars) {
+        for (Constructor cstr : constructors) {
+            if (cstr.args.length == pars.length) {
+                boolean found = true;
+                for (int i = 0; i < pars.length; i++) {
+                    if (!cstr.args[i].type.isAssignableFrom(pars[i])) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) {
+                    return cstr;
+                }
+            }
+        }
+        throw new NoSuchMethodError();
     }
 
     @Override
@@ -151,5 +175,72 @@ public class Type extends Scope {
             }
         }
         throw new NoClassDefFoundError(name);
+    }
+
+    public Item newInstance(IEnv ctx) {
+        Item i = new Item(core, ctx, this);
+        Queue<Type> q = new ArrayDeque<>();
+        q.add(this);
+        while (!q.isEmpty()) {
+            q.poll().instances.add(i);
+            q.addAll(q.peek().supertypes);
+        }
+        return i;
+    }
+
+    public Item newExistential() {
+        if (instances.size() == 1) {
+            return instances.iterator().next();
+        } else {
+            throw new UnsupportedOperationException("not supported yet..");
+        }
+    }
+
+    static class BoolType extends Type {
+
+        BoolType(Core core) {
+            super(core, core, BOOL, true);
+        }
+
+        @Override
+        public Item newInstance(IEnv ctx) {
+            throw new UnsupportedOperationException("not supported yet..");
+        }
+    }
+
+    static class IntType extends Type {
+
+        IntType(Core core) {
+            super(core, core, INT, true);
+        }
+
+        @Override
+        public Item newInstance(IEnv ctx) {
+            throw new UnsupportedOperationException("not supported yet..");
+        }
+    }
+
+    static class RealType extends Type {
+
+        RealType(Core core) {
+            super(core, core, REAL, true);
+        }
+
+        @Override
+        public Item newInstance(IEnv ctx) {
+            throw new UnsupportedOperationException("not supported yet..");
+        }
+    }
+
+    static class StringType extends Type {
+
+        StringType(Core core) {
+            super(core, core, STRING, true);
+        }
+
+        @Override
+        public Item newInstance(IEnv ctx) {
+            throw new UnsupportedOperationException("not supported yet..");
+        }
     }
 }

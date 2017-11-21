@@ -22,7 +22,10 @@ package it.cnr.istc.core;
  */
 public class Item extends Env {
 
-    public Item(final Core core, final IEnv env) {
+    public final Type type;
+
+    public Item(final Core core, final IEnv env, final Type type) {
         super(core, env);
+        this.type = type;
     }
 }

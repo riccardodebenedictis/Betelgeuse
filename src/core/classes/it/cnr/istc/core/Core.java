@@ -16,6 +16,10 @@
  */
 package it.cnr.istc.core;
 
+import static it.cnr.istc.core.Type.BOOL;
+import static it.cnr.istc.core.Type.INT;
+import static it.cnr.istc.core.Type.REAL;
+import static it.cnr.istc.core.Type.STRING;
 import it.cnr.istc.smt.SatCore;
 import it.cnr.istc.smt.lra.LRATheory;
 import it.cnr.istc.smt.var.VarTheory;
@@ -37,6 +41,13 @@ public class Core implements IScope, IEnv {
     final Map<String, Type> types = new HashMap<>();
     final Map<String, Predicate> predicates = new HashMap<>();
     final Map<String, Item> items = new HashMap<>();
+
+    public Core() {
+        types.put(BOOL, new Type.BoolType(this));
+        types.put(INT, new Type.IntType(this));
+        types.put(REAL, new Type.RealType(this));
+        types.put(STRING, new Type.StringType(this));
+    }
 
     @Override
     public Core getCore() {

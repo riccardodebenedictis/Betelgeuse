@@ -30,17 +30,17 @@ public class Method extends Scope {
     final Type return_type;
 
     public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements) {
-        this(core, scope, name, args, statements, null);
+        this(core, scope, name, null, args, statements);
     }
 
-    public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements, final Type return_type) {
+    public Method(final Core core, final IScope scope, final String name, final Type return_type, final Field[] args, final Statement[] statements) {
         super(core, scope);
         this.name = name;
         this.args = args;
-        fields.put(THIS, new Field(((Type) scope), THIS));
         if (return_type != null) {
             fields.put(RETURN, new Field(return_type, RETURN));
         }
+        fields.put(THIS, new Field(((Type) scope), THIS));
         for (Field arg : args) {
             fields.put(arg.name, arg);
         }

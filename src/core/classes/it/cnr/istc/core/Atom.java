@@ -22,7 +22,7 @@ package it.cnr.istc.core;
  */
 public class Atom extends Item {
 
-    public Atom(final Core core, final IEnv env) {
-        super(core, env);
+    public Atom(final Core core, final IEnv env, final Predicate p) {
+        super(core, env, p);
     }
 }

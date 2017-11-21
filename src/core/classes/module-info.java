@@ -16,6 +16,7 @@
  */
 module core {
     exports it.cnr.istc.core;
+    requires common;
     requires smt;
     requires smt.lra;
     requires smt.var;
