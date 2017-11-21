@@ -24,7 +24,6 @@ import it.cnr.istc.core.Item.StringItem;
 import static it.cnr.istc.core.Type.BOOL;
 import static it.cnr.istc.core.Type.INT;
 import static it.cnr.istc.core.Type.REAL;
-import static it.cnr.istc.core.Type.STRING;
 import it.cnr.istc.parser.Parser;
 import it.cnr.istc.parser.declarations.CompilationUnit;
 import it.cnr.istc.smt.Lit;
@@ -57,10 +56,13 @@ public class Core implements IScope, IEnv {
     private final Parser parser = new Parser();
 
     public Core() {
-        types.put(BOOL, new Type.BoolType(this));
-        types.put(INT, new Type.IntType(this));
-        types.put(REAL, new Type.RealType(this));
-        types.put(STRING, new Type.StringType(this));
+        newTypes(new Type.BoolType(this), new Type.IntType(this), new Type.RealType(this), new Type.StringType(this));
+    }
+
+    protected final void newTypes(final Type... ts) {
+        for (Type t : ts) {
+            types.put(t.name, t);
+        }
     }
 
     public void read(final String script) throws UnsolvableException {

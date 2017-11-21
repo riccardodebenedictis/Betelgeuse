@@ -17,16 +17,19 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.core.Core;
-import it.cnr.istc.solver.types.ReusableResource;
-import it.cnr.istc.solver.types.StateVariable;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Type;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Solver extends Core {
+public abstract class SmartType extends Type {
 
-    public Solver() {
-        newTypes(new StateVariable(this), new ReusableResource(this));
+    public SmartType(final Core core, final IScope scope, final String name) {
+        super(core, scope, name);
     }
+
+    public abstract Collection<Flaw> getFlaws();
 }

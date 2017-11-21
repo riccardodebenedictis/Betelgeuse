@@ -14,19 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.solver;
+package it.cnr.istc.solver.types;
 
 import it.cnr.istc.core.Core;
-import it.cnr.istc.solver.types.ReusableResource;
-import it.cnr.istc.solver.types.StateVariable;
+import it.cnr.istc.solver.Flaw;
+import it.cnr.istc.solver.SmartType;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Solver extends Core {
+public class StateVariable extends SmartType {
 
-    public Solver() {
-        newTypes(new StateVariable(this), new ReusableResource(this));
+    public static final String STATE_VARIABLE = "StateVariable";
+
+    public StateVariable(final Core core) {
+        super(core, core, STATE_VARIABLE);
+    }
+
+    @Override
+    public Collection<Flaw> getFlaws() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

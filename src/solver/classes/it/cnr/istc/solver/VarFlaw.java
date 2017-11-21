@@ -16,17 +16,9 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.core.Core;
-import it.cnr.istc.solver.types.ReusableResource;
-import it.cnr.istc.solver.types.StateVariable;
-
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Solver extends Core {
-
-    public Solver() {
-        newTypes(new StateVariable(this), new ReusableResource(this));
-    }
+class VarFlaw extends Flaw {
 }
