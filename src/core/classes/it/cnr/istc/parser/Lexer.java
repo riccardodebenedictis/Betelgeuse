@@ -17,6 +17,11 @@
 package it.cnr.istc.parser;
 
 import it.cnr.istc.common.Rational;
+import static it.cnr.istc.parser.Lexer.Symbol.ID;
+import static it.cnr.istc.parser.Lexer.Symbol.INT;
+import static it.cnr.istc.parser.Lexer.Symbol.REAL;
+import static it.cnr.istc.parser.Lexer.Symbol.STRING;
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -26,7 +31,7 @@ import java.io.Reader;
 public class Lexer {
 
     private final Reader reader;
-    private char ch;
+    private int ch;
     private int start_line = 0;
     private int start_pos = 0;
     private int end_line = 0;
@@ -36,8 +41,48 @@ public class Lexer {
         this.reader = r;
     }
 
-    public Token next() {
+    public Token next() throws IOException {
+        ch = reader.read();
         throw new UnsupportedOperationException("not supported yet..");
+    }
+
+    private Token mkToken(final Symbol sym) {
+        Token tk = new Token(sym, start_line, start_pos, end_line, end_pos);
+        start_line = end_line;
+        start_pos = end_pos;
+        return tk;
+    }
+
+    private IdToken mkIdToken(final String id) {
+        IdToken tk = new IdToken(start_line, start_pos, end_line, end_pos, id);
+        start_line = end_line;
+        start_pos = end_pos;
+        return tk;
+    }
+
+    private IntToken mkIntToken(final String val) {
+        IntToken tk = new IntToken(start_line, start_pos, end_line, end_pos, Long.parseLong(val));
+        start_line = end_line;
+        start_pos = end_pos;
+        return tk;
+    }
+
+    private RealToken mkRealToken(final String num, final String den) {
+        RealToken tk = new RealToken(start_line, start_pos, end_line, end_pos, new Rational(Long.parseLong(num), Long.parseLong(den)));
+        start_line = end_line;
+        start_pos = end_pos;
+        return tk;
+    }
+
+    private StringToken mkStringToken(final String str) {
+        StringToken tk = new StringToken(start_line, start_pos, end_line, end_pos, str);
+        start_line = end_line;
+        start_pos = end_pos;
+        return tk;
+    }
+
+    private void error(final String msg) {
+        System.err.println(msg);
     }
 
     public enum Symbol {
@@ -112,18 +157,18 @@ public class Lexer {
 
         public final String id;
 
-        IdToken(Symbol sym, int start_line, int start_pos, int end_line, int end_pos, final String id) {
-            super(sym, start_line, start_pos, end_line, end_pos);
+        IdToken(int start_line, int start_pos, int end_line, int end_pos, final String id) {
+            super(ID, start_line, start_pos, end_line, end_pos);
             this.id = id;
         }
     }
 
     public static class IntToken extends Token {
 
-        public final int val;
+        public final long val;
 
-        IntToken(Symbol sym, int start_line, int start_pos, int end_line, int end_pos, final int val) {
-            super(sym, start_line, start_pos, end_line, end_pos);
+        IntToken(int start_line, int start_pos, int end_line, int end_pos, final long val) {
+            super(INT, start_line, start_pos, end_line, end_pos);
             this.val = val;
         }
     }
@@ -132,8 +177,8 @@ public class Lexer {
 
         public final Rational val;
 
-        RealToken(Symbol sym, int start_line, int start_pos, int end_line, int end_pos, final Rational val) {
-            super(sym, start_line, start_pos, end_line, end_pos);
+        RealToken(int start_line, int start_pos, int end_line, int end_pos, final Rational val) {
+            super(REAL, start_line, start_pos, end_line, end_pos);
             this.val = val;
         }
     }
@@ -142,8 +187,8 @@ public class Lexer {
 
         public final String val;
 
-        StringToken(Symbol sym, int start_line, int start_pos, int end_line, int end_pos, final String val) {
-            super(sym, start_line, start_pos, end_line, end_pos);
+        StringToken(int start_line, int start_pos, int end_line, int end_pos, final String val) {
+            super(STRING, start_line, start_pos, end_line, end_pos);
             this.val = val;
         }
     }
