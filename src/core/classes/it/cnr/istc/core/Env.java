@@ -16,9 +16,42 @@
  */
 package it.cnr.istc.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Env {
+public class Env implements IEnv {
+
+    protected final Core core;
+    protected final IEnv env;
+    final Map<String, Item> items = new HashMap<>();
+
+    Env(final Core core, final IEnv env) {
+        this.core = core;
+        this.env = env;
+    }
+
+    @Override
+    public Core getCore() {
+        return core;
+    }
+
+    @Override
+    public IEnv getEnv() {
+        return env;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Item> T get(final String name) {
+        T it = (T) items.get(name);
+        if (it != null) {
+            return it;
+        }
+        // if not here, check any enclosing environment
+        return env.get(name);
+    }
 }

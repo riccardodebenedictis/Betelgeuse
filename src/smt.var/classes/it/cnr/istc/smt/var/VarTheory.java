@@ -17,6 +17,7 @@
 package it.cnr.istc.smt.var;
 
 import it.cnr.istc.smt.Lit;
+import it.cnr.istc.smt.SatCore;
 import it.cnr.istc.smt.Theory;
 import java.util.Collection;
 
@@ -25,6 +26,12 @@ import java.util.Collection;
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class VarTheory implements Theory {
+
+    private final SatCore sat_core;
+
+    public VarTheory(SatCore core) {
+        this.sat_core = core;
+    }
 
     @Override
     public boolean propagate(Lit p, Collection<Lit> cnfl) {

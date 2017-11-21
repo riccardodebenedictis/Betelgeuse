@@ -16,9 +16,56 @@
  */
 package it.cnr.istc.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Scope {
+public class Scope implements IScope {
+
+    protected final Core core;
+    protected final IScope scope;
+    final Map<String, Field> fields = new HashMap<>();
+
+    Scope(final Core core, final IScope scope) {
+        this.core = core;
+        this.scope = scope;
+    }
+
+    @Override
+    public Core getCore() {
+        return core;
+    }
+
+    @Override
+    public IScope getScope() {
+        return scope;
+    }
+
+    @Override
+    public Field getField(String name) {
+        Field f = fields.get(name);
+        if (f != null) {
+            return f;
+        }
+        // if not here, check any enclosing scope
+        return scope.getField(name);
+    }
+
+    @Override
+    public Method getMethod(String name, Type... pars) {
+        return scope.getMethod(name, pars);
+    }
+
+    @Override
+    public Type getType(String name) {
+        return scope.getType(name);
+    }
+
+    @Override
+    public Predicate getPredicate(String name) {
+        return scope.getPredicate(name);
+    }
 }

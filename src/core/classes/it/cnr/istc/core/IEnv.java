@@ -25,4 +25,6 @@ public interface IEnv {
     public Core getCore();
 
     public IEnv getEnv();
+
+    public <T extends Item> T get(final String name);
 }

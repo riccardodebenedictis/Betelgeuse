@@ -16,9 +16,35 @@
  */
 package it.cnr.istc.core;
 
+import it.cnr.istc.parser.statements.Statement;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Method {
+public class Method extends Scope {
+
+    public final String name;
+    final Field[] args;
+    final Statement[] statements;
+    final Type return_type;
+
+    public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements) {
+        this(core, scope, name, args, statements, null);
+    }
+
+    public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements, final Type return_type) {
+        super(core, scope);
+        this.name = name;
+        this.args = args;
+        fields.put(THIS, new Field(((Type) scope), THIS));
+        if (return_type != null) {
+            fields.put(RETURN, new Field(return_type, RETURN));
+        }
+        for (Field arg : args) {
+            fields.put(arg.name, arg);
+        }
+        this.statements = statements;
+        this.return_type = return_type;
+    }
 }

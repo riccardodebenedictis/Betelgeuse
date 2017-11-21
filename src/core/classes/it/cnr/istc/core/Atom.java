@@ -20,5 +20,9 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Atom {
+public class Atom extends Item {
+
+    public Atom(final Core core, final IEnv env) {
+        super(core, env);
+    }
 }

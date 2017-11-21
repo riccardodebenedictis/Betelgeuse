@@ -20,5 +20,9 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Predicate {
+public class Predicate extends Type {
+
+    public Predicate(final Core core, final IScope scope, final String name) {
+        super(core, scope, name);
+    }
 }

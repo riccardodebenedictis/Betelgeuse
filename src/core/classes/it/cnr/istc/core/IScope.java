@@ -22,6 +22,10 @@ package it.cnr.istc.core;
  */
 public interface IScope {
 
+    public static final String THIS = "this";
+    public static final String RETURN = "return";
+    public static final String TAU = "τ";
+
     public Core getCore();
 
     public IScope getScope();

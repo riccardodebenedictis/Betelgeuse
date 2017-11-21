@@ -20,5 +20,9 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Constructor {
+public class Constructor extends Scope {
+
+    public Constructor(final Core core, final IScope scope) {
+        super(core, scope);
+    }
 }
