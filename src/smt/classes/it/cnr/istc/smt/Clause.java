@@ -16,6 +16,12 @@
  */
 package it.cnr.istc.smt;
 
+import static it.cnr.istc.smt.LBool.False;
+import static it.cnr.istc.smt.LBool.True;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
@@ -23,7 +29,7 @@ package it.cnr.istc.smt;
 public class Clause {
 
     private final SatCore core;
-    private Lit[] lits;
+    Lit[] lits;
 
     public Clause(final SatCore core, final Lit[] lits) {
         assert lits.length >= 2;
@@ -34,6 +40,37 @@ public class Clause {
     }
 
     public boolean propagate(final Lit p) {
-        throw new UnsupportedOperationException("not supported yet..");
+        // make sure false literal is lits[1]..
+        if (lits[0].v == p.v) {
+            Lit tmp = lits[0];
+            lits[0] = lits[1];
+            lits[1] = tmp;
+        }
+
+        // if 0th watch is true, the clause is already satisfied..
+        if (core.value(lits[0]) == True) {
+            core.watches.get(core.index(p)).add(this);
+            return true;
+        }
+
+        // we look for a new literal to watch..
+        for (int i = 1; i < lits.length; i++) {
+            if (core.value(lits[i]) != False) {
+                Lit tmp = lits[1];
+                lits[1] = lits[i];
+                lits[i] = tmp;
+                core.watches.get(core.index(lits[1].not())).add(this);
+                return true;
+            }
+        }
+
+        // clause is unit under assignment..
+        core.watches.get(core.index(p)).add(this);
+        return core.enqueue(lits[0], this);
+    }
+
+    @Override
+    public String toString() {
+        return Stream.of(lits).map(l -> l.toString()).collect(Collectors.joining(", "));
     }
 }

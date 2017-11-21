@@ -14,23 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.parser.declarations;
-
-import it.cnr.istc.core.IEnv;
-import it.cnr.istc.core.IScope;
+package it.cnr.istc.smt.var;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class CompilationUnit {
+public interface IVarListener {
 
-    public void declare(final IScope scp) {
-    }
-
-    public void refine(final IScope scp) {
-    }
-
-    public void execute(final IScope scp, final IEnv env) {
-    }
+    void varValueChange(final int v);
 }

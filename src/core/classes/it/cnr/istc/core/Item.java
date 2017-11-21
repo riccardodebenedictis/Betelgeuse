@@ -16,16 +16,69 @@
  */
 package it.cnr.istc.core;
 
+import it.cnr.istc.common.Lin;
+import static it.cnr.istc.core.Type.BOOL;
+import it.cnr.istc.smt.Lit;
+import it.cnr.istc.smt.var.IVarVal;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Item extends Env {
+public class Item extends Env implements IVarVal {
 
     public final Type type;
 
-    public Item(final Core core, final IEnv env, final Type type) {
+    Item(final Core core, final IEnv env, final Type type) {
         super(core, env);
         this.type = type;
+    }
+
+    public static class BoolItem extends Item {
+
+        public final Lit l;
+
+        BoolItem(final Core core, final Lit l) {
+            super(core, core, core.getType(BOOL));
+            this.l = l;
+        }
+    }
+
+    public static class ArithItem extends Item {
+
+        public final Lin l;
+
+        ArithItem(final Core core, final Type type, final Lin l) {
+            super(core, core, type);
+            this.l = l;
+        }
+    }
+
+    public static class StringItem extends Item {
+
+        String val;
+
+        StringItem(final Core core, final String val) {
+            super(core, core, core.getType(BOOL));
+            this.val = val;
+        }
+
+        public String getVal() {
+            return val;
+        }
+
+        public void setVal(final String val) {
+            this.val = val;
+        }
+    }
+
+    public static class VarItem extends Item {
+
+        public final int var;
+
+        VarItem(final Core core, final Type type, final int var) {
+            super(core, core, type);
+            this.var = var;
+        }
     }
 }

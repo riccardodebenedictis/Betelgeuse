@@ -18,8 +18,17 @@ package it.cnr.istc.smt.var;
 
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
+import static it.cnr.istc.smt.SatCore.TRUE_var;
 import it.cnr.istc.smt.Theory;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -28,9 +37,36 @@ import java.util.Collection;
 public class VarTheory implements Theory {
 
     private final SatCore sat_core;
+    private final List<Map<IVarVal, Integer>> assigns = new ArrayList<>(); // the current assignments (val to bool variable)..
+    private final Map<String, Integer> exprs = new HashMap<>(); // the already existing expressions (string to bool variable)..
+    private final Map<Integer, Collection<Integer>> is_contained_in = new HashMap<>(); // the boolean variable contained in the set variables (bool variable to vector of set variables)..
+    private final Deque<Set<Integer>> layers = new ArrayDeque<>(); // we store the updated variables..
+    private final Map<Integer, Collection<IVarListener>> listeners = new HashMap<>();
 
-    public VarTheory(SatCore core) {
+    public VarTheory(final SatCore core) {
         this.sat_core = core;
+    }
+
+    public int newVar(final Set<? extends IVarVal> vals) {
+        assert !vals.isEmpty();
+        final int id = assigns.size();
+        assigns.add(new IdentityHashMap<>());
+        if (vals.size() == 1) {
+            assigns.get(id).put(vals.iterator().next(), TRUE_var);
+        } else {
+            for (IVarVal val : vals) {
+                int bv = sat_core.newVar();
+                assigns.get(id).put(val, bv);
+                sat_core.bind(bv, this);
+                Collection<Integer> ici = is_contained_in.get(bv);
+                if (ici == null) {
+                    ici = new ArrayList<>();
+                    is_contained_in.put(bv, ici);
+                }
+                ici.add(id);
+            }
+        }
+        return id;
     }
 
     @Override

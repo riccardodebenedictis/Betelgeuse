@@ -16,16 +16,29 @@
  */
 package it.cnr.istc.core;
 
+import it.cnr.istc.common.Lin;
+import it.cnr.istc.common.Rational;
+import it.cnr.istc.core.Item.ArithItem;
+import it.cnr.istc.core.Item.BoolItem;
+import it.cnr.istc.core.Item.StringItem;
 import static it.cnr.istc.core.Type.BOOL;
 import static it.cnr.istc.core.Type.INT;
 import static it.cnr.istc.core.Type.REAL;
 import static it.cnr.istc.core.Type.STRING;
+import it.cnr.istc.parser.Parser;
+import it.cnr.istc.parser.declarations.CompilationUnit;
+import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
+import static it.cnr.istc.smt.SatCore.FALSE_var;
+import static it.cnr.istc.smt.SatCore.TRUE_var;
 import it.cnr.istc.smt.lra.LRATheory;
 import it.cnr.istc.smt.var.VarTheory;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -41,12 +54,92 @@ public class Core implements IScope, IEnv {
     final Map<String, Type> types = new HashMap<>();
     final Map<String, Predicate> predicates = new HashMap<>();
     final Map<String, Item> items = new HashMap<>();
+    private final Parser parser = new Parser();
 
     public Core() {
         types.put(BOOL, new Type.BoolType(this));
         types.put(INT, new Type.IntType(this));
         types.put(REAL, new Type.RealType(this));
         types.put(STRING, new Type.StringType(this));
+    }
+
+    public void read(final String script) throws UnsolvableException {
+        CompilationUnit cu = parser.parse(new StringReader(script));
+        cu.declare(this);
+        cu.refine(this);
+        cu.execute(this, this);
+
+        if (!sat_core.check()) {
+            throw new UnsolvableException("the input problem is inconsistent");
+        }
+    }
+
+    public void read(final Reader[] readers) throws UnsolvableException {
+        CompilationUnit[] cus = new CompilationUnit[readers.length];
+        for (int i = 0; i < readers.length; i++) {
+            cus[i] = parser.parse(readers[i]);
+        }
+        for (CompilationUnit cu : cus) {
+            cu.declare(this);
+        }
+        for (CompilationUnit cu : cus) {
+            cu.refine(this);
+        }
+        for (CompilationUnit cu : cus) {
+            cu.execute(this, this);
+        }
+
+        if (!sat_core.check()) {
+            throw new UnsolvableException("the input problem is inconsistent");
+        }
+    }
+
+    public BoolItem newBool() {
+        return new BoolItem(this, new Lit(sat_core.newVar()));
+    }
+
+    public BoolItem newBool(final boolean val) {
+        return new BoolItem(this, new Lit(val ? TRUE_var : FALSE_var));
+    }
+
+    public ArithItem newInt() {
+        return new ArithItem(this, types.get(INT), new Lin(la_theory.newVar(), Rational.ONE));
+    }
+
+    public ArithItem newInt(final long val) {
+        return new ArithItem(this, types.get(INT), new Lin(new Rational(val)));
+    }
+
+    public ArithItem newReal() {
+        return new ArithItem(this, types.get(REAL), new Lin(la_theory.newVar(), Rational.ONE));
+    }
+
+    public ArithItem newReal(final Rational val) {
+        return new ArithItem(this, types.get(REAL), new Lin(new Rational(val)));
+    }
+
+    public StringItem newString() {
+        return new StringItem(this, "");
+    }
+
+    public StringItem newString(final String val) {
+        return new StringItem(this, val);
+    }
+
+    public Item newEnum(final Type type, final Set<Item> vals) {
+        assert !vals.isEmpty();
+        assert !type.name.equals(BOOL);
+        assert !type.name.equals(INT);
+        assert !type.name.equals(REAL);
+        if (vals.size() == 1) {
+            return vals.iterator().next();
+        } else {
+            return new Item.VarItem(this, type, var_theory.newVar(vals));
+        }
+    }
+
+    public Item newEnum(final Type type, final int[] vars, final Item[] vals) {
+        throw new UnsupportedOperationException("not supported yet..");
     }
 
     @Override

@@ -14,23 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.parser.declarations;
-
-import it.cnr.istc.core.IEnv;
-import it.cnr.istc.core.IScope;
+package it.cnr.istc.core;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class CompilationUnit {
+public class UnsolvableException extends Exception {
 
-    public void declare(final IScope scp) {
+    /**
+     * Creates a new instance of <code>UnsolvableException</code> without detail
+     * message.
+     */
+    public UnsolvableException() {
     }
 
-    public void refine(final IScope scp) {
-    }
-
-    public void execute(final IScope scp, final IEnv env) {
+    /**
+     * Constructs an instance of <code>UnsolvableException</code> with the
+     * specified detail message.
+     *
+     * @param msg the detail message.
+     */
+    public UnsolvableException(String msg) {
+        super(msg);
     }
 }

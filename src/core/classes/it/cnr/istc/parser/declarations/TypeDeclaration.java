@@ -16,9 +16,17 @@
  */
 package it.cnr.istc.parser.declarations;
 
+import it.cnr.istc.core.IScope;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class TypeDeclaration {
+
+    public void declare(final IScope scp) {
+    }
+
+    public void refine(final IScope scp) {
+    }
 }

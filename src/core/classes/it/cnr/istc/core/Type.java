@@ -20,6 +20,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
 
@@ -189,11 +190,7 @@ public class Type extends Scope {
     }
 
     public Item newExistential() {
-        if (instances.size() == 1) {
-            return instances.iterator().next();
-        } else {
-            throw new UnsupportedOperationException("not supported yet..");
-        }
+        return core.newEnum(this, new HashSet<>(instances));
     }
 
     static class BoolType extends Type {

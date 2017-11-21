@@ -37,4 +37,32 @@ public class Lit {
     public Lit not() {
         return new Lit(v, !sign);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + this.v;
+        hash = 97 * hash + (this.sign ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Lit other = (Lit) obj;
+        return this.v == other.v && this.sign == other.sign;
+    }
+
+    @Override
+    public String toString() {
+        return (sign ? "" : "¬") + "b" + v;
+    }
 }

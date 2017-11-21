@@ -30,7 +30,7 @@ public class Parser {
 
     private Token tk; // the current lookahead token..
     private final List<Token> tks = new ArrayList<>(); // all the tokens parsed so far..
-    private int pos = 0; // the current position within 0tks'..
+    private int pos = 0; // the current position within 'tks'..
 
     public CompilationUnit parse(final Reader r) {
         Lexer lexer = new Lexer(r);

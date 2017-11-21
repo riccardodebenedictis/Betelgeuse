@@ -14,16 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.parser.declarations;
-
-import it.cnr.istc.core.IScope;
+package it.cnr.istc.parser.statements;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class TypedefDeclaration extends TypeDeclaration {
-
-    public void declare(final IScope scp) {
-    }
+public class FormulaStatement extends Statement {
 }
