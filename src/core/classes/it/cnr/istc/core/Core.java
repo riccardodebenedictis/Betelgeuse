@@ -32,6 +32,7 @@ import static it.cnr.istc.smt.SatCore.FALSE_var;
 import static it.cnr.istc.smt.SatCore.TRUE_var;
 import it.cnr.istc.smt.lra.LRATheory;
 import it.cnr.istc.smt.var.VarTheory;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
@@ -65,7 +66,7 @@ public class Core implements IScope, IEnv {
         }
     }
 
-    public void read(final String script) throws UnsolvableException {
+    public void read(final String script) throws UnsolvableException, IOException {
         CompilationUnit cu = parser.parse(new StringReader(script));
         cu.declare(this);
         cu.refine(this);
@@ -76,7 +77,7 @@ public class Core implements IScope, IEnv {
         }
     }
 
-    public void read(final Reader[] readers) throws UnsolvableException {
+    public void read(final Reader[] readers) throws UnsolvableException, IOException {
         CompilationUnit[] cus = new CompilationUnit[readers.length];
         for (int i = 0; i < readers.length; i++) {
             cus[i] = parser.parse(readers[i]);
