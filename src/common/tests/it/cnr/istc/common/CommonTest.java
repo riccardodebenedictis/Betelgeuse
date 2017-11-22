@@ -24,7 +24,7 @@ import org.junit.Test;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class RationalTest {
+public class CommonTest {
 
     @Test
     public void testRational() {
@@ -37,5 +37,18 @@ public class RationalTest {
         r2.add(2);
         r2.sub(-2);
         r2.mult(2);
+    }
+
+    @Test
+    public void testLin() {
+        Lin l0 = new Lin();
+        l0.add(0, ONE);
+        l0.add(1, new Rational(2));
+
+        Lin l1 = new Lin();
+        l1.add(1, ONE);
+        l1.add(2, new Rational(2));
+
+        Lin l2 = l0.plus(l1);
     }
 }
