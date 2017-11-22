@@ -71,21 +71,21 @@ public class VarTheory implements Theory {
 
     @Override
     public boolean propagate(Lit p, Collection<Lit> cnfl) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("not supported yet..");
     }
 
     @Override
     public boolean check(Collection<Lit> cnfl) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("not supported yet..");
     }
 
     @Override
     public void push() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("not supported yet..");
     }
 
     @Override
     public void pop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("not supported yet..");
     }
 }

@@ -18,6 +18,8 @@ package it.cnr.istc.parser.declarations;
 
 import it.cnr.istc.core.IEnv;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.statements.Statement;
+import java.util.Collection;
 
 /**
  *
@@ -25,12 +27,39 @@ import it.cnr.istc.core.IScope;
  */
 public class CompilationUnit {
 
+    private final Collection<MethodDeclaration> methods;
+    private final Collection<PredicateDeclaration> predicates;
+    private final Collection<TypeDeclaration> types;
+    private final Collection<Statement> statements;
+
+    public CompilationUnit(final Collection<MethodDeclaration> methods, final Collection<PredicateDeclaration> predicates, final Collection<TypeDeclaration> types, final Collection<Statement> statements) {
+        this.methods = methods;
+        this.predicates = predicates;
+        this.types = types;
+        this.statements = statements;
+    }
+
     public void declare(final IScope scp) {
+        for (TypeDeclaration type : types) {
+            type.declare(scp);
+        }
     }
 
     public void refine(final IScope scp) {
+        for (MethodDeclaration method : methods) {
+            method.refine(scp);
+        }
+        for (PredicateDeclaration predicate : predicates) {
+            predicate.refine(scp);
+        }
+        for (TypeDeclaration type : types) {
+            type.refine(scp);
+        }
     }
 
     public void execute(final IScope scp, final IEnv env) {
+        for (Statement statement : statements) {
+            statement.execute(scp, env);
+        }
     }
 }

@@ -17,6 +17,7 @@
 package it.cnr.istc.parser.declarations;
 
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.expressions.Expression;
 
 /**
  *
@@ -24,6 +25,17 @@ import it.cnr.istc.core.IScope;
  */
 public class TypedefDeclaration extends TypeDeclaration {
 
+    private final String name;
+    private final String primitive_type;
+    private final Expression xpr;
+
+    public TypedefDeclaration(final String name, final String primitive_type, final Expression xpr) {
+        this.name = name;
+        this.primitive_type = primitive_type;
+        this.xpr = xpr;
+    }
+
+    @Override
     public void declare(final IScope scp) {
     }
 }

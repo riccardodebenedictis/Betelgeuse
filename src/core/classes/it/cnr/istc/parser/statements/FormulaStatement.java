@@ -16,9 +16,17 @@
  */
 package it.cnr.istc.parser.statements;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class FormulaStatement extends Statement {
+
+    @Override
+    public void execute(IScope scp, IEnv env) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

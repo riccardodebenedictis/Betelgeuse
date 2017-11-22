@@ -24,9 +24,11 @@ import it.cnr.istc.core.IScope;
  */
 public class EnumDeclaration extends TypeDeclaration {
 
+    @Override
     public void declare(final IScope scp) {
     }
 
+    @Override
     public void refine(final IScope scp) {
     }
 }

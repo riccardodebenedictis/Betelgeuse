@@ -25,6 +25,7 @@ import static it.cnr.istc.core.Type.BOOL;
 import static it.cnr.istc.core.Type.INT;
 import static it.cnr.istc.core.Type.REAL;
 import it.cnr.istc.parser.Parser;
+import it.cnr.istc.parser.ParsingException;
 import it.cnr.istc.parser.declarations.CompilationUnit;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
@@ -67,33 +68,41 @@ public class Core implements IScope, IEnv {
     }
 
     public void read(final String script) throws UnsolvableException, IOException {
-        CompilationUnit cu = parser.parse(new StringReader(script));
-        cu.declare(this);
-        cu.refine(this);
-        cu.execute(this, this);
+        try {
+            CompilationUnit cu = parser.parse(new StringReader(script));
+            cu.declare(this);
+            cu.refine(this);
+            cu.execute(this, this);
 
-        if (!sat_core.check()) {
-            throw new UnsolvableException("the input problem is inconsistent");
+            if (!sat_core.check()) {
+                throw new UnsolvableException("the input problem is inconsistent");
+            }
+        } catch (ParsingException ex) {
+            throw new IOException("parsing exception..", ex);
         }
     }
 
     public void read(final Reader[] readers) throws UnsolvableException, IOException {
-        CompilationUnit[] cus = new CompilationUnit[readers.length];
-        for (int i = 0; i < readers.length; i++) {
-            cus[i] = parser.parse(readers[i]);
-        }
-        for (CompilationUnit cu : cus) {
-            cu.declare(this);
-        }
-        for (CompilationUnit cu : cus) {
-            cu.refine(this);
-        }
-        for (CompilationUnit cu : cus) {
-            cu.execute(this, this);
-        }
+        try {
+            CompilationUnit[] cus = new CompilationUnit[readers.length];
+            for (int i = 0; i < readers.length; i++) {
+                cus[i] = parser.parse(readers[i]);
+            }
+            for (CompilationUnit cu : cus) {
+                cu.declare(this);
+            }
+            for (CompilationUnit cu : cus) {
+                cu.refine(this);
+            }
+            for (CompilationUnit cu : cus) {
+                cu.execute(this, this);
+            }
 
-        if (!sat_core.check()) {
-            throw new UnsolvableException("the input problem is inconsistent");
+            if (!sat_core.check()) {
+                throw new UnsolvableException("the input problem is inconsistent");
+            }
+        } catch (ParsingException ex) {
+            throw new IOException("parsing exception..", ex);
         }
     }
 

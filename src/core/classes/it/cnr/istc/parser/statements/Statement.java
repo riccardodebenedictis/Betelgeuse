@@ -16,9 +16,14 @@
  */
 package it.cnr.istc.parser.statements;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Statement {
+public abstract class Statement {
+
+    public abstract void execute(final IScope scp, final IEnv env);
 }
