@@ -310,11 +310,11 @@ public class Rational {
     public Rational divide(final Rational rhs) {
         Rational rec = new Rational();
         if (num >= 0) {
-            rec.num = den;
-            rec.den = num;
+            rec.num = rhs.den;
+            rec.den = rhs.num;
         } else {
-            rec.num = -den;
-            rec.den = -num;
+            rec.num = -rhs.den;
+            rec.den = -rhs.num;
         }
         return times(rec);
     }
