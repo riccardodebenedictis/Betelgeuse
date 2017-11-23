@@ -137,7 +137,7 @@ class Assertion {
         return sb.toString();
     }
 
-    private enum Op {
+    enum Op {
         LEq, GEq
     }
 }

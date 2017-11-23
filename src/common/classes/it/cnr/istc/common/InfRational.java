@@ -25,8 +25,8 @@ import static it.cnr.istc.common.Rational.ZERO;
  */
 public class InfRational {
 
-    private Rational rat; // the rational part..
-    private Rational inf; // the infinitesimal part..
+    public Rational rat; // the rational part..
+    public Rational inf; // the infinitesimal part..
 
     public InfRational() {
         this.rat = new Rational();
@@ -54,14 +54,6 @@ public class InfRational {
         this.inf = inf;
     }
 
-    public Rational getRational() {
-        return rat;
-    }
-
-    public Rational getInfinitesimal() {
-        return inf;
-    }
-
     public boolean neq(final InfRational rhs) {
         return rat.neq(rhs.rat) && inf.neq(rhs.inf);
     }
@@ -87,51 +79,51 @@ public class InfRational {
     }
 
     public boolean neq(final Rational rhs) {
-        return rat != rhs || inf.numerator() != 0;
+        return rat != rhs || inf.num != 0;
     }
 
     public boolean lt(final Rational rhs) {
-        return rat.lt(rhs) || (rat.eq(rhs) && inf.numerator() < 0);
+        return rat.lt(rhs) || (rat.eq(rhs) && inf.num < 0);
     }
 
     public boolean leq(final Rational rhs) {
-        return rat.leq(rhs) || (rat.eq(rhs) && inf.numerator() <= 0);
+        return rat.leq(rhs) || (rat.eq(rhs) && inf.num <= 0);
     }
 
     public boolean eq(final Rational rhs) {
-        return rat.eq(rhs) && inf.numerator() == 0;
+        return rat.eq(rhs) && inf.num == 0;
     }
 
     public boolean geq(final Rational rhs) {
-        return rat.geq(rhs) || (rat.eq(rhs) && inf.numerator() >= 0);
+        return rat.geq(rhs) || (rat.eq(rhs) && inf.num >= 0);
     }
 
     public boolean gt(final Rational rhs) {
-        return rat.gt(rhs) || (rat.eq(rhs) && inf.numerator() > 0);
+        return rat.gt(rhs) || (rat.eq(rhs) && inf.num > 0);
     }
 
     public boolean neq(final long rhs) {
-        return rat.neq(rhs) || inf.numerator() != 0;
+        return rat.neq(rhs) || inf.num != 0;
     }
 
     public boolean lt(final long rhs) {
-        return rat.lt(rhs) || (rat.eq(rhs) && inf.numerator() < 0);
+        return rat.lt(rhs) || (rat.eq(rhs) && inf.num < 0);
     }
 
     public boolean leq(final long rhs) {
-        return rat.leq(rhs) || (rat.eq(rhs) && inf.numerator() <= 0);
+        return rat.leq(rhs) || (rat.eq(rhs) && inf.num <= 0);
     }
 
     public boolean eq(final long rhs) {
-        return rat.eq(rhs) && inf.numerator() == 0;
+        return rat.eq(rhs) && inf.num == 0;
     }
 
     public boolean geq(final long rhs) {
-        return rat.geq(rhs) || (rat.eq(rhs) && inf.numerator() >= 0);
+        return rat.geq(rhs) || (rat.eq(rhs) && inf.num >= 0);
     }
 
     public boolean gt(final long rhs) {
-        return rat.gt(rhs) || (rat.eq(rhs) && inf.numerator() > 0);
+        return rat.gt(rhs) || (rat.eq(rhs) && inf.num > 0);
     }
 
     public InfRational plus(final InfRational rhs) {

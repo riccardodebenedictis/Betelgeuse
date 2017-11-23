@@ -32,8 +32,8 @@ import java.util.Map;
 class Row {
 
     private final LRATheory th;
-    private final int x; // the basic variable..
-    private final Lin l; // the linear expression..
+    final int x; // the basic variable..
+    final Lin l; // the linear expression..
 
     Row(final LRATheory th, final int x, final Lin l) {
         this.th = th;
@@ -53,11 +53,11 @@ class Row {
         assert cnfl.isEmpty();
         // we make room for the first literal..
         cnfl.add(new Lit(0));
-        if (l.getVars().get(x_i).isPositive()) {
+        if (l.vars.get(x_i).isPositive()) {
             InfRational lb = new InfRational();
-            for (Map.Entry<Integer, Rational> term : l.getVars().entrySet()) {
+            for (Map.Entry<Integer, Rational> term : l.vars.entrySet()) {
                 if (term.getValue().isPositive()) {
-                    if (th.lb(term.getKey()).getRational().isNegativeInfinite()) {
+                    if (th.lb(term.getKey()).rat.isNegativeInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -66,7 +66,7 @@ class Row {
                         cnfl.add(th.assigns.get(LRATheory.lb_index(term.getKey())).reason.not());
                     }
                 } else if (term.getValue().isNegative()) {
-                    if (th.ub(term.getKey()).getRational().isPositiveInfinite()) {
+                    if (th.ub(term.getKey()).rat.isPositiveInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -105,9 +105,9 @@ class Row {
             }
         } else {
             InfRational ub = new InfRational();
-            for (Map.Entry<Integer, Rational> term : l.getVars().entrySet()) {
+            for (Map.Entry<Integer, Rational> term : l.vars.entrySet()) {
                 if (term.getValue().isPositive()) {
-                    if (th.ub(term.getKey()).getRational().isPositiveInfinite()) {
+                    if (th.ub(term.getKey()).rat.isPositiveInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -116,7 +116,7 @@ class Row {
                         cnfl.add(th.assigns.get(LRATheory.ub_index(term.getKey())).reason.not());
                     }
                 } else if (term.getValue().isNegative()) {
-                    if (th.lb(term.getKey()).getRational().isNegativeInfinite()) {
+                    if (th.lb(term.getKey()).rat.isNegativeInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -171,11 +171,11 @@ class Row {
         assert cnfl.isEmpty();
         // we make room for the first literal..
         cnfl.add(new Lit(0));
-        if (l.getVars().get(x_i).isPositive()) {
+        if (l.vars.get(x_i).isPositive()) {
             InfRational ub = new InfRational();
-            for (Map.Entry<Integer, Rational> term : l.getVars().entrySet()) {
+            for (Map.Entry<Integer, Rational> term : l.vars.entrySet()) {
                 if (term.getValue().isPositive()) {
-                    if (th.ub(term.getKey()).getRational().isPositiveInfinite()) {
+                    if (th.ub(term.getKey()).rat.isPositiveInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -184,7 +184,7 @@ class Row {
                         cnfl.add(th.assigns.get(LRATheory.ub_index(term.getKey())).reason.not());
                     }
                 } else if (term.getValue().isNegative()) {
-                    if (th.lb(term.getKey()).getRational().isNegativeInfinite()) {
+                    if (th.lb(term.getKey()).rat.isNegativeInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -223,9 +223,9 @@ class Row {
             }
         } else {
             InfRational lb = new InfRational();
-            for (Map.Entry<Integer, Rational> term : l.getVars().entrySet()) {
+            for (Map.Entry<Integer, Rational> term : l.vars.entrySet()) {
                 if (term.getValue().isPositive()) {
-                    if (th.lb(term.getKey()).getRational().isNegativeInfinite()) {
+                    if (th.lb(term.getKey()).rat.isNegativeInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;
@@ -234,7 +234,7 @@ class Row {
                         cnfl.add(th.assigns.get(LRATheory.lb_index(term.getKey())).reason.not());
                     }
                 } else if (term.getValue().isNegative()) {
-                    if (th.ub(term.getKey()).getRational().isPositiveInfinite()) {
+                    if (th.ub(term.getKey()).rat.isPositiveInfinite()) {
                         // nothing to propagate..
                         cnfl.clear();
                         return true;

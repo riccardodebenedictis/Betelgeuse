@@ -27,8 +27,8 @@ import java.util.TreeMap;
  */
 public class Lin {
 
-    private final Map<Integer, Rational> vars = new TreeMap<>();
-    private Rational known_term;
+    public final Map<Integer, Rational> vars = new TreeMap<>();
+    public Rational known_term;
 
     public Lin() {
         this.known_term = new Rational();

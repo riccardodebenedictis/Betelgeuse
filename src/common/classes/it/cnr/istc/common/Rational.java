@@ -26,8 +26,8 @@ public class Rational {
     public static final Rational ONE = new Rational(1);
     public static final Rational POSITIVE_INFINITY = new Rational(1, 0);
     public static final Rational NEGATIVE_INFINITY = new Rational(-1, 0);
-    private long num; // the numerator..
-    private long den; // the denominator..
+    public long num; // the numerator..
+    public long den; // the denominator..
 
     public Rational() {
         this.num = 0;
@@ -48,14 +48,6 @@ public class Rational {
         this.num = n;
         this.den = d;
         normalize();
-    }
-
-    public long numerator() {
-        return num;
-    }
-
-    public long denominator() {
-        return den;
     }
 
     public boolean isPositive() {
