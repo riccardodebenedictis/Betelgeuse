@@ -27,7 +27,7 @@ public class VariableDeclaration {
     private final String name;
     private final Expression expression;
 
-    public VariableDeclaration(String name, Expression expression) {
+    public VariableDeclaration(final String name, final Expression expression) {
         this.name = name;
         this.expression = expression;
     }

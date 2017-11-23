@@ -16,15 +16,25 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
 import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class DivisionExpression extends Expression {
+public class DivisionExpression implements Expression {
 
-    public DivisionExpression(Collection<Expression> xprs) {
+    private final Collection<Expression> xprs;
+
+    public DivisionExpression(final Collection<Expression> xprs) {
+        this.xprs = xprs;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

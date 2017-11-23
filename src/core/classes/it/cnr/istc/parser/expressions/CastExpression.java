@@ -16,15 +16,27 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
 import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class CastExpression extends Expression {
+public class CastExpression implements Expression {
 
-    public CastExpression(Collection<String> ids, Expression xpr) {
+    private final Collection<String> type;
+    private final Expression xpr;
+
+    public CastExpression(final Collection<String> ids, final Expression xpr) {
+        this.type = ids;
+        this.xpr = xpr;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -16,15 +16,27 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
 import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class ConstructorExpression extends Expression {
+public class ConstructorExpression implements Expression {
 
-    public ConstructorExpression(Collection<String> ids, Collection<Expression> xprs) {
+    private final Collection<String> type;
+    private final Collection<Expression> xprs;
+
+    public ConstructorExpression(final Collection<String> ids, final Collection<Expression> xprs) {
+        this.type = ids;
+        this.xprs = xprs;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

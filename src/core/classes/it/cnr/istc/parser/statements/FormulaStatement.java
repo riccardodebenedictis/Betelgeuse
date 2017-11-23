@@ -28,8 +28,18 @@ import java.util.Collection;
  */
 public class FormulaStatement extends Statement {
 
-    public FormulaStatement(boolean f, String fn, Collection<String> scp, String pn, Collection<Pair<String, Expression>> assgns) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final boolean is_fact;
+    private final String formula_name;
+    private final Collection<String> formula_scope;
+    private final String predicate_name;
+    private final Collection<Pair<String, Expression>> assignments;
+
+    public FormulaStatement(final boolean f, final String fn, final Collection<String> scp, String pn, final Collection<Pair<String, Expression>> assgns) {
+        this.is_fact = f;
+        this.formula_name = fn;
+        this.formula_scope = scp;
+        this.predicate_name = pn;
+        this.assignments = assgns;
     }
 
     @Override

@@ -17,14 +17,24 @@
 package it.cnr.istc.parser.expressions;
 
 import it.cnr.istc.common.Rational;
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class RealLiteralExpression extends Expression {
+public class RealLiteralExpression implements Expression {
 
-    public RealLiteralExpression(Rational val) {
+    private final Rational val;
+
+    public RealLiteralExpression(final Rational val) {
+        this.val = val;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -16,13 +16,24 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class PlusExpression extends Expression {
+public class PlusExpression implements Expression {
 
-    public PlusExpression(Expression expression) {
+    private final Expression xpr;
+
+    public PlusExpression(final Expression xpr) {
+        this.xpr = xpr;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

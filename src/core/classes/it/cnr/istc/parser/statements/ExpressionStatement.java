@@ -26,8 +26,10 @@ import it.cnr.istc.parser.expressions.Expression;
  */
 public class ExpressionStatement extends Statement {
 
-    public ExpressionStatement(Expression xpr) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final Expression xpr;
+
+    public ExpressionStatement(final Expression xpr) {
+        this.xpr = xpr;
     }
 
     @Override

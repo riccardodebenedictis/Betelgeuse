@@ -22,11 +22,11 @@ import it.cnr.istc.core.IScope;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class TypeDeclaration {
+public abstract class TypeDeclaration {
 
     private final String name;
 
-    public TypeDeclaration(String name) {
+    TypeDeclaration(final String name) {
         this.name = name;
     }
 

@@ -26,8 +26,10 @@ import java.util.Collection;
  */
 public class BlockStatement extends Statement {
 
-    public BlockStatement(Collection<Statement> stmnts) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final Collection<Statement> statements;
+
+    public BlockStatement(final Collection<Statement> stmnts) {
+        this.statements = stmnts;
     }
 
     @Override

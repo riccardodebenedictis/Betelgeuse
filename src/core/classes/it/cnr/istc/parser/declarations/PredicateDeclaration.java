@@ -27,8 +27,16 @@ import java.util.Collection;
  */
 public class PredicateDeclaration {
 
-    public PredicateDeclaration(String n, Collection<Pair<Collection<String>, String>> pars, Collection<Collection<String>> pl, Collection<Statement> stmnts) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final String name;
+    private final Collection<Pair<Collection<String>, String>> parameters;
+    private final Collection<Collection<String>> predicate_list;
+    private final Collection<Statement> statements;
+
+    public PredicateDeclaration(final String n, final Collection<Pair<Collection<String>, String>> pars, final Collection<Collection<String>> pl, final Collection<Statement> stmnts) {
+        this.name = n;
+        this.parameters = pars;
+        this.predicate_list = pl;
+        this.statements = stmnts;
     }
 
     public void refine(final IScope scp) {

@@ -27,8 +27,14 @@ import java.util.Collection;
  */
 public class LocalFieldStatement extends Statement {
 
-    public LocalFieldStatement(Collection<String> ids, String n, Expression e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final Collection<String> field_type;
+    private final String name;
+    private final Expression xpr;
+
+    public LocalFieldStatement(final Collection<String> ids, final String n, final Expression e) {
+        this.field_type = ids;
+        this.name = n;
+        this.xpr = e;
     }
 
     @Override

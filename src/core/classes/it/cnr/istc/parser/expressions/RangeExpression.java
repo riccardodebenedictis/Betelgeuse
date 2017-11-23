@@ -16,13 +16,26 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class RangeExpression extends Expression {
+public class RangeExpression implements Expression {
 
-    public RangeExpression(Expression min_e, Expression max_e) {
+    private final Expression min_e;
+    private final Expression max_e;
+
+    public RangeExpression(final Expression min_e, final Expression max_e) {
+        this.min_e = min_e;
+        this.max_e = max_e;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

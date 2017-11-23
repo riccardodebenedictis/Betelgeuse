@@ -28,8 +28,10 @@ import java.util.Collection;
  */
 public class DisjunctionStatement extends Statement {
 
-    public DisjunctionStatement(Collection<Pair<Collection<Statement>, Expression>> disjs) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final Collection<Pair<Collection<Statement>, Expression>> disjunctions;
+
+    public DisjunctionStatement(final Collection<Pair<Collection<Statement>, Expression>> disjs) {
+        this.disjunctions = disjs;
     }
 
     @Override

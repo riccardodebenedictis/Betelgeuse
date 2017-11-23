@@ -16,15 +16,25 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
 import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class IdExpression extends Expression {
+public class IdExpression implements Expression {
 
-    public IdExpression(Collection<String> is) {
+    private final Collection<String> is;
+
+    public IdExpression(final Collection<String> is) {
+        this.is = is;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

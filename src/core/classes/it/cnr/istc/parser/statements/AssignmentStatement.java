@@ -27,8 +27,14 @@ import java.util.Collection;
  */
 public class AssignmentStatement extends Statement {
 
-    public AssignmentStatement(Collection<String> ids, String id, Expression xpr) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final Collection<String> ids;
+    private final String id;
+    private final Expression xpr;
+
+    public AssignmentStatement(final Collection<String> ids, final String id, final Expression xpr) {
+        this.ids = ids;
+        this.id = id;
+        this.xpr = xpr;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ConstructorDeclaration {
     private final Collection<Pair<String, Collection<Expression>>> init_list;
     private final Collection<Statement> statements;
 
-    public ConstructorDeclaration(Collection<Pair<Collection<String>, String>> pars, Collection<Pair<String, Collection<Expression>>> il, Collection<Statement> stmnts) {
+    public ConstructorDeclaration(final Collection<Pair<Collection<String>, String>> pars, final Collection<Pair<String, Collection<Expression>>> il, final Collection<Statement> stmnts) {
         this.parameters = pars;
         this.init_list = il;
         this.statements = stmnts;

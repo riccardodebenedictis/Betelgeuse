@@ -16,13 +16,24 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class IntLiteralExpression extends Expression {
+public class IntLiteralExpression implements Expression {
 
-    public IntLiteralExpression(long val) {
+    private final long val;
+
+    public IntLiteralExpression(final long val) {
+        this.val = val;
+    }
+
+    @Override
+    public Item evaluate(IScope scp, IEnv env) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
