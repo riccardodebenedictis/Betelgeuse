@@ -16,9 +16,19 @@
  */
 package it.cnr.istc.parser.declarations;
 
+import it.cnr.istc.parser.expressions.Expression;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class VariableDeclaration {
+
+    private final String name;
+    private final Expression expression;
+
+    public VariableDeclaration(String name, Expression expression) {
+        this.name = name;
+        this.expression = expression;
+    }
 }

@@ -16,14 +16,21 @@
  */
 package it.cnr.istc.parser.statements;
 
+import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.IEnv;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.expressions.Expression;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class FormulaStatement extends Statement {
+
+    public FormulaStatement(boolean f, String fn, Collection<String> scp, String pn, Collection<Pair<String, Expression>> assgns) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     public void execute(IScope scp, IEnv env) {

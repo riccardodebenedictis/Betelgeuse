@@ -16,13 +16,27 @@
  */
 package it.cnr.istc.parser.declarations;
 
+import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.expressions.Expression;
+import it.cnr.istc.parser.statements.Statement;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class ConstructorDeclaration {
+
+    private final Collection<Pair<Collection<String>, String>> parameters;
+    private final Collection<Pair<String, Collection<Expression>>> init_list;
+    private final Collection<Statement> statements;
+
+    public ConstructorDeclaration(Collection<Pair<Collection<String>, String>> pars, Collection<Pair<String, Collection<Expression>>> il, Collection<Statement> stmnts) {
+        this.parameters = pars;
+        this.init_list = il;
+        this.statements = stmnts;
+    }
 
     public void refine(final IScope scp) {
     }

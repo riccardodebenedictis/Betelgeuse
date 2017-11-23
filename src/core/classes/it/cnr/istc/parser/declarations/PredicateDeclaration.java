@@ -16,13 +16,20 @@
  */
 package it.cnr.istc.parser.declarations;
 
+import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.statements.Statement;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class PredicateDeclaration {
+
+    public PredicateDeclaration(String n, Collection<Pair<Collection<String>, String>> pars, Collection<Collection<String>> pl, Collection<Statement> stmnts) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     public void refine(final IScope scp) {
     }

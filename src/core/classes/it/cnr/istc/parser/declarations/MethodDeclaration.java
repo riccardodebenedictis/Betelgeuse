@@ -16,13 +16,28 @@
  */
 package it.cnr.istc.parser.declarations;
 
+import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.statements.Statement;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class MethodDeclaration {
+
+    private final Collection<String> return_type;
+    private final String name;
+    private final Collection<Pair<Collection<String>, String>> parameters;
+    private final Collection<Statement> statements;
+
+    public MethodDeclaration(final Collection<String> ids, final String n, final Collection<Pair<Collection<String>, String>> pars, final Collection<Statement> stmnts) {
+        this.return_type = ids;
+        this.name = n;
+        this.parameters = pars;
+        this.statements = stmnts;
+    }
 
     public void refine(final IScope scp) {
     }

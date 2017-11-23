@@ -17,12 +17,21 @@
 package it.cnr.istc.parser.declarations;
 
 import it.cnr.istc.core.IScope;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class FieldDeclaration {
+
+    private final Collection<String> field_type;
+    private final Collection<VariableDeclaration> declarations;
+
+    public FieldDeclaration(final Collection<String> tp, final Collection<VariableDeclaration> ds) {
+        this.field_type = tp;
+        this.declarations = ds;
+    }
 
     public void refine(final IScope scp) {
     }

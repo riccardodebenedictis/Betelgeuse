@@ -17,12 +17,22 @@
 package it.cnr.istc.parser.declarations;
 
 import it.cnr.istc.core.IScope;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class EnumDeclaration extends TypeDeclaration {
+
+    private final Collection<String> enums;
+    private final Collection<Collection<String>> type_refs;
+
+    public EnumDeclaration(final String name, final Collection<String> enums, final Collection<Collection<String>> type_refs) {
+        super(name);
+        this.enums = enums;
+        this.type_refs = type_refs;
+    }
 
     @Override
     public void declare(final IScope scp) {

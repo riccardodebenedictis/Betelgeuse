@@ -16,9 +16,15 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import java.util.Collection;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class CastExpression extends Expression {
+
+    public CastExpression(Collection<String> ids, Expression xpr) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

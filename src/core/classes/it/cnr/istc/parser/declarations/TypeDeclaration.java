@@ -24,6 +24,12 @@ import it.cnr.istc.core.IScope;
  */
 public class TypeDeclaration {
 
+    private final String name;
+
+    public TypeDeclaration(String name) {
+        this.name = name;
+    }
+
     public void declare(final IScope scp) {
     }
 

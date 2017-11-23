@@ -16,9 +16,15 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import java.util.Collection;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class SubtractionExpression extends Expression {
+
+    public SubtractionExpression(Collection<Expression> xprs) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

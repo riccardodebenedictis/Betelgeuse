@@ -16,9 +16,15 @@
  */
 package it.cnr.istc.parser.expressions;
 
+import it.cnr.istc.common.Rational;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class RealLiteralExpression extends Expression {
+
+    public RealLiteralExpression(Rational val) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -18,12 +18,18 @@ package it.cnr.istc.parser.statements;
 
 import it.cnr.istc.core.IEnv;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.parser.expressions.Expression;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class LocalFieldStatement extends Statement {
+
+    public LocalFieldStatement(Collection<String> ids, String n, Expression e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     public void execute(IScope scp, IEnv env) {

@@ -25,12 +25,11 @@ import it.cnr.istc.parser.expressions.Expression;
  */
 public class TypedefDeclaration extends TypeDeclaration {
 
-    private final String name;
     private final String primitive_type;
     private final Expression xpr;
 
     public TypedefDeclaration(final String name, final String primitive_type, final Expression xpr) {
-        this.name = name;
+        super(name);
         this.primitive_type = primitive_type;
         this.xpr = xpr;
     }

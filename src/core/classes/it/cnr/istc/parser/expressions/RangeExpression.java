@@ -21,4 +21,8 @@ package it.cnr.istc.parser.expressions;
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class RangeExpression extends Expression {
+
+    public RangeExpression(Expression min_e, Expression max_e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

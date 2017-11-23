@@ -21,4 +21,8 @@ package it.cnr.istc.parser.expressions;
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class MinusExpression extends Expression {
+
+    public MinusExpression(Expression expression) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
