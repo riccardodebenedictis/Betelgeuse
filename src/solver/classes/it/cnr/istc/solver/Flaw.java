@@ -16,9 +16,58 @@
  */
 package it.cnr.istc.solver;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Flaw {
+public abstract class Flaw {
+
+    protected final Solver slv; // the solver this flaw belongs to..
+    public final boolean exclusive;
+    public final boolean structural;
+    private boolean expanded = false;
+    private int phi; // the propositional variable indicates whether the flaw is active or not..
+    final Collection<Resolver> resolvers = new ArrayList<>(); // the resolvers for this flaw..
+    final Collection<Resolver> causes; // the causes for having this flaw..
+    final Collection<Resolver> supports = new ArrayList<>(); // the resolvers supported by this flaw..
+
+    public Flaw(final Solver slv, final Collection<Resolver> causes) {
+        this(slv, causes, false, false);
+    }
+
+    Flaw(final Solver slv, final Collection<Resolver> causes, final boolean exclusive, final boolean structural) {
+        this.slv = slv;
+        this.causes = causes;
+        this.exclusive = exclusive;
+        this.structural = structural;
+        for (Resolver cause : causes) {
+            cause.preconditions.add(this);
+        }
+    }
+
+    void init() {
+    }
+
+    void expand() {
+    }
+
+    abstract void compute_resolvers();
+
+    protected void add_resolver(Resolver r) {
+    }
+
+    /**
+     * Returns the least expensive resolver according to their estimated cost.
+     * This method can be extended in order to further refine the resolver
+     * selection procedure.
+     *
+     * @return the least expensive resolver.
+     */
+    public Resolver getBestResolver() {
+        assert expanded;
+        return resolvers.stream().min((Resolver r0, Resolver r1) -> Double.compare(r0.est_cost, r1.est_cost)).get();
+    }
 }

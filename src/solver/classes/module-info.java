@@ -16,4 +16,5 @@
  */
 module solver {
     requires core;
+    requires common;
 }

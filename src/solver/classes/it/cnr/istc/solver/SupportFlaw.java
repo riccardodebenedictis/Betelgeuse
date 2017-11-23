@@ -16,9 +16,24 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.core.Atom;
+import java.util.Collection;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 class SupportFlaw extends Flaw {
+
+    private final Atom atom;
+
+    SupportFlaw(final Solver slv, final Collection<Resolver> causes, final Atom atom) {
+        super(slv, causes);
+        this.atom = atom;
+    }
+
+    @Override
+    void compute_resolvers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

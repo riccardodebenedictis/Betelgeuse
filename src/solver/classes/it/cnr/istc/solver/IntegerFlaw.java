@@ -16,9 +16,23 @@
  */
 package it.cnr.istc.solver;
 
+import java.util.Collection;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 class IntegerFlaw extends Flaw {
+
+    private final int var;
+
+    IntegerFlaw(Solver slv, Collection<Resolver> causes, final int var) {
+        super(slv, causes, true, false);
+        this.var = var;
+    }
+
+    @Override
+    void compute_resolvers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

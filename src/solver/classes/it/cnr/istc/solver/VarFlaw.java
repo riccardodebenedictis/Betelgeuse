@@ -16,9 +16,24 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.core.Item.VarItem;
+import java.util.Collection;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 class VarFlaw extends Flaw {
+
+    private final VarItem varItem;
+
+    public VarFlaw(final Solver slv, final Collection<Resolver> causes, final VarItem varItem) {
+        super(slv, causes, true, true);
+        this.varItem = varItem;
+    }
+
+    @Override
+    void compute_resolvers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -16,24 +16,27 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.core.Disjunction;
+import it.cnr.istc.common.Lin;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class DisjunctionFlaw extends Flaw {
+public class Resolver {
 
-    private final Disjunction dsj;
+    protected final Solver slv; // the solver this resolver belongs to..
+    final int rho; // the propositional variable indicating whether the resolver is active or not..
+    final Lin cost; // the intrinsic cost of the resolver..
+    final Collection<Flaw> preconditions = new ArrayList<>(); // the preconditions of this resolver..
+    final Flaw effect;  // the flaw solved by this resolver..
+    double est_cost = Double.POSITIVE_INFINITY; // the estimated cost of the resolver..
 
-    DisjunctionFlaw(final Solver slv, final Collection<Resolver> causes, final Disjunction dsj) {
-        super(slv, causes, true, true);
-        this.dsj = dsj;
-    }
-
-    @Override
-    void compute_resolvers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Resolver(Solver slv, int rho, Lin cost, Flaw effect) {
+        this.slv = slv;
+        this.rho = rho;
+        this.cost = cost;
+        this.effect = effect;
     }
 }

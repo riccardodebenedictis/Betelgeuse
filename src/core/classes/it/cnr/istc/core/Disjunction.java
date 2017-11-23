@@ -14,26 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.solver;
+package it.cnr.istc.core;
 
-import it.cnr.istc.core.Disjunction;
 import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class DisjunctionFlaw extends Flaw {
+public class Disjunction extends Scope {
 
-    private final Disjunction dsj;
+    private final Collection<Conjunction> conjunctions;
 
-    DisjunctionFlaw(final Solver slv, final Collection<Resolver> causes, final Disjunction dsj) {
-        super(slv, causes, true, true);
-        this.dsj = dsj;
-    }
-
-    @Override
-    void compute_resolvers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Disjunction(final Core core, final IScope scope, final Collection<Conjunction> conjunctions) {
+        super(core, scope);
+        this.conjunctions = conjunctions;
     }
 }
