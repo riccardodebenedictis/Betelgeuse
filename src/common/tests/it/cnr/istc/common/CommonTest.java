@@ -18,6 +18,8 @@ package it.cnr.istc.common;
 
 import static it.cnr.istc.common.Rational.NEGATIVE_INFINITY;
 import static it.cnr.istc.common.Rational.ONE;
+import java.util.Iterator;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -50,5 +52,44 @@ public class CommonTest {
         l1.add(2, new Rational(2));
 
         Lin l2 = l0.plus(l1);
+    }
+
+    @Test
+    public void testCombinations() {
+        Iterator<Character[]> it = new CombinationGenerator<>(2, 'a', 'b', 'c').iterator();
+        Assert.assertTrue(it.hasNext());
+        Character[] next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "ab");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "ac");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "bc");
+        Assert.assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testCartesianProduce() {
+        Iterator<Character[]> it = new CartesianProductGenerator<>(new Character[]{'a', 'b', 'c'}, new Character[]{'d', 'e'}).iterator();
+        Assert.assertTrue(it.hasNext());
+        Character[] next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "ad");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "ae");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "bd");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "be");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "cd");
+        Assert.assertTrue(it.hasNext());
+        next = it.next();
+        Assert.assertEquals(new String(new char[]{next[0], next[1]}), "ce");
+        Assert.assertFalse(it.hasNext());
     }
 }
