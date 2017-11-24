@@ -18,7 +18,7 @@ package it.cnr.istc.smt;
 
 import static it.cnr.istc.smt.LBool.False;
 import static it.cnr.istc.smt.LBool.True;
-import java.util.Collections;
+import static it.cnr.istc.smt.SatCore.index;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,8 +35,8 @@ public class Clause {
         assert lits.length >= 2;
         this.core = core;
         this.lits = lits;
-        core.watches.get(core.index(lits[0].not())).add(this);
-        core.watches.get(core.index(lits[1].not())).add(this);
+        core.watches.get(index(lits[0].not())).add(this);
+        core.watches.get(index(lits[1].not())).add(this);
     }
 
     public boolean propagate(final Lit p) {

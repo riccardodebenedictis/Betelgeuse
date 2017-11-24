@@ -230,7 +230,7 @@ public class SatCore {
         }
     }
 
-    public int index(final Lit p) {
+    static int index(final Lit p) {
         return p.sign ? p.v << 1 : (p.v << 1) ^ 1;
     }
 
@@ -286,6 +286,8 @@ public class SatCore {
                 // we record the no-good..
                 record(no_good.toArray(new Lit[no_good.size()]));
                 cnfl.clear();
+            } else {
+                return true;
             }
         }
     }
