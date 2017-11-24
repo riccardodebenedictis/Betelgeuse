@@ -48,6 +48,10 @@ public abstract class Flaw {
         }
     }
 
+    public int getPhi() {
+        return phi;
+    }
+
     void init() {
     }
 

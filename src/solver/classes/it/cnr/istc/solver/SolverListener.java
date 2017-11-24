@@ -14,10 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-module solver {
-    requires core;
-    requires smt;
-    requires smt.lra;
-    requires smt.var;
-    requires common;
+package it.cnr.istc.solver;
+
+/**
+ *
+ * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
+ */
+public interface SolverListener {
+
+    default void newFlaw(final Flaw f) {
+        f.slv.sat_core.listen(f.getPhi(), (int v) -> flawStateChanged(f));
+    }
+
+    void flawCreated(final Flaw f);
+
+    void flawStateChanged(final Flaw f);
+
+    void currentFlaw(final Flaw f);
+
+    default void newResolver(final Resolver r) {
+        r.slv.sat_core.listen(r.rho, (int v) -> resolverStateChanged(r));
+    }
+
+    void resolverCreated(final Resolver f);
+
+    void resolverStateChanged(final Resolver f);
+
+    void resolverCostChanged(final Resolver f);
+
+    void currentResolver(final Resolver f);
 }

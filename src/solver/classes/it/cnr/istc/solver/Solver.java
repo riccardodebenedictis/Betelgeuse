@@ -22,12 +22,16 @@ import it.cnr.istc.core.Disjunction;
 import it.cnr.istc.core.IEnv;
 import it.cnr.istc.solver.types.ReusableResource;
 import it.cnr.istc.solver.types.StateVariable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class Solver extends Core {
+
+    private final Collection<SolverListener> listeners = new ArrayList<>();
 
     public Solver() {
         newTypes(new StateVariable(this), new ReusableResource(this));
@@ -46,5 +50,13 @@ public class Solver extends Core {
     @Override
     protected void newDisjunction(IEnv env, Disjunction dsj) {
         throw new UnsupportedOperationException("not supported yet..");
+    }
+
+    public void listen(final SolverListener l) {
+        listeners.add(l);
+    }
+
+    public void forget(final SolverListener l) {
+        listeners.remove(l);
     }
 }

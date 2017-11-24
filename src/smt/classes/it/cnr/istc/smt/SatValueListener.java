@@ -20,7 +20,7 @@ package it.cnr.istc.smt;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public interface SatListener {
+public interface SatValueListener {
 
     void satValueChange(final int v);
 }

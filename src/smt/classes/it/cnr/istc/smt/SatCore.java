@@ -52,7 +52,7 @@ public class SatCore {
     final Map<String, Integer> exprs = new HashMap<>(); // the already existing expressions (string to bool variable)..
     private final Collection<Theory> theories = new ArrayList<>();
     private final Map<Integer, Collection<Theory>> binds = new HashMap<>();
-    private final Map<Integer, Collection<SatListener>> listeners = new HashMap<>();
+    private final Map<Integer, Collection<SatValueListener>> listeners = new HashMap<>();
 
     public SatCore() {
         int c_false = newVar();
@@ -429,9 +429,9 @@ public class SatCore {
                 reason.set(p.v, c);
                 trail.add(p);
                 prop_q.add(p);
-                Collection<SatListener> ls = listeners.get(p.v);
+                Collection<SatValueListener> ls = listeners.get(p.v);
                 if (ls != null) {
-                    for (SatListener l : ls) {
+                    for (SatValueListener l : ls) {
                         l.satValueChange(p.v);
                     }
                 }
@@ -446,9 +446,9 @@ public class SatCore {
         assigns.set(v, Undefined);
         reason.set(v, null);
         level.set(v, -1);
-        Collection<SatListener> ls = listeners.get(v);
+        Collection<SatValueListener> ls = listeners.get(v);
         if (ls != null) {
-            for (SatListener l : ls) {
+            for (SatValueListener l : ls) {
                 l.satValueChange(v);
             }
         }
@@ -475,8 +475,8 @@ public class SatCore {
         }
     }
 
-    public void listen(final int v, final SatListener l) {
-        Collection<SatListener> ls = listeners.get(v);
+    public void listen(final int v, final SatValueListener l) {
+        Collection<SatValueListener> ls = listeners.get(v);
         if (ls == null) {
             ls = new ArrayList<>();
             listeners.put(v, ls);
@@ -484,8 +484,8 @@ public class SatCore {
         ls.add(l);
     }
 
-    public void forget(final int v, final SatListener l) {
-        Collection<SatListener> ls = listeners.get(v);
+    public void forget(final int v, final SatValueListener l) {
+        Collection<SatValueListener> ls = listeners.get(v);
         ls.remove(l);
         if (ls.isEmpty()) {
             listeners.remove(v);

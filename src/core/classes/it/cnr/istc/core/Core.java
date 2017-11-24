@@ -293,6 +293,14 @@ public abstract class Core implements IScope, IEnv {
         return new BoolItem(this, new Lit(l.eq(r)));
     }
 
+    public void assertFacts(final Lit... lits) throws UnsolvableException {
+        for (Lit lit : lits) {
+            if (!sat_core.newClause(new Lit(ctr_var, false), lit)) {
+                throw new UnsolvableException("the problem is unsolvable..");
+            }
+        }
+    }
+
     public LBool value(final BoolItem bi) {
         return sat_core.value(bi.l);
     }
