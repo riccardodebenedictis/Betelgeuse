@@ -30,18 +30,22 @@ public class InfRational {
 
     public InfRational() {
         this.rat = new Rational();
+        this.inf = ZERO;
     }
 
     public InfRational(final long num) {
         this.rat = new Rational(num);
+        this.inf = ZERO;
     }
 
     public InfRational(final Rational rat) {
-        this.rat = rat;
+        this.rat = new Rational(rat);
+        this.inf = ZERO;
     }
 
     public InfRational(final long num, final long den) {
         this.rat = new Rational(num, den);
+        this.inf = ZERO;
     }
 
     public InfRational(final Rational rat, final long inf) {

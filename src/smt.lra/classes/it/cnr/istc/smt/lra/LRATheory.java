@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -59,6 +60,7 @@ public class LRATheory implements Theory {
 
     public LRATheory(final SatCore core) {
         this.sat_core = core;
+        core.addTheory(this);
     }
 
     public int newVar() {
@@ -125,9 +127,8 @@ public class LRATheory implements Theory {
         final int slack = mk_slack(expr);
         final String s_assertion = "x" + slack + " <= " + c_right.toString();
         final Integer asrt_var = s_asrts.get(s_assertion);
-        if (asrt_var != null) // this assertion already exists..
-        {
-            return asrt_var;
+        if (asrt_var != null) {
+            return asrt_var; // this assertion already exists..
         } else {
             final int ctr = sat_core.newVar();
             sat_core.bind(ctr, this);
@@ -210,7 +211,7 @@ public class LRATheory implements Theory {
             // we need to create a new slack variable..
             final int slack = newVar();
             exprs.put(s_expr, slack);
-            vals.set(slack, value(l));                            // we set the initial value of the new slack variable..
+            vals.set(slack, value(l)); // we set the initial value of the new slack variable..
             tableau.put(slack, new Row(this, slack, l)); // we add a new row into the tableau..
             return slack;
         }
@@ -233,7 +234,7 @@ public class LRATheory implements Theory {
      * @return the upper bound of variable 'v'.
      */
     public InfRational ub(final int v) {
-        return assigns.get(lb_index(v)).value;
+        return assigns.get(ub_index(v)).value;
     }
 
     /**
@@ -304,17 +305,65 @@ public class LRATheory implements Theory {
 
     @Override
     public boolean check(Collection<Lit> cnfl) {
-        throw new UnsupportedOperationException("not supported yet..");
+        assert cnfl.isEmpty();
+        while (true) {
+            // we find a basic variable whose value is outside its bounds..
+            Optional<Map.Entry<Integer, Row>> x_i = tableau.entrySet().stream().filter(row -> value(row.getKey()).lt(lb(row.getKey())) || value(row.getKey()).gt(ub(row.getKey()))).findFirst();
+            if (!x_i.isPresent()) {
+                return true;
+            }
+            if (value(x_i.get().getKey()).lt(lb(x_i.get().getKey()))) {
+                // the current value is lower than the lower bound..
+                Optional<Map.Entry<Integer, Rational>> x_j = x_i.get().getValue().l.vars.entrySet().stream().filter(term -> (term.getValue().isPositive() && value(term.getKey()).lt(ub(term.getKey()))) || (term.getValue().isNegative() && value(term.getKey()).gt(lb(term.getKey())))).findFirst();
+                if (x_j.isPresent()) {
+                    // var x_j can be used to increase the value of x_i..
+                    pivot_and_update(x_i.get().getKey(), x_j.get().getKey(), lb(x_i.get().getKey()));
+                } else {
+                    // we generate an explanation for the conflict..
+                    for (Map.Entry<Integer, Rational> term : x_i.get().getValue().l.vars.entrySet()) {
+                        if (term.getValue().isPositive()) {
+                            cnfl.add(assigns.get(ub_index(term.getKey())).reason.not());
+                        } else if (term.getValue().isNegative()) {
+                            cnfl.add(assigns.get(lb_index(term.getKey())).reason.not());
+                        }
+                    }
+                    cnfl.add(assigns.get(lb_index(x_i.get().getKey())).reason.not());
+                    return false;
+                }
+            }
+            if (value(x_i.get().getKey()).gt(ub(x_i.get().getKey()))) {
+                // the current value is greater than the upper bound..
+                Optional<Map.Entry<Integer, Rational>> x_j = x_i.get().getValue().l.vars.entrySet().stream().filter(term -> (term.getValue().isNegative() && value(term.getKey()).lt(ub(term.getKey()))) || (term.getValue().isPositive() && value(term.getKey()).gt(lb(term.getKey())))).findFirst();
+                if (x_j.isPresent()) {
+                    // var x_j can be used to decrease the value of x_i..
+                    pivot_and_update(x_i.get().getKey(), x_j.get().getKey(), ub(x_i.get().getKey()));
+                } else {
+                    // we generate an explanation for the conflict..
+                    for (Map.Entry<Integer, Rational> term : x_i.get().getValue().l.vars.entrySet()) {
+                        if (term.getValue().isPositive()) {
+                            cnfl.add(assigns.get(lb_index(term.getKey())).reason.not());
+                        } else if (term.getValue().isNegative()) {
+                            cnfl.add(assigns.get(ub_index(term.getKey())).reason.not());
+                        }
+                    }
+                    cnfl.add(assigns.get(ub_index(x_i.get().getKey())).reason.not());
+                    return false;
+                }
+            }
+        }
     }
 
     @Override
     public void push() {
-        throw new UnsupportedOperationException("not supported yet..");
+        layers.add(new HashMap<>());
     }
 
     @Override
     public void pop() {
-        throw new UnsupportedOperationException("not supported yet..");
+        // we restore the variables' bounds and their reason..
+        for (Map.Entry<Integer, Bound> bound : layers.pollLast().entrySet()) {
+            assigns.set(bound.getKey(), bound.getValue());
+        }
     }
 
     private boolean assert_lower(final int x_i, final InfRational val, final Lit p, final Collection<Lit> cnfl) {
