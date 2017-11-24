@@ -54,7 +54,7 @@ public class LRATheory implements Theory {
     private final Map<String, Integer> s_asrts = new HashMap<>(); // the assertions (string to boolean variable) used for reducing the number of boolean variables..
     private final Map<Integer, Assertion> v_asrts = new HashMap<>(); // the assertions (boolean variable to assertion) used for enforcing (negating) assertions..
     final List<Collection<Assertion>> a_watches = new ArrayList<>(); // for each variable 'v', a list of assertions watching 'v'..
-    private final List<Set<Row>> t_watches = new ArrayList<>(); // for each variable 'v', a list of tableau rows watching 'v'..
+    final List<Set<Row>> t_watches = new ArrayList<>(); // for each variable 'v', a list of tableau rows watching 'v'..
     private final Deque<Map<Integer, Bound>> layers = new ArrayDeque<>(); // we store the updated bounds..
     private final Map<Integer, Collection<LRAValueListener>> listeners = new HashMap<>();
 
@@ -74,25 +74,40 @@ public class LRATheory implements Theory {
         return id;
     }
 
+    public int newVar(final Lin l) {
+        final String s_xpr = l.toString();
+        Integer sl_xpr = exprs.get(s_xpr);
+        if (sl_xpr != null) {
+            return sl_xpr; // the expression already exists..
+        } else {
+            // we need to create a new slack variable..
+            final int slack = newVar();
+            exprs.put(s_xpr, slack);
+            vals.set(slack, value(l)); // we set the initial value of the new slack variable..
+            tableau.put(slack, new Row(this, slack, l)); // we add a new row into the tableau..
+            return slack;
+        }
+    }
+
     public int newLt(final Lin left, final Lin right) {
-        Lin expr = left.minus(right);
-        for (Integer v : new ArrayList<>(expr.vars.keySet())) {
+        Lin xpr = left.minus(right);
+        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
             Row row = tableau.get(v);
             if (row != null) {
-                expr.add(row.l.times(expr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(v)));
             }
         }
 
-        final InfRational c_right = new InfRational(expr.known_term.minus(), -1);
-        expr.known_term = new Rational();
+        final InfRational c_right = new InfRational(xpr.known_term.minus(), -1);
+        xpr.known_term = new Rational();
 
-        if (ub(expr).leq(c_right)) {
+        if (ub(xpr).leq(c_right)) {
             return TRUE_var; // the constraint is already satisfied..
-        } else if (lb(expr).gt(c_right)) {
+        } else if (lb(xpr).gt(c_right)) {
             return FALSE_var; // the constraint is unsatisfable..
         }
 
-        final int slack = mk_slack(expr);
+        final int slack = newVar(xpr);
         final String s_assertion = "x" + slack + " <= " + c_right.toString();
         final Integer asrt_var = s_asrts.get(s_assertion);
         if (asrt_var != null) {
@@ -107,24 +122,24 @@ public class LRATheory implements Theory {
     }
 
     public int newLEq(final Lin left, final Lin right) {
-        Lin expr = left.minus(right);
-        for (Integer v : new ArrayList<>(expr.vars.keySet())) {
+        Lin xpr = left.minus(right);
+        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
             Row row = tableau.get(v);
             if (row != null) {
-                expr.add(row.l.times(expr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(v)));
             }
         }
 
-        final InfRational c_right = new InfRational(expr.known_term.minus());
-        expr.known_term = new Rational();
+        final InfRational c_right = new InfRational(xpr.known_term.minus());
+        xpr.known_term = new Rational();
 
-        if (ub(expr).leq(c_right)) {
+        if (ub(xpr).leq(c_right)) {
             return TRUE_var; // the constraint is already satisfied..
-        } else if (lb(expr).gt(c_right)) {
+        } else if (lb(xpr).gt(c_right)) {
             return FALSE_var; // the constraint is unsatisfable..
         }
 
-        final int slack = mk_slack(expr);
+        final int slack = newVar(xpr);
         final String s_assertion = "x" + slack + " <= " + c_right.toString();
         final Integer asrt_var = s_asrts.get(s_assertion);
         if (asrt_var != null) {
@@ -138,25 +153,29 @@ public class LRATheory implements Theory {
         }
     }
 
+    public int newEq(final Lin left, final Lin right) {
+        return sat_core.newConj(new Lit(newLEq(left, right)), new Lit(newGEq(left, right)));
+    }
+
     public int newGEq(final Lin left, final Lin right) {
-        Lin expr = left.minus(right);
-        for (Integer v : new ArrayList<>(expr.vars.keySet())) {
+        Lin xpr = left.minus(right);
+        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
             Row row = tableau.get(v);
             if (row != null) {
-                expr.add(row.l.times(expr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(v)));
             }
         }
 
-        final InfRational c_right = new InfRational(expr.known_term.minus());
-        expr.known_term = new Rational();
+        final InfRational c_right = new InfRational(xpr.known_term.minus());
+        xpr.known_term = new Rational();
 
-        if (lb(expr).geq(c_right)) {
+        if (lb(xpr).geq(c_right)) {
             return TRUE_var; // the constraint is already satisfied..
-        } else if (ub(expr).lt(c_right)) {
+        } else if (ub(xpr).lt(c_right)) {
             return FALSE_var; // the constraint is unsatisfable..
         }
 
-        final int slack = mk_slack(expr);
+        final int slack = newVar(xpr);
         final String s_assertion = "x" + slack + " >= " + c_right.toString();
         final Integer asrt_var = s_asrts.get(s_assertion);
         if (asrt_var != null) {
@@ -171,24 +190,24 @@ public class LRATheory implements Theory {
     }
 
     public int newGt(final Lin left, final Lin right) {
-        Lin expr = left.minus(right);
-        for (Integer v : new ArrayList<>(expr.vars.keySet())) {
+        Lin xpr = left.minus(right);
+        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
             Row row = tableau.get(v);
             if (row != null) {
-                expr.add(row.l.times(expr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(v)));
             }
         }
 
-        final InfRational c_right = new InfRational(expr.known_term.minus(), 1);
-        expr.known_term = new Rational();
+        final InfRational c_right = new InfRational(xpr.known_term.minus(), 1);
+        xpr.known_term = new Rational();
 
-        if (lb(expr).geq(c_right)) {
+        if (lb(xpr).geq(c_right)) {
             return TRUE_var; // the constraint is already satisfied..
-        } else if (ub(expr).lt(c_right)) {
+        } else if (ub(xpr).lt(c_right)) {
             return FALSE_var; // the constraint is unsatisfable..
         }
 
-        final int slack = mk_slack(expr);
+        final int slack = newVar(xpr);
         final String s_assertion = "x" + slack + " >= " + c_right.toString();
         final Integer asrt_var = s_asrts.get(s_assertion);
         if (asrt_var != null) {
@@ -199,21 +218,6 @@ public class LRATheory implements Theory {
             s_asrts.put(s_assertion, ctr);
             v_asrts.put(ctr, new Assertion(this, Assertion.Op.GEq, ctr, slack, c_right));
             return ctr;
-        }
-    }
-
-    private int mk_slack(final Lin l) {
-        final String s_expr = l.toString();
-        Integer sl_expr = exprs.get(s_expr);
-        if (sl_expr != null) {
-            return sl_expr; // the expression already exists..
-        } else {
-            // we need to create a new slack variable..
-            final int slack = newVar();
-            exprs.put(s_expr, slack);
-            vals.set(slack, value(l)); // we set the initial value of the new slack variable..
-            tableau.put(slack, new Row(this, slack, l)); // we add a new row into the tableau..
-            return slack;
         }
     }
 
@@ -378,9 +382,9 @@ public class LRATheory implements Theory {
             if (!layers.isEmpty() && !layers.getLast().containsKey(lb_index(x_i))) {
                 layers.getLast().put(lb_index(x_i), new Bound(lb(x_i), assigns.get(lb_index(x_i)).reason));
             }
-            assigns.set(lb_index(x_i), new Bound(val, new Lit(p.v, p.sign)));
+            assigns.set(lb_index(x_i), new Bound(val, p));
 
-            if (vals.get(x_i).lt(val) && tableau.containsKey(x_i)) {
+            if (vals.get(x_i).lt(val) && !tableau.containsKey(x_i)) {
                 update(x_i, val);
             }
 
@@ -413,9 +417,9 @@ public class LRATheory implements Theory {
             if (!layers.isEmpty() && !layers.getLast().containsKey(ub_index(x_i))) {
                 layers.getLast().put(ub_index(x_i), new Bound(ub(x_i), assigns.get(ub_index(x_i)).reason));
             }
-            assigns.set(ub_index(x_i), new Bound(val, new Lit(p.v, p.sign)));
+            assigns.set(ub_index(x_i), new Bound(val, p));
 
-            if (vals.get(x_i).gt(val) && tableau.containsKey(x_i)) {
+            if (vals.get(x_i).gt(val) && !tableau.containsKey(x_i)) {
                 update(x_i, val);
             }
 
@@ -437,7 +441,7 @@ public class LRATheory implements Theory {
     }
 
     private void update(final int x_i, final InfRational v) {
-        assert tableau.containsKey(x_i) : "x_i should be a non-basic variable..";
+        assert !tableau.containsKey(x_i) : "x_i should be a non-basic variable..";
         for (Row row : t_watches.get(x_i)) {
             // x_j = x_j + a_ji(v - x_i)..
             vals.get(row.x).add(v.minus(vals.get(x_i)).times(row.l.vars.get(x_i)));
@@ -502,24 +506,27 @@ public class LRATheory implements Theory {
     private void pivot(final int x_i, final int x_j) {
         // the exiting row..
         Row row = tableau.remove(x_i);
-        t_watches.removeAll(row.l.vars.keySet());
+        for (Map.Entry<Integer, Rational> term : row.l.vars.entrySet()) {
+            t_watches.get(term.getKey()).remove(row);
+        }
 
-        final Rational c = row.l.vars.remove(x_j);
-        row.l.divide(c.minus());
-        row.l.vars.put(x_i, ONE.divide(c));
+        final Lin xpr = row.l;
+        final Rational c = xpr.vars.remove(x_j);
+        xpr.div(c.minus());
+        xpr.vars.put(x_i, ONE.divide(c));
 
         for (Row r : new ArrayList<>(t_watches.get(x_j))) {
             for (Integer v : r.l.vars.keySet()) {
                 t_watches.get(v).remove(r);
             }
-            r.l.add(row.l.times(r.l.vars.remove(x_j)));
+            r.l.add(xpr.times(r.l.vars.remove(x_j)));
             for (Integer v : r.l.vars.keySet()) {
                 t_watches.get(v).add(r);
             }
         }
 
         // we add a new row into the tableau..
-        tableau.put(x_j, new Row(this, x_j, row.l));
+        tableau.put(x_j, new Row(this, x_j, xpr));
     }
 
     static int lb_index(final int v) {
@@ -530,6 +537,9 @@ public class LRATheory implements Theory {
         return (v << 1) ^ 1;
     }
 
+    /**
+     * Represents the bound of a variable and the reason for its existence.
+     */
     static class Bound {
 
         final InfRational value; // the value of the bound..

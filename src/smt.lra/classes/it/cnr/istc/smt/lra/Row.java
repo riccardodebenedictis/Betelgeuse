@@ -39,6 +39,9 @@ class Row {
         this.th = th;
         this.x = x;
         this.l = l;
+        for (Map.Entry<Integer, Rational> term : l.vars.entrySet()) {
+            th.t_watches.get(term.getKey()).add(this);
+        }
     }
 
     /**

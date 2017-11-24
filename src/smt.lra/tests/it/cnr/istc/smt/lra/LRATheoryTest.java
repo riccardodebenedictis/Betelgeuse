@@ -35,38 +35,23 @@ public class LRATheoryTest {
         SatCore core = new SatCore();
         LRATheory lra = new LRATheory(core);
 
-        int x0 = lra.newVar();
-        int x1 = lra.newVar();
-        int x2 = lra.newVar();
-        int x3 = lra.newVar();
+        int x = lra.newVar();
+        int y = lra.newVar();
+        int s1 = lra.newVar(new Lin(x, ONE.minus()).plus(new Lin(y)));
+        int s2 = lra.newVar(new Lin(x, ONE).plus(new Lin(y)));
 
-        // x0 == -x2+x3
-        Lin l_x0 = new Lin(x0);
-        Lin l__x2x3 = new Lin(x2, ONE.minus());
-        l__x2x3.vars.put(x3, ONE);
-        boolean nc = core.newClause(new Lit(core.newConj(new Lit(lra.newLEq(l_x0, l__x2x3)), new Lit(lra.newGEq(l_x0, l__x2x3))))) && core.check();
+        // x <= -4
+        boolean nc = core.newClause(new Lit(lra.newLEq(new Lin(x), new Lin(new Rational(-4))))) && core.check();
         Assert.assertTrue(nc);
-
-        //x1 == x2+x3
-        Lin l_x1 = new Lin(x1);
-        Lin l_x2x3 = new Lin(x2, ONE);
-        l_x2x3.vars.put(x3, ONE);
-        nc = core.newClause(new Lit(core.newConj(new Lit(lra.newLEq(l_x1, l_x2x3)), new Lit(lra.newGEq(l_x1, l_x2x3))))) && core.check();
+        // x >= -8
+        nc = core.newClause(new Lit(lra.newGEq(new Lin(x), new Lin(new Rational(-8))))) && core.check();
+        Assert.assertTrue(nc);
+        // s1 <= 1
+        nc = core.newClause(new Lit(lra.newLEq(new Lin(s1), new Lin(ONE)))) && core.check();
         Assert.assertTrue(nc);
 
-        // x2 <= -4
-        nc = core.newClause(new Lit(lra.newLEq(new Lin(x2), new Lin(new Rational(-4))))) && core.check();
-        Assert.assertTrue(nc);
-        // x2 >= -8
-        nc = core.newClause(new Lit(lra.newGEq(new Lin(x2), new Lin(new Rational(-8))))) && core.check();
-        Assert.assertTrue(nc);
-        // x0 <= 1
-        nc = core.newClause(new Lit(lra.newLEq(new Lin(x0), new Lin(ONE)))) && core.check();
-        Assert.assertTrue(nc);
-
-        // x1 >= -3
-        // this constraint is inconsistent with the previous ones!
-        boolean asm = core.assume(new Lit(lra.newGEq(new Lin(x1), new Lin(new Rational(-3)))));
-        Assert.assertTrue(asm);
+        // s2 >= -3
+        boolean asm = core.assume(new Lit(lra.newGEq(new Lin(s2), new Lin(new Rational(-3)))));
+        Assert.assertFalse(asm);
     }
 }

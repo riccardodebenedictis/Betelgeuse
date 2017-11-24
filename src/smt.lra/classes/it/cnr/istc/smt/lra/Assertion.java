@@ -40,6 +40,7 @@ class Assertion {
         this.b = b;
         this.x = x;
         this.v = v;
+        th.a_watches.get(x).add(this);
     }
 
     /**
