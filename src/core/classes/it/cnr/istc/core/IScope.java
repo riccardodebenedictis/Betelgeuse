@@ -16,6 +16,8 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Map;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
@@ -31,6 +33,8 @@ public interface IScope {
     public IScope getScope();
 
     public Field getField(final String name);
+
+    public Map<String, Field> getFields();
 
     public Method getMethod(final String name, final Type... pars);
 

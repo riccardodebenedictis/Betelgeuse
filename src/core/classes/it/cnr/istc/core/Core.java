@@ -16,38 +16,43 @@
  */
 package it.cnr.istc.core;
 
+import it.cnr.istc.common.InfRational;
 import it.cnr.istc.common.Lin;
 import it.cnr.istc.common.Rational;
+import static it.cnr.istc.common.Rational.ZERO;
 import it.cnr.istc.core.Item.ArithItem;
 import it.cnr.istc.core.Item.BoolItem;
 import it.cnr.istc.core.Item.StringItem;
+import it.cnr.istc.core.Item.VarItem;
 import static it.cnr.istc.core.Type.BOOL;
 import static it.cnr.istc.core.Type.INT;
 import static it.cnr.istc.core.Type.REAL;
 import it.cnr.istc.parser.Parser;
 import it.cnr.istc.parser.ParsingException;
 import it.cnr.istc.parser.declarations.CompilationUnit;
+import it.cnr.istc.smt.LBool;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
 import static it.cnr.istc.smt.SatCore.FALSE_var;
 import static it.cnr.istc.smt.SatCore.TRUE_var;
 import it.cnr.istc.smt.lra.LRATheory;
+import it.cnr.istc.smt.var.IVarVal;
 import it.cnr.istc.smt.var.VarTheory;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Core implements IScope, IEnv {
+public abstract class Core implements IScope, IEnv {
 
     public final SatCore sat_core = new SatCore();
     public final LRATheory la_theory = new LRATheory(sat_core);
@@ -58,6 +63,8 @@ public class Core implements IScope, IEnv {
     final Map<String, Predicate> predicates = new HashMap<>();
     final Map<String, Item> items = new HashMap<>();
     private final Parser parser = new Parser();
+    private int tmp_var = -1;
+    private int ctr_var = TRUE_var;
 
     public Core() {
         newTypes(new Type.BoolType(this), new Type.IntType(this), new Type.RealType(this), new Type.StringType(this));
@@ -186,6 +193,141 @@ public class Core implements IScope, IEnv {
         }
     }
 
+    public BoolItem negate(final BoolItem bi) {
+        return new BoolItem(this, bi.l.not());
+    }
+
+    public BoolItem eq(final BoolItem l, final BoolItem r) {
+        return new BoolItem(this, new Lit(sat_core.newEq(l.l, r.l)));
+    }
+
+    public BoolItem conj(final BoolItem... bis) {
+        return new BoolItem(this, new Lit(sat_core.newConj(Stream.of(bis).map(bi -> bi.l).toArray(Lit[]::new))));
+    }
+
+    public BoolItem disj(final BoolItem... bis) {
+        return new BoolItem(this, new Lit(sat_core.newDisj(Stream.of(bis).map(bi -> bi.l).toArray(Lit[]::new))));
+    }
+
+    public BoolItem exct_one(final BoolItem... bis) {
+        return new BoolItem(this, new Lit(sat_core.newExctOne(Stream.of(bis).map(bi -> bi.l).toArray(Lit[]::new))));
+    }
+
+    public ArithItem add(final ArithItem... ais) {
+        Lin l = new Lin();
+        boolean is_real = false;
+        for (ArithItem ai : ais) {
+            l.add(ai.l);
+            if (ai.type.name.equals(REAL)) {
+                is_real = true;
+            }
+        }
+        return new ArithItem(this, types.get(is_real ? REAL : INT), l);
+    }
+
+    public ArithItem sub(final ArithItem... ais) {
+        Lin l = new Lin();
+        boolean is_real = false;
+        for (ArithItem ai : ais) {
+            l.sub(ai.l);
+            if (ai.type.name.equals(REAL)) {
+                is_real = true;
+            }
+        }
+        return new ArithItem(this, types.get(is_real ? REAL : INT), l);
+    }
+
+    public ArithItem mult(final ArithItem... ais) {
+        Lin l = new Lin();
+        boolean is_real = false;
+        for (ArithItem ai : ais) {
+            assert la_theory.lb(ai.l).eq(la_theory.ub(ai.l)) : "non-linear expression..";
+            assert la_theory.value(ai.l).inf.eq(ZERO);
+            l.mult(la_theory.value(ai.l).rat);
+            if (ai.type.name.equals(REAL)) {
+                is_real = true;
+            }
+        }
+        return new ArithItem(this, types.get(is_real ? REAL : INT), l);
+    }
+
+    public ArithItem div(final ArithItem... ais) {
+        Lin l = new Lin();
+        boolean is_real = false;
+        for (ArithItem ai : ais) {
+            assert la_theory.lb(ai.l).eq(la_theory.ub(ai.l)) : "non-linear expression..";
+            assert la_theory.value(ai.l).inf.eq(ZERO);
+            l.div(la_theory.value(ai.l).rat);
+            if (ai.type.name.equals(REAL)) {
+                is_real = true;
+            }
+        }
+        return new ArithItem(this, types.get(is_real ? REAL : INT), l);
+    }
+
+    public ArithItem minus(final ArithItem ai) {
+        return new ArithItem(this, ai.type, ai.l.minus());
+    }
+
+    public BoolItem lt(final ArithItem l, final ArithItem r) {
+        return new BoolItem(this, new Lit(la_theory.newLt(l.l, r.l)));
+    }
+
+    public BoolItem leq(final ArithItem l, final ArithItem r) {
+        return new BoolItem(this, new Lit(la_theory.newLEq(l.l, r.l)));
+    }
+
+    public BoolItem eq(final ArithItem l, final ArithItem r) {
+        return new BoolItem(this, new Lit(la_theory.newEq(l.l, r.l)));
+    }
+
+    public BoolItem geq(final ArithItem l, final ArithItem r) {
+        return new BoolItem(this, new Lit(la_theory.newGEq(l.l, r.l)));
+    }
+
+    public BoolItem gt(final ArithItem l, final ArithItem r) {
+        return new BoolItem(this, new Lit(la_theory.newGt(l.l, r.l)));
+    }
+
+    public BoolItem eq(final Item l, final Item r) {
+        return new BoolItem(this, new Lit(l.eq(r)));
+    }
+
+    public LBool value(final BoolItem bi) {
+        return sat_core.value(bi.l);
+    }
+
+    public InfRational lb(final ArithItem ai) {
+        return la_theory.lb(ai.l);
+    }
+
+    public InfRational ub(final ArithItem ai) {
+        return la_theory.ub(ai.l);
+    }
+
+    public InfRational value(final ArithItem ai) {
+        return la_theory.value(ai.l);
+    }
+
+    public Set<IVarVal> value(final VarItem vi) {
+        return var_theory.value(vi.var);
+    }
+
+    protected void setVar(final int v) {
+        tmp_var = ctr_var;
+        ctr_var = v;
+    }
+
+    protected void restoreVar() {
+        ctr_var = tmp_var;
+    }
+
+    protected abstract void newFact(final Atom atom);
+
+    protected abstract void newGoal(final Atom atom);
+
+    protected abstract void newDisjunction(final IEnv env, final Disjunction dsj);
+
     @Override
     public Core getCore() {
         return this;
@@ -203,6 +345,11 @@ public class Core implements IScope, IEnv {
             return f;
         }
         throw new NoSuchFieldError(name);
+    }
+
+    @Override
+    public Map<String, Field> getFields() {
+        return Collections.unmodifiableMap(fields);
     }
 
     @Override

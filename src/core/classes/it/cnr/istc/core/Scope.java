@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,11 @@ public class Scope implements IScope {
         }
         // if not here, check any enclosing scope
         return scope.getField(name);
+    }
+
+    @Override
+    public Map<String, Field> getFields() {
+        return Collections.unmodifiableMap(fields);
     }
 
     @Override

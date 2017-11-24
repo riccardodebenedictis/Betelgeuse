@@ -16,7 +16,10 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.core.Atom;
 import it.cnr.istc.core.Core;
+import it.cnr.istc.core.Disjunction;
+import it.cnr.istc.core.IEnv;
 import it.cnr.istc.solver.types.ReusableResource;
 import it.cnr.istc.solver.types.StateVariable;
 
@@ -28,5 +31,20 @@ public class Solver extends Core {
 
     public Solver() {
         newTypes(new StateVariable(this), new ReusableResource(this));
+    }
+
+    @Override
+    protected void newFact(Atom atom) {
+        throw new UnsupportedOperationException("not supported yet..");
+    }
+
+    @Override
+    protected void newGoal(Atom atom) {
+        throw new UnsupportedOperationException("not supported yet..");
+    }
+
+    @Override
+    protected void newDisjunction(IEnv env, Disjunction dsj) {
+        throw new UnsupportedOperationException("not supported yet..");
     }
 }
