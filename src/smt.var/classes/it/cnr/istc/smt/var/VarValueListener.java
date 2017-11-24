@@ -20,7 +20,7 @@ package it.cnr.istc.smt.var;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public interface IVarListener {
+public interface VarValueListener {
 
     void varValueChange(final int v);
 }

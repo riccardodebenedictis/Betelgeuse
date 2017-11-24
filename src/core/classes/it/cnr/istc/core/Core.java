@@ -36,8 +36,10 @@ import it.cnr.istc.smt.var.VarTheory;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -151,7 +153,37 @@ public class Core implements IScope, IEnv {
     }
 
     public Item newEnum(final Type type, final int[] vars, final Item[] vals) {
-        throw new UnsupportedOperationException("not supported yet..");
+        switch (type.name) {
+            case BOOL: {
+                BoolItem bi = newBool();
+                boolean nc;
+                for (int i = 0; i < vars.length; i++) {
+                    nc = sat_core.newClause(new Lit(vars[i], false), new Lit(sat_core.newEq(((BoolItem) vals[i]).l, bi.l)));
+                    assert nc;
+                }
+                return bi;
+            }
+            case INT: {
+                ArithItem ai = newInt();
+                boolean nc;
+                for (int i = 0; i < vars.length; i++) {
+                    nc = sat_core.newClause(new Lit(vars[i], false), new Lit(la_theory.newEq(((ArithItem) vals[i]).l, ai.l)));
+                    assert nc;
+                }
+                return ai;
+            }
+            case REAL: {
+                ArithItem ai = newReal();
+                boolean nc;
+                for (int i = 0; i < vars.length; i++) {
+                    nc = sat_core.newClause(new Lit(vars[i], false), new Lit(la_theory.newEq(((ArithItem) vals[i]).l, ai.l)));
+                    assert nc;
+                }
+                return ai;
+            }
+            default:
+                return new Item.VarItem(this, type, var_theory.newVar(vars, vals));
+        }
     }
 
     @Override

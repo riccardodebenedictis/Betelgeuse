@@ -529,6 +529,23 @@ public class LRATheory implements Theory {
         tableau.put(x_j, new Row(this, x_j, xpr));
     }
 
+    public void listen(final int v, final LRAValueListener l) {
+        Collection<LRAValueListener> ls = listeners.get(v);
+        if (ls == null) {
+            ls = new ArrayList<>();
+            listeners.put(v, ls);
+        }
+        ls.add(l);
+    }
+
+    public void forget(final int v, final LRAValueListener l) {
+        Collection<LRAValueListener> ls = listeners.get(v);
+        ls.remove(l);
+        if (ls.isEmpty()) {
+            listeners.remove(v);
+        }
+    }
+
     static int lb_index(final int v) {
         return v << 1;
     }
