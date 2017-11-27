@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,12 +24,12 @@ import java.util.Collection;
  */
 class CompilationUnit {
 
-    private final Collection<MethodDeclaration> methods;
-    private final Collection<PredicateDeclaration> predicates;
-    private final Collection<TypeDeclaration> types;
-    private final Collection<Statement> statements;
+    private final List<MethodDeclaration> methods;
+    private final List<PredicateDeclaration> predicates;
+    private final List<TypeDeclaration> types;
+    private final List<Statement> statements;
 
-    CompilationUnit(final Collection<MethodDeclaration> methods, final Collection<PredicateDeclaration> predicates, final Collection<TypeDeclaration> types, final Collection<Statement> statements) {
+    CompilationUnit(final List<MethodDeclaration> methods, final List<PredicateDeclaration> predicates, final List<TypeDeclaration> types, final List<Statement> statements) {
         this.methods = methods;
         this.predicates = predicates;
         this.types = types;
@@ -54,7 +54,7 @@ class CompilationUnit {
         }
     }
 
-    public void execute(final IScope scp, final IEnv env) {
+    public void execute(final IScope scp, final IEnv env) throws UnsolvableException {
         for (Statement statement : statements) {
             statement.execute(scp, env);
         }

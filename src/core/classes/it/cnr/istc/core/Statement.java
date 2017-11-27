@@ -20,7 +20,7 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public abstract class Statement {
+abstract class Statement {
 
-    public abstract void execute(final IScope scp, final IEnv env);
+    abstract void execute(final IScope scp, final IEnv env) throws UnsolvableException;
 }

@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,16 +24,16 @@ import java.util.Collection;
  */
 class CastExpression implements Expression {
 
-    private final Collection<String> type;
+    private final List<String> type;
     private final Expression xpr;
 
-    CastExpression(final Collection<String> ids, final Expression xpr) {
+    CastExpression(final List<String> ids, final Expression xpr) {
         this.type = ids;
         this.xpr = xpr;
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+        return xpr.evaluate(scp, env);
     }
 }

@@ -17,7 +17,10 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
-import java.util.Collection;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  *
@@ -26,11 +29,11 @@ import java.util.Collection;
 class PredicateDeclaration {
 
     private final String name;
-    private final Collection<Pair<Collection<String>, String>> parameters;
-    private final Collection<Collection<String>> predicate_list;
-    private final Collection<Statement> statements;
+    private final List<Pair<List<String>, String>> parameters;
+    private final List<List<String>> predicate_list;
+    private final List<Statement> statements;
 
-    PredicateDeclaration(final String n, final Collection<Pair<Collection<String>, String>> pars, final Collection<Collection<String>> pl, final Collection<Statement> stmnts) {
+    PredicateDeclaration(final String n, final List<Pair<List<String>, String>> pars, final List<List<String>> pl, final List<Statement> stmnts) {
         this.name = n;
         this.parameters = pars;
         this.predicate_list = pl;
@@ -38,5 +41,35 @@ class PredicateDeclaration {
     }
 
     public void refine(final IScope scp) {
+        List<Field> args = new ArrayList<>(parameters.size());
+        for (Pair<List<String>, String> par : parameters) {
+            IScope sc = scp;
+            for (String id : par.first) {
+                sc = sc.getType(id);
+            }
+            args.add(new Field((Type) sc, par.second));
+        }
+
+        Predicate p = new Predicate(scp.getCore(), scp, name, args);
+
+        for (List<String> pls : predicate_list) {
+            IScope sc = scp;
+            for (String id : pls) {
+                sc = sc.getType(id);
+            }
+            p.supertypes.add((Predicate) sc);
+        }
+
+        if (scp instanceof Core) {
+            ((Core) scp).predicates.put(name, p);
+        } else {
+            ((Type) scp).predicates.put(name, p);
+            Queue<Type> q = new ArrayDeque<>();
+            q.add((Type) scp);
+            while (!q.isEmpty()) {
+                q.poll().newPredicate(p);
+                q.addAll(q.peek().supertypes);
+            }
+        }
     }
 }

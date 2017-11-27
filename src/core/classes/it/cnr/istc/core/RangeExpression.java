@@ -31,7 +31,11 @@ class RangeExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+        Item.ArithItem min_v = (Item.ArithItem) min_e.evaluate(scp, env);
+        Item.ArithItem max_v = (Item.ArithItem) max_e.evaluate(scp, env);
+        Item.ArithItem var = (min_v.type.name.equals(Type.REAL) || max_v.type.name.equals(Type.REAL)) ? scp.getCore().newReal() : scp.getCore().newInt();
+        scp.getCore().assertFacts(scp.getCore().geq(var, min_v).l, scp.getCore().leq(var, max_v).l);
+        return var;
     }
 }

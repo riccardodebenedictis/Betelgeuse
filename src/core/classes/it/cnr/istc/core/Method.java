@@ -16,6 +16,10 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
@@ -23,15 +27,15 @@ package it.cnr.istc.core;
 public class Method extends Scope {
 
     public final String name;
-    final Field[] args;
-    final Statement[] statements;
+    final List<Field> args;
+    final List<Statement> statements;
     final Type return_type;
 
-    public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements) {
-        this(core, scope, name, null, args, statements);
+    public Method(final Core core, final IScope scope, final String name, final Field... args) {
+        this(core, scope, name, null, Arrays.asList(args), Collections.emptyList());
     }
 
-    public Method(final Core core, final IScope scope, final String name, final Type return_type, final Field[] args, final Statement[] statements) {
+    Method(final Core core, final IScope scope, final String name, final Type return_type, final List<Field> args, final List<Statement> statements) {
         super(core, scope);
         this.name = name;
         this.args = args;

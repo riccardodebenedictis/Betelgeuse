@@ -17,6 +17,9 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -24,11 +27,15 @@ import it.cnr.istc.common.Pair;
  */
 public class Constructor extends Scope {
 
-    final Field[] args;
-    final Statement[] statements;
-    final Pair<String, Expression[]>[] init_list;
+    final List<Field> args;
+    final List<Statement> statements;
+    final List<Pair<String, List<Expression>>> init_list;
 
-    public Constructor(final Core core, final IScope scope, final Field[] args, final Statement[] statements, final Pair<String, Expression[]>[] init_list) {
+    public Constructor(final Core core, final IScope scope, final Field... args) {
+        this(core, scope, Arrays.asList(args), Collections.emptyList(), Collections.emptyList());
+    }
+
+    Constructor(final Core core, final IScope scope, final List<Field> args, final List<Statement> statements, final List<Pair<String, List<Expression>>> init_list) {
         super(core, scope);
         this.args = args;
         fields.put(THIS, new Field(((Type) scope), THIS));

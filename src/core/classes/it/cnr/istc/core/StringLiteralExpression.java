@@ -30,6 +30,6 @@ class StringLiteralExpression implements Expression {
 
     @Override
     public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return scp.getCore().newString(val);
     }
 }

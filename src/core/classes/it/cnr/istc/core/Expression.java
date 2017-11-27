@@ -22,5 +22,5 @@ package it.cnr.istc.core;
  */
 interface Expression {
 
-    Item evaluate(IScope scp, IEnv env);
+    Item evaluate(IScope scp, IEnv env) throws UnsolvableException;
 }

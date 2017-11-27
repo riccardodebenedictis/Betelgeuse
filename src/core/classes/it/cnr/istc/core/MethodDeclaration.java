@@ -17,7 +17,7 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -25,12 +25,12 @@ import java.util.Collection;
  */
 class MethodDeclaration {
 
-    private final Collection<String> return_type;
+    private final List<String> return_type;
     private final String name;
-    private final Collection<Pair<Collection<String>, String>> parameters;
-    private final Collection<Statement> statements;
+    private final List<Pair<List<String>, String>> parameters;
+    private final List<Statement> statements;
 
-    MethodDeclaration(final Collection<String> ids, final String n, final Collection<Pair<Collection<String>, String>> pars, final Collection<Statement> stmnts) {
+    MethodDeclaration(final List<String> ids, final String n, final List<Pair<List<String>, String>> pars, final List<Statement> stmnts) {
         this.return_type = ids;
         this.name = n;
         this.parameters = pars;

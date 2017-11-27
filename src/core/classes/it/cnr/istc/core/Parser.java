@@ -21,8 +21,6 @@ import it.cnr.istc.core.Lexer.RealToken;
 import it.cnr.istc.core.Lexer.StringToken;
 import static it.cnr.istc.core.Lexer.Symbol.*;
 import it.cnr.istc.core.Lexer.Token;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,10 +65,10 @@ class Parser {
     CompilationUnit compilation_unit() throws ParsingException {
         tk = lexer.next();
 
-        final Collection<MethodDeclaration> ms = new ArrayList<>();
-        final Collection<PredicateDeclaration> ps = new ArrayList<>();
-        final Collection<TypeDeclaration> ts = new ArrayList<>();
-        final Collection<Statement> ss = new ArrayList<>();
+        final List<MethodDeclaration> ms = new ArrayList<>();
+        final List<PredicateDeclaration> ps = new ArrayList<>();
+        final List<TypeDeclaration> ts = new ArrayList<>();
+        final List<Statement> ss = new ArrayList<>();
 
         while (tk.sym != EOF) {
             switch (tk.sym) {
@@ -166,8 +164,8 @@ class Parser {
 
     private EnumDeclaration enum_declaration() throws ParsingException {
         String n;
-        Collection<String> es = new ArrayList<>();
-        Collection<Collection<String>> trs = new ArrayList<>();
+        List<String> es = new ArrayList<>();
+        List<List<String>> trs = new ArrayList<>();
 
         if (!match(ENUM)) {
             throw new ParsingException(tk.start_line, tk.start_pos, "expected 'enum'..");
@@ -199,7 +197,7 @@ class Parser {
                     }
                     break;
                 case ID: {
-                    Collection<String> ids = new ArrayList<>();
+                    List<String> ids = new ArrayList<>();
                     ids.add(((Lexer.IdToken) tk).id);
                     tk = next();
                     while (match(DOT)) {
@@ -225,12 +223,12 @@ class Parser {
 
     private ClassDeclaration class_declaration() throws ParsingException {
         String n; // the name of the class..
-        Collection<Collection<String>> bcs = new ArrayList<>(); // the base classes..
-        Collection<FieldDeclaration> fs = new ArrayList<>(); // the fields of the class..
-        Collection<ConstructorDeclaration> cs = new ArrayList<>(); // the constructors of the class..
-        Collection<MethodDeclaration> ms = new ArrayList<>(); // the methods of the class..
-        Collection<PredicateDeclaration> ps = new ArrayList<>(); // the predicates of the class..
-        Collection<TypeDeclaration> ts = new ArrayList<>(); // the types of the class..
+        List<List<String>> bcs = new ArrayList<>(); // the base classes..
+        List<FieldDeclaration> fs = new ArrayList<>(); // the fields of the class..
+        List<ConstructorDeclaration> cs = new ArrayList<>(); // the constructors of the class..
+        List<MethodDeclaration> ms = new ArrayList<>(); // the methods of the class..
+        List<PredicateDeclaration> ps = new ArrayList<>(); // the predicates of the class..
+        List<TypeDeclaration> ts = new ArrayList<>(); // the types of the class..
 
         if (!match(CLASS)) {
             throw new ParsingException(tk.start_line, tk.start_pos, "expected 'class'..");
@@ -243,7 +241,7 @@ class Parser {
 
         if (match(COLON)) {
             do {
-                Collection<String> ids = new ArrayList<>();
+                List<String> ids = new ArrayList<>();
                 do {
                     if (!match(ID)) {
                         throw new ParsingException(tk.start_line, tk.start_pos, "expected identifier..");
@@ -363,9 +361,9 @@ class Parser {
 
     private PredicateDeclaration predicate_declaration() throws ParsingException {
         String n;
-        Collection<Pair<Collection<String>, String>> pars = new ArrayList<>();
-        Collection<Collection<String>> pl = new ArrayList<>();
-        Collection<Statement> stmnts = new ArrayList<>();
+        List<Pair<List<String>, String>> pars = new ArrayList<>();
+        List<List<String>> pl = new ArrayList<>();
+        List<Statement> stmnts = new ArrayList<>();
 
         if (!match(PREDICATE)) {
             throw new ParsingException(tk.start_line, tk.start_pos, "expected 'predicate'..");
@@ -382,7 +380,7 @@ class Parser {
 
         if (!match(RPAREN)) {
             do {
-                Collection<String> p_ids = new ArrayList<>();
+                List<String> p_ids = new ArrayList<>();
                 switch (tk.sym) {
                     case BOOL:
                         p_ids.add("bool");
@@ -425,7 +423,7 @@ class Parser {
 
         if (match(COLON)) {
             do {
-                Collection<String> p_ids = new ArrayList<>();
+                List<String> p_ids = new ArrayList<>();
                 do {
                     if (!match(ID)) {
                         throw new ParsingException(tk.start_line, tk.start_pos, "expected identifier..");
@@ -448,9 +446,9 @@ class Parser {
     }
 
     private ConstructorDeclaration constructor_declaration() throws ParsingException {
-        Collection<Pair<Collection<String>, String>> pars = new ArrayList<>();
-        Collection<Pair<String, Collection<Expression>>> il = new ArrayList<>();
-        Collection<Statement> stmnts = new ArrayList<>();
+        List<Pair<List<String>, String>> pars = new ArrayList<>();
+        List<Pair<String, List<Expression>>> il = new ArrayList<>();
+        List<Statement> stmnts = new ArrayList<>();
 
         if (!match(ID)) {
             throw new ParsingException(tk.start_line, tk.start_pos, "expected identifier..");
@@ -462,7 +460,7 @@ class Parser {
 
         if (!match(RPAREN)) {
             do {
-                Collection<String> p_ids = new ArrayList<>();
+                List<String> p_ids = new ArrayList<>();
                 switch (tk.sym) {
                     case ID:
                         p_ids.add(((Lexer.IdToken) tk).id);
@@ -506,7 +504,7 @@ class Parser {
         if (match(COLON)) {
             do {
                 String pn;
-                Collection<Expression> xprs = new ArrayList<>();
+                List<Expression> xprs = new ArrayList<>();
                 if (!match(ID)) {
                     throw new ParsingException(tk.start_line, tk.start_pos, "expected identifier..");
                 }
@@ -541,10 +539,10 @@ class Parser {
     }
 
     private MethodDeclaration method_declaration() throws ParsingException {
-        Collection<String> ids = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         String n;
-        Collection<Pair<Collection<String>, String>> pars = new ArrayList<>();
-        Collection<Statement> stmnts = new ArrayList<>();
+        List<Pair<List<String>, String>> pars = new ArrayList<>();
+        List<Statement> stmnts = new ArrayList<>();
 
         if (!match(VOID)) {
             do {
@@ -566,7 +564,7 @@ class Parser {
 
         if (!match(RPAREN)) {
             do {
-                Collection<String> p_ids = new ArrayList<>();
+                List<String> p_ids = new ArrayList<>();
                 switch (tk.sym) {
                     case BOOL:
                         p_ids.add(Type.BOOL);
@@ -621,9 +619,9 @@ class Parser {
     }
 
     private FieldDeclaration field_declaration() throws ParsingException {
-        Collection<String> ids = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         String n;
-        Collection<VariableDeclaration> ds = new ArrayList<>();
+        List<VariableDeclaration> ds = new ArrayList<>();
 
         switch (tk.sym) {
             case BOOL:
@@ -694,7 +692,7 @@ class Parser {
             case REAL:
             case STRING: // a local field having a primitive type..
             {
-                Collection<String> ids = new ArrayList<>();
+                List<String> ids = new ArrayList<>();
                 switch (tk.sym) {
                     case BOOL:
                         ids.add("bool");
@@ -796,7 +794,7 @@ class Parser {
             case LBRACE: // either a block or a disjunction..
             {
                 tk = next();
-                Collection<Statement> stmnts = new ArrayList<>();
+                List<Statement> stmnts = new ArrayList<>();
                 do {
                     stmnts.add(statement());
                 } while (!match(RBRACE));
@@ -804,7 +802,7 @@ class Parser {
                     case LBRACKET:
                     case OR: // a disjunctive statement..
                     {
-                        Collection<Pair<Collection<Statement>, Expression>> disjs = new ArrayList<>();
+                        List<Pair<List<Statement>, Expression>> disjs = new ArrayList<>();
                         Expression e = null;
                         if (match(LBRACKET)) {
                             e = expression(0);
@@ -843,7 +841,7 @@ class Parser {
                 String fn;
                 List<String> scp = new ArrayList<>();
                 String pn;
-                Collection<Pair<String, Expression>> assgns = new ArrayList<>();
+                List<Pair<String, Expression>> assgns = new ArrayList<>();
 
                 if (!match(ID)) {
                     throw new ParsingException(tk.start_line, tk.start_pos, "expected identifier..");
@@ -947,7 +945,7 @@ class Parser {
                 if (match(RPAREN)) // a cast..
                 {
                     backtrack(c_pos);
-                    Collection<String> ids = new ArrayList<>();
+                    List<String> ids = new ArrayList<>();
                     do {
                         if (!match(ID)) {
                             throw new ParsingException(tk.start_line, tk.start_pos, "expected identifier..");
@@ -1036,7 +1034,7 @@ class Parser {
                 if (match(LPAREN)) {
                     tk = next();
                     String fn = is.remove(is.size() - 1);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     if (!match(LPAREN)) {
                         throw new ParsingException(tk.start_line, tk.start_pos, "expected '('..");
                     }
@@ -1108,7 +1106,7 @@ class Parser {
                 }
                 case BAR: {
                     assert (1 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(BAR)) {
@@ -1120,7 +1118,7 @@ class Parser {
                 }
                 case AMP: {
                     assert (1 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(BAR)) {
@@ -1132,7 +1130,7 @@ class Parser {
                 }
                 case CARET: {
                     assert (1 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(BAR)) {
@@ -1144,7 +1142,7 @@ class Parser {
                 }
                 case PLUS: {
                     assert (2 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(PLUS)) {
@@ -1156,7 +1154,7 @@ class Parser {
                 }
                 case MINUS: {
                     assert (2 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(MINUS)) {
@@ -1168,7 +1166,7 @@ class Parser {
                 }
                 case STAR: {
                     assert (3 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(STAR)) {
@@ -1180,7 +1178,7 @@ class Parser {
                 }
                 case SLASH: {
                     assert (3 >= pr);
-                    Collection<Expression> xprs = new ArrayList<>();
+                    List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
                     while (match(SLASH)) {

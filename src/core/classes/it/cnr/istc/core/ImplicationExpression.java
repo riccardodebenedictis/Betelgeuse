@@ -31,7 +31,7 @@ class ImplicationExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+        return scp.getCore().disj(scp.getCore().negate((Item.BoolItem) xpr0.evaluate(scp, env)), (Item.BoolItem) xpr1.evaluate(scp, env));
     }
 }

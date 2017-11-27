@@ -22,7 +22,7 @@ package it.cnr.istc.core;
  */
 abstract class TypeDeclaration {
 
-    private final String name;
+    protected final String name;
 
     TypeDeclaration(final String name) {
         this.name = name;

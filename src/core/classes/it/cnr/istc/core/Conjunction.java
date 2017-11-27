@@ -17,7 +17,7 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Lin;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -26,9 +26,9 @@ import java.util.Collection;
 public class Conjunction extends Scope {
 
     private final Lin cost;
-    private final Collection<Statement> statements;
+    private final List<Statement> statements;
 
-    Conjunction(final Core core, final IScope scope, final Lin cost, final Collection<Statement> statements) {
+    Conjunction(final Core core, final IScope scope, final Lin cost, final List<Statement> statements) {
         super(core, scope);
         this.cost = cost;
         this.statements = statements;

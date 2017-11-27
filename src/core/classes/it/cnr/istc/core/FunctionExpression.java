@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,11 +24,11 @@ import java.util.Collection;
  */
 class FunctionExpression implements Expression {
 
-    private final Collection<String> ids;
+    private final List<String> ids;
     private final String function_name;
-    private final Collection<Expression> xprs;
+    private final List<Expression> xprs;
 
-    FunctionExpression(final Collection<String> is, final String fn, final Collection<Expression> xprs) {
+    FunctionExpression(final List<String> is, final String fn, final List<Expression> xprs) {
         this.ids = is;
         this.function_name = fn;
         this.xprs = xprs;

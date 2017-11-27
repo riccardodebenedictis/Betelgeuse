@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,18 +24,26 @@ import java.util.Collection;
  */
 class AssignmentStatement extends Statement {
 
-    private final Collection<String> ids;
+    private final List<String> ids;
     private final String id;
     private final Expression xpr;
 
-    AssignmentStatement(final Collection<String> ids, final String id, final Expression xpr) {
+    AssignmentStatement(final List<String> ids, final String id, final Expression xpr) {
         this.ids = ids;
         this.id = id;
         this.xpr = xpr;
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+        IEnv e = env;
+        for (String id : ids) {
+            e = e.get(id);
+        }
+        if (e instanceof Core) {
+            ((Core) e).items.put(id, xpr.evaluate(scp, env));
+        } else {
+            ((Env) e).items.put(id, xpr.evaluate(scp, env));
+        }
     }
 }

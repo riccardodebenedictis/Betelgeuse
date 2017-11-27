@@ -363,10 +363,10 @@ public abstract class Core implements IScope, IEnv {
         Collection<Method> c_ms = methods.get(name);
         if (c_ms != null) {
             for (Method mthd : c_ms) {
-                if (mthd.args.length == pars.length) {
+                if (mthd.args.size() == pars.length) {
                     boolean found = true;
                     for (int i = 0; i < pars.length; i++) {
-                        if (!mthd.args[i].type.isAssignableFrom(pars[i])) {
+                        if (!mthd.args.get(i).type.isAssignableFrom(pars[i])) {
                             found = false;
                             break;
                         }

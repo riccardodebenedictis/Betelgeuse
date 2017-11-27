@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,18 +24,27 @@ import java.util.Collection;
  */
 class LocalFieldStatement extends Statement {
 
-    private final Collection<String> field_type;
+    private final List<String> field_type;
     private final String name;
     private final Expression xpr;
 
-    LocalFieldStatement(final Collection<String> ids, final String n, final Expression e) {
+    LocalFieldStatement(final List<String> ids, final String n, final Expression e) {
         this.field_type = ids;
         this.name = n;
         this.xpr = e;
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+        IScope sc = scp;
+        for (String id : field_type) {
+            sc = sc.getType(id);
+        }
+        Type tp = (Type) sc;
+        if (env instanceof Core) {
+            ((Core) env).items.put(name, tp.primitive ? tp.newInstance(env) : tp.newExistential());
+        } else {
+            ((Env) env).items.put(name, tp.primitive ? tp.newInstance(env) : tp.newExistential());
+        }
     }
 }

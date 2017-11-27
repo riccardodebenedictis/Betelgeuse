@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,14 +24,16 @@ import java.util.Collection;
  */
 class BlockStatement extends Statement {
 
-    private final Collection<Statement> statements;
+    private final List<Statement> statements;
 
-    BlockStatement(final Collection<Statement> stmnts) {
+    BlockStatement(final List<Statement> stmnts) {
         this.statements = stmnts;
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+        for (Statement stmnt : statements) {
+            stmnt.execute(scp, env);
+        }
     }
 }

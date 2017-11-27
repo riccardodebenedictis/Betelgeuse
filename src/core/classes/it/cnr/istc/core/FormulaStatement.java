@@ -17,7 +17,7 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -27,11 +27,11 @@ class FormulaStatement extends Statement {
 
     private final boolean is_fact;
     private final String formula_name;
-    private final Collection<String> formula_scope;
+    private final List<String> formula_scope;
     private final String predicate_name;
-    private final Collection<Pair<String, Expression>> assignments;
+    private final List<Pair<String, Expression>> assignments;
 
-    FormulaStatement(final boolean f, final String fn, final Collection<String> scp, String pn, final Collection<Pair<String, Expression>> assgns) {
+    FormulaStatement(final boolean f, final String fn, final List<String> scp, String pn, final List<Pair<String, Expression>> assgns) {
         this.is_fact = f;
         this.formula_name = fn;
         this.formula_scope = scp;

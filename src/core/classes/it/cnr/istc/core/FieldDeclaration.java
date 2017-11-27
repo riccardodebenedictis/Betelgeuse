@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,14 +24,29 @@ import java.util.Collection;
  */
 class FieldDeclaration {
 
-    private final Collection<String> field_type;
-    private final Collection<VariableDeclaration> declarations;
+    private final List<String> field_type;
+    private final List<VariableDeclaration> declarations;
 
-    FieldDeclaration(final Collection<String> tp, final Collection<VariableDeclaration> ds) {
+    FieldDeclaration(final List<String> tp, final List<VariableDeclaration> ds) {
         this.field_type = tp;
         this.declarations = ds;
     }
 
     public void refine(final IScope scp) {
+        // we add fields to the current scope..
+        IScope sc = scp;
+        for (String id : field_type) {
+            sc = sc.getType(id);
+        }
+        Type tp = (Type) sc;
+        if (scp instanceof Core) {
+            for (VariableDeclaration dec : declarations) {
+                ((Core) scp).fields.put(dec.name, new Field(tp, dec.name, dec.expression, false));
+            }
+        } else {
+            for (VariableDeclaration dec : declarations) {
+                ((Scope) scp).fields.put(dec.name, new Field(tp, dec.name, dec.expression, false));
+            }
+        }
     }
 }

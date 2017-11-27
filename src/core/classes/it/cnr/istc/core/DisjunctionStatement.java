@@ -17,7 +17,7 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -25,9 +25,9 @@ import java.util.Collection;
  */
 class DisjunctionStatement extends Statement {
 
-    private final Collection<Pair<Collection<Statement>, Expression>> disjunctions;
+    private final List<Pair<List<Statement>, Expression>> disjunctions;
 
-    DisjunctionStatement(final Collection<Pair<Collection<Statement>, Expression>> disjs) {
+    DisjunctionStatement(final List<Pair<List<Statement>, Expression>> disjs) {
         this.disjunctions = disjs;
     }
 

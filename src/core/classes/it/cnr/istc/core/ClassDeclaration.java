@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,14 +24,14 @@ import java.util.Collection;
  */
 class ClassDeclaration extends TypeDeclaration {
 
-    private final Collection<FieldDeclaration> fields;
-    private final Collection<Collection<String>> base_classes;
-    private final Collection<ConstructorDeclaration> constructors;
-    private final Collection<MethodDeclaration> methods;
-    private final Collection<PredicateDeclaration> predicates;
-    private final Collection<TypeDeclaration> types;
+    private final List<FieldDeclaration> fields;
+    private final List<List<String>> base_classes;
+    private final List<ConstructorDeclaration> constructors;
+    private final List<MethodDeclaration> methods;
+    private final List<PredicateDeclaration> predicates;
+    private final List<TypeDeclaration> types;
 
-    ClassDeclaration(final String name, final Collection<Collection<String>> base_classes, final Collection<FieldDeclaration> fields, final Collection<ConstructorDeclaration> constructors, final Collection<MethodDeclaration> methods, final Collection<PredicateDeclaration> predicates, final Collection<TypeDeclaration> types) {
+    ClassDeclaration(final String name, final List<List<String>> base_classes, final List<FieldDeclaration> fields, final List<ConstructorDeclaration> constructors, final List<MethodDeclaration> methods, final List<PredicateDeclaration> predicates, final List<TypeDeclaration> types) {
         super(name);
         this.base_classes = base_classes;
         this.fields = fields;

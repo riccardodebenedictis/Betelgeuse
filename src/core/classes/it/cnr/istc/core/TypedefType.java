@@ -16,23 +16,23 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Predicate extends Type {
+public class TypedefType extends Type {
 
-    private final List<Field> args;
+    private final Type base_type;
+    private final Expression xpr;
 
-    public Predicate(final Core core, final IScope scope, final String name, final Field... args) {
-        this(core, scope, name, Arrays.asList(args));
+    TypedefType(Core core, IScope scope, String name, final Type base_type, final Expression xpr) {
+        super(core, scope, name);
+        this.base_type = base_type;
+        this.xpr = xpr;
     }
 
-    Predicate(final Core core, final IScope scp, final String name, final List<Field> args) {
-        super(core, scp, name);
-        this.args = args;
+    @Override
+    public Item newInstance(IEnv ctx) throws UnsolvableException {
+        return xpr.evaluate(this, ctx);
     }
 }

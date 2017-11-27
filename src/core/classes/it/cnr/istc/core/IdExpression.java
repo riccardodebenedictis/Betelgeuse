@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,14 +24,18 @@ import java.util.Collection;
  */
 class IdExpression implements Expression {
 
-    private final Collection<String> is;
+    private final List<String> is;
 
-    IdExpression(final Collection<String> is) {
+    IdExpression(final List<String> is) {
         this.is = is;
     }
 
     @Override
     public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        IEnv e = env;
+        for (String id : is) {
+            e = e.get(id);
+        }
+        return (Item) e;
     }
 }

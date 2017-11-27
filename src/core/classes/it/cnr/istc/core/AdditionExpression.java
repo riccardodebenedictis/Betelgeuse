@@ -16,7 +16,8 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,14 +25,18 @@ import java.util.Collection;
  */
 class AdditionExpression implements Expression {
 
-    private final Collection<Expression> xprs;
+    private final List<Expression> xprs;
 
-    AdditionExpression(final Collection<Expression> xprs) {
+    AdditionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+        List<Item.ArithItem> itms = new ArrayList<>(xprs.size());
+        for (Expression xpr : xprs) {
+            itms.add((Item.ArithItem) xpr.evaluate(scp, env));
+        }
+        return scp.getCore().add(itms.toArray(new Item.ArithItem[itms.size()]));
     }
 }

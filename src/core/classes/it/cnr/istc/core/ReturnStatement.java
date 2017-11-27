@@ -29,7 +29,9 @@ class ReturnStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+        if (env instanceof Core) {
+            ((Core) env).items.put(IScope.RETURN, xpr.evaluate(scp, env));
+        }
     }
 }

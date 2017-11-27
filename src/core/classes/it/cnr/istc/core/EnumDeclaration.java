@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,10 +24,10 @@ import java.util.Collection;
  */
 class EnumDeclaration extends TypeDeclaration {
 
-    private final Collection<String> enums;
-    private final Collection<Collection<String>> type_refs;
+    private final List<String> enums;
+    private final List<List<String>> type_refs;
 
-    EnumDeclaration(final String name, final Collection<String> enums, final Collection<Collection<String>> type_refs) {
+    EnumDeclaration(final String name, final List<String> enums, final List<List<String>> type_refs) {
         super(name);
         this.enums = enums;
         this.type_refs = type_refs;

@@ -33,5 +33,13 @@ class TypedefDeclaration extends TypeDeclaration {
 
     @Override
     public void declare(final IScope scp) {
+        assert scp instanceof Core || scp instanceof Type;
+        // A new typedef type has been declared..
+        TypedefType tt = new TypedefType(scp.getCore(), scp, name, scp.getType(primitive_type), xpr);
+        if (scp instanceof Core) {
+            ((Core) scp).types.put(name, tt);
+        } else if (scp instanceof Type) {
+            ((Type) scp).types.put(name, tt);
+        }
     }
 }
