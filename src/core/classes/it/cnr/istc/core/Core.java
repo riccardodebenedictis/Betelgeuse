@@ -27,9 +27,6 @@ import it.cnr.istc.core.Item.VarItem;
 import static it.cnr.istc.core.Type.BOOL;
 import static it.cnr.istc.core.Type.INT;
 import static it.cnr.istc.core.Type.REAL;
-import it.cnr.istc.parser.Parser;
-import it.cnr.istc.parser.ParsingException;
-import it.cnr.istc.parser.declarations.CompilationUnit;
 import it.cnr.istc.smt.LBool;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
@@ -62,7 +59,6 @@ public abstract class Core implements IScope, IEnv {
     final Map<String, Type> types = new HashMap<>();
     final Map<String, Predicate> predicates = new HashMap<>();
     final Map<String, Item> items = new HashMap<>();
-    private final Parser parser = new Parser();
     private int tmp_var = -1;
     private int ctr_var = TRUE_var;
 
@@ -78,7 +74,8 @@ public abstract class Core implements IScope, IEnv {
 
     public void read(final String script) throws UnsolvableException, IOException {
         try {
-            CompilationUnit cu = parser.parse(new StringReader(script));
+            Parser p = new Parser(new Lexer(new StringReader(script)));
+            CompilationUnit cu = p.compilation_unit();
             cu.declare(this);
             cu.refine(this);
             cu.execute(this, this);
@@ -95,7 +92,8 @@ public abstract class Core implements IScope, IEnv {
         try {
             CompilationUnit[] cus = new CompilationUnit[readers.length];
             for (int i = 0; i < readers.length; i++) {
-                cus[i] = parser.parse(readers[i]);
+                Parser p = new Parser(new Lexer(readers[i]));
+                cus[i] = p.compilation_unit();
             }
             for (CompilationUnit cu : cus) {
                 cu.declare(this);

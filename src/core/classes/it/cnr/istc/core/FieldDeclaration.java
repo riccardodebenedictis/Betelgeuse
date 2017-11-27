@@ -16,26 +16,22 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.Pair;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Constructor extends Scope {
+class FieldDeclaration {
 
-    final Field[] args;
-    final Statement[] statements;
-    final Pair<String, Expression[]>[] init_list;
+    private final Collection<String> field_type;
+    private final Collection<VariableDeclaration> declarations;
 
-    public Constructor(final Core core, final IScope scope, final Field[] args, final Statement[] statements, final Pair<String, Expression[]>[] init_list) {
-        super(core, scope);
-        this.args = args;
-        fields.put(THIS, new Field(((Type) scope), THIS));
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
-        this.statements = statements;
-        this.init_list = init_list;
+    FieldDeclaration(final Collection<String> tp, final Collection<VariableDeclaration> ds) {
+        this.field_type = tp;
+        this.declarations = ds;
+    }
+
+    public void refine(final IScope scp) {
     }
 }

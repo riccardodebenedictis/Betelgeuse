@@ -20,29 +20,17 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Method extends Scope {
+abstract class TypeDeclaration {
 
-    public final String name;
-    final Field[] args;
-    final Statement[] statements;
-    final Type return_type;
+    private final String name;
 
-    public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements) {
-        this(core, scope, name, null, args, statements);
+    TypeDeclaration(final String name) {
+        this.name = name;
     }
 
-    public Method(final Core core, final IScope scope, final String name, final Type return_type, final Field[] args, final Statement[] statements) {
-        super(core, scope);
-        this.name = name;
-        this.args = args;
-        if (return_type != null) {
-            fields.put(RETURN, new Field(return_type, RETURN));
-        }
-        fields.put(THIS, new Field(((Type) scope), THIS));
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
-        this.statements = statements;
-        this.return_type = return_type;
+    public void declare(final IScope scp) {
+    }
+
+    public void refine(final IScope scp) {
     }
 }

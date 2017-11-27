@@ -20,29 +20,13 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Method extends Scope {
+class VariableDeclaration {
 
-    public final String name;
-    final Field[] args;
-    final Statement[] statements;
-    final Type return_type;
+    final String name;
+    final Expression expression;
 
-    public Method(final Core core, final IScope scope, final String name, final Field[] args, final Statement[] statements) {
-        this(core, scope, name, null, args, statements);
-    }
-
-    public Method(final Core core, final IScope scope, final String name, final Type return_type, final Field[] args, final Statement[] statements) {
-        super(core, scope);
+    VariableDeclaration(final String name, final Expression expression) {
         this.name = name;
-        this.args = args;
-        if (return_type != null) {
-            fields.put(RETURN, new Field(return_type, RETURN));
-        }
-        fields.put(THIS, new Field(((Type) scope), THIS));
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
-        this.statements = statements;
-        this.return_type = return_type;
+        this.expression = expression;
     }
 }

@@ -16,26 +16,11 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.Pair;
-
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Constructor extends Scope {
+interface Expression {
 
-    final Field[] args;
-    final Statement[] statements;
-    final Pair<String, Expression[]>[] init_list;
-
-    public Constructor(final Core core, final IScope scope, final Field[] args, final Statement[] statements, final Pair<String, Expression[]>[] init_list) {
-        super(core, scope);
-        this.args = args;
-        fields.put(THIS, new Field(((Type) scope), THIS));
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
-        this.statements = statements;
-        this.init_list = init_list;
-    }
+    Item evaluate(IScope scp, IEnv env);
 }

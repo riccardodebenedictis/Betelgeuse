@@ -17,7 +17,6 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Lin;
-import it.cnr.istc.parser.statements.Statement;
 import java.util.Collection;
 
 /**

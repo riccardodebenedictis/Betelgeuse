@@ -16,8 +16,6 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.parser.expressions.Expression;
-
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>

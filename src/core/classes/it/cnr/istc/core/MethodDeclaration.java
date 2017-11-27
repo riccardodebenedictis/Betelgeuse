@@ -17,25 +17,26 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
+import java.util.Collection;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Constructor extends Scope {
+class MethodDeclaration {
 
-    final Field[] args;
-    final Statement[] statements;
-    final Pair<String, Expression[]>[] init_list;
+    private final Collection<String> return_type;
+    private final String name;
+    private final Collection<Pair<Collection<String>, String>> parameters;
+    private final Collection<Statement> statements;
 
-    public Constructor(final Core core, final IScope scope, final Field[] args, final Statement[] statements, final Pair<String, Expression[]>[] init_list) {
-        super(core, scope);
-        this.args = args;
-        fields.put(THIS, new Field(((Type) scope), THIS));
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
-        this.statements = statements;
-        this.init_list = init_list;
+    MethodDeclaration(final Collection<String> ids, final String n, final Collection<Pair<Collection<String>, String>> pars, final Collection<Statement> stmnts) {
+        this.return_type = ids;
+        this.name = n;
+        this.parameters = pars;
+        this.statements = stmnts;
+    }
+
+    public void refine(final IScope scp) {
     }
 }
