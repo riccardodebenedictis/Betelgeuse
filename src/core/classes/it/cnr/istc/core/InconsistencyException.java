@@ -20,19 +20,22 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class TypedefType extends Type {
+public class InconsistencyException extends CoreException {
 
-    private final Type base_type;
-    private final Expression xpr;
-
-    TypedefType(Core core, IScope scope, String name, final Type base_type, final Expression xpr) {
-        super(core, scope, name);
-        this.base_type = base_type;
-        this.xpr = xpr;
+    /**
+     * Creates a new instance of <code>InconsistencyException</code> without
+     * detail message.
+     */
+    public InconsistencyException() {
     }
 
-    @Override
-    public Item newInstance(IEnv ctx) throws CoreException {
-        return xpr.evaluate(this, ctx);
+    /**
+     * Constructs an instance of <code>InconsistencyException</code> with the
+     * specified detail message.
+     *
+     * @param msg the detail message.
+     */
+    public InconsistencyException(String msg) {
+        super(msg);
     }
 }

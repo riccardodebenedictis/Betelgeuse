@@ -17,6 +17,7 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,11 @@ class DisjunctionStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(IScope scp, IEnv env) throws CoreException {
+        List<Conjunction> conjs = new ArrayList<>(disjunctions.size());
+        for (Pair<List<Statement>, Expression> conj : disjunctions) {
+            conjs.add(new Conjunction(scp.getCore(), scp, ((Item.ArithItem) conj.second.evaluate(scp, env)).l, conj.first));
+        }
+        scp.getCore().newDisjunction(env, new Disjunction(scp.getCore(), scp, conjs));
     }
 }

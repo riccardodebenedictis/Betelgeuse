@@ -22,5 +22,5 @@ package it.cnr.istc.core;
  */
 abstract class Statement {
 
-    abstract void execute(final IScope scp, final IEnv env) throws UnsolvableException;
+    abstract void execute(final IScope scp, final IEnv env) throws CoreException;
 }

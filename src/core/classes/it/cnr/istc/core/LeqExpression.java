@@ -31,7 +31,7 @@ class LeqExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return scp.getCore().leq((Item.ArithItem) xpr0.evaluate(scp, env), (Item.ArithItem) xpr1.evaluate(scp, env));
     }
 }

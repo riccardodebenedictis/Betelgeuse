@@ -43,9 +43,50 @@ class ClassDeclaration extends TypeDeclaration {
 
     @Override
     public void declare(final IScope scp) {
+        // A new type has been declared..
+        Type tp = new Type(scp.getCore(), scp, name);
+        if (scp instanceof Core) {
+            ((Core) scp).types.put(tp.name, tp);
+        } else if (scp instanceof Type) {
+            ((Type) scp).types.put(tp.name, tp);
+        }
+
+        for (TypeDeclaration t : types) {
+            t.declare(tp);
+        }
     }
 
     @Override
     public void refine(final IScope scp) {
+        Type tp = scp.getType(name);
+        for (List<String> base_class : base_classes) {
+            IScope sc = scp;
+            for (String id : base_class) {
+                sc = sc.getType(id);
+            }
+            tp.supertypes.add((Type) sc);
+        }
+
+        for (FieldDeclaration f : fields) {
+            f.refine(tp);
+        }
+
+        if (constructors.isEmpty()) {
+            tp.constructors.add(new Constructor(scp.getCore(), tp));
+        } else {
+            for (ConstructorDeclaration cnstr : constructors) {
+                cnstr.refine(tp);
+            }
+        }
+
+        for (MethodDeclaration md : methods) {
+            md.refine(tp);
+        }
+        for (PredicateDeclaration pd : predicates) {
+            pd.refine(tp);
+        }
+        for (TypeDeclaration t : types) {
+            t.refine(tp);
+        }
     }
 }

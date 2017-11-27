@@ -72,10 +72,10 @@ public class Type extends Scope {
 
     public Constructor getConstructor(Type... pars) {
         for (Constructor cstr : constructors) {
-            if (cstr.args.size() == pars.length) {
+            if (cstr.arguments.size() == pars.length) {
                 boolean found = true;
                 for (int i = 0; i < pars.length; i++) {
-                    if (!cstr.args.get(i).type.isAssignableFrom(pars[i])) {
+                    if (!cstr.arguments.get(i).type.isAssignableFrom(pars[i])) {
                         found = false;
                         break;
                     }
@@ -113,10 +113,10 @@ public class Type extends Scope {
         Collection<Method> c_ms = methods.get(name);
         if (c_ms != null) {
             for (Method mthd : c_ms) {
-                if (mthd.args.size() == pars.length) {
+                if (mthd.arguments.size() == pars.length) {
                     boolean found = true;
                     for (int i = 0; i < pars.length; i++) {
-                        if (!mthd.args.get(i).type.isAssignableFrom(pars[i])) {
+                        if (!mthd.arguments.get(i).type.isAssignableFrom(pars[i])) {
                             found = false;
                             break;
                         }
@@ -181,7 +181,7 @@ public class Type extends Scope {
         throw new NoClassDefFoundError(name);
     }
 
-    public Item newInstance(IEnv ctx) throws UnsolvableException {
+    public Item newInstance(IEnv ctx) throws CoreException {
         Item i = new Item(core, ctx, this);
         Queue<Type> q = new ArrayDeque<>();
         q.add(this);
@@ -192,7 +192,7 @@ public class Type extends Scope {
         return i;
     }
 
-    public Item newExistential() throws UnsolvableException {
+    public Item newExistential() throws CoreException {
         return core.newEnum(this, new HashSet<>(instances));
     }
 

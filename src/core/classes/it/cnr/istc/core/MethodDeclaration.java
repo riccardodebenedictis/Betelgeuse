@@ -17,6 +17,8 @@
 package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,5 +40,40 @@ class MethodDeclaration {
     }
 
     public void refine(final IScope scp) {
+        Type rt = null;
+        if (!(return_type.isEmpty())) {
+            IScope sc = scp;
+            for (String id : return_type) {
+                sc = sc.getType(id);
+            }
+            rt = (Type) sc;
+        }
+
+        List<Field> args = new ArrayList<>(parameters.size());
+        for (Pair<List<String>, String> par : parameters) {
+            IScope sc = scp;
+            for (String id : par.first) {
+                sc = sc.getType(id);
+            }
+            args.add(new Field((Type) sc, par.second));
+        }
+
+        Method m = new Method(scp.getCore(), scp, name, rt, args, statements);
+
+        if (scp instanceof Core) {
+            Collection<Method> ms = ((Core) scp).methods.get(name);
+            if (ms == null) {
+                ms = new ArrayList<>();
+                ((Core) scp).methods.put(name, ms);
+            }
+            ms.add(m);
+        } else {
+            Collection<Method> ms = ((Type) scp).methods.get(name);
+            if (ms == null) {
+                ms = new ArrayList<>();
+                ((Type) scp).methods.put(name, ms);
+            }
+            ms.add(m);
+        }
     }
 }

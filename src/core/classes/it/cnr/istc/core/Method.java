@@ -27,7 +27,7 @@ import java.util.List;
 public class Method extends Scope {
 
     public final String name;
-    final List<Field> args;
+    final List<Field> arguments;
     final List<Statement> statements;
     final Type return_type;
 
@@ -38,7 +38,7 @@ public class Method extends Scope {
     Method(final Core core, final IScope scope, final String name, final Type return_type, final List<Field> args, final List<Statement> statements) {
         super(core, scope);
         this.name = name;
-        this.args = args;
+        this.arguments = args;
         if (return_type != null) {
             fields.put(RETURN, new Field(return_type, RETURN));
         }
@@ -48,5 +48,22 @@ public class Method extends Scope {
         }
         this.statements = statements;
         this.return_type = return_type;
+    }
+
+    public Item invoke(final IEnv env, final Item... args) throws CoreException {
+        Env e = new Env(core, env);
+        for (int i = 0; i < arguments.size(); i++) {
+            e.items.put(arguments.get(i).name, args[i]);
+        }
+
+        for (Statement stmnt : statements) {
+            stmnt.execute(this, e);
+        }
+
+        if (return_type != null) {
+            return e.items.get(RETURN);
+        } else {
+            return null;
+        }
     }
 }

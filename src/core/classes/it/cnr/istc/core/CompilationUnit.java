@@ -54,7 +54,7 @@ class CompilationUnit {
         }
     }
 
-    public void execute(final IScope scp, final IEnv env) throws UnsolvableException {
+    public void execute(final IScope scp, final IEnv env) throws CoreException {
         for (Statement statement : statements) {
             statement.execute(scp, env);
         }

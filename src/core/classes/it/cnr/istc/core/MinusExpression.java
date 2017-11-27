@@ -29,7 +29,7 @@ class MinusExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return scp.getCore().minus((Item.ArithItem) xpr.evaluate(scp, env));
     }
 }

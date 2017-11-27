@@ -72,7 +72,7 @@ public abstract class Core implements IScope, IEnv {
         }
     }
 
-    public void read(final String script) throws UnsolvableException, IOException {
+    public void read(final String script) throws CoreException {
         try {
             Parser p = new Parser(new Lexer(new StringReader(script)));
             CompilationUnit cu = p.compilation_unit();
@@ -83,12 +83,12 @@ public abstract class Core implements IScope, IEnv {
             if (!sat_core.check()) {
                 throw new UnsolvableException("the input problem is inconsistent");
             }
-        } catch (ParsingException ex) {
-            throw new IOException("parsing exception..", ex);
+        } catch (IOException ex) {
+            throw new ParsingException(ex.getLocalizedMessage());
         }
     }
 
-    public void read(final Reader[] readers) throws UnsolvableException, IOException {
+    public void read(final Reader[] readers) throws CoreException {
         try {
             CompilationUnit[] cus = new CompilationUnit[readers.length];
             for (int i = 0; i < readers.length; i++) {
@@ -108,8 +108,8 @@ public abstract class Core implements IScope, IEnv {
             if (!sat_core.check()) {
                 throw new UnsolvableException("the input problem is inconsistent");
             }
-        } catch (ParsingException ex) {
-            throw new IOException("parsing exception..", ex);
+        } catch (IOException ex) {
+            throw new ParsingException(ex.getLocalizedMessage());
         }
     }
 
@@ -363,10 +363,10 @@ public abstract class Core implements IScope, IEnv {
         Collection<Method> c_ms = methods.get(name);
         if (c_ms != null) {
             for (Method mthd : c_ms) {
-                if (mthd.args.size() == pars.length) {
+                if (mthd.arguments.size() == pars.length) {
                     boolean found = true;
                     for (int i = 0; i < pars.length; i++) {
-                        if (!mthd.args.get(i).type.isAssignableFrom(pars[i])) {
+                        if (!mthd.arguments.get(i).type.isAssignableFrom(pars[i])) {
                             found = false;
                             break;
                         }

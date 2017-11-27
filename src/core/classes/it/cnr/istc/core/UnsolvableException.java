@@ -20,7 +20,7 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class UnsolvableException extends Exception {
+public class UnsolvableException extends CoreException {
 
     /**
      * Creates a new instance of <code>UnsolvableException</code> without detail

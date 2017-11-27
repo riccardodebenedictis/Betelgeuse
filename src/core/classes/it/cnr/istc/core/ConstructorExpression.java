@@ -16,7 +16,9 @@
  */
 package it.cnr.istc.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -33,7 +35,20 @@ class ConstructorExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
+        IScope sc = scp;
+        for (String id : type) {
+            sc = sc.getType(id);
+        }
+
+        List<Item> args = new ArrayList<>(xprs.size());
+        List<Type> par_types = new ArrayList<>(xprs.size());
+        for (Expression xpr : xprs) {
+            Item arg = xpr.evaluate(scp, env);
+            args.add(arg);
+            par_types.add(arg.type);
+        }
+
+        return ((Type) sc).getConstructor(par_types.toArray(new Type[par_types.size()])).newInstance(env, args.toArray(new Item[args.size()]));
     }
 }

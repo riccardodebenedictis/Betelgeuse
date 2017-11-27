@@ -31,7 +31,7 @@ class BlockStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+    public void execute(IScope scp, IEnv env) throws CoreException {
         for (Statement stmnt : statements) {
             stmnt.execute(scp, env);
         }

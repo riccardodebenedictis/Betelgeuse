@@ -35,7 +35,7 @@ class LocalFieldStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+    public void execute(IScope scp, IEnv env) throws CoreException {
         IScope sc = scp;
         for (String id : field_type) {
             sc = sc.getType(id);

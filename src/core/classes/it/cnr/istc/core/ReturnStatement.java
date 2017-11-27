@@ -29,9 +29,11 @@ class ReturnStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+    public void execute(IScope scp, IEnv env) throws CoreException {
         if (env instanceof Core) {
             ((Core) env).items.put(IScope.RETURN, xpr.evaluate(scp, env));
+        } else {
+            ((Env) env).items.put(IScope.RETURN, xpr.evaluate(scp, env));
         }
     }
 }

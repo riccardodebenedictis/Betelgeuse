@@ -32,7 +32,7 @@ class ExctOneExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
         List<Item.BoolItem> itms = new ArrayList<>(xprs.size());
         for (Expression xpr : xprs) {
             itms.add((Item.BoolItem) xpr.evaluate(scp, env));

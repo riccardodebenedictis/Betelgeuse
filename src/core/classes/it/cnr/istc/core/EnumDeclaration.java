@@ -35,9 +35,31 @@ class EnumDeclaration extends TypeDeclaration {
 
     @Override
     public void declare(final IScope scp) {
+        // A new enum type has been declared..
+        EnumType et = new EnumType(scp.getCore(), scp, name);
+
+        for (String e : enums) {
+            et.instances.add(new Item.StringItem(scp.getCore(), e));
+        }
+
+        if (scp instanceof Core) {
+            ((Core) scp).types.put(et.name, et);
+        } else {
+            ((Type) scp).types.put(et.name, et);
+        }
     }
 
     @Override
     public void refine(final IScope scp) {
+        if (!type_refs.isEmpty()) {
+            EnumType et = (EnumType) scp.getType(name);
+            for (List<String> t_ref : type_refs) {
+                IScope sc = scp;
+                for (String id : t_ref) {
+                    sc = sc.getType(id);
+                }
+                et.enum_types.add((EnumType) sc);
+            }
+        }
     }
 }

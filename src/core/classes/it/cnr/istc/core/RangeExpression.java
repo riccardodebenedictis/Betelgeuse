@@ -31,7 +31,7 @@ class RangeExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
         Item.ArithItem min_v = (Item.ArithItem) min_e.evaluate(scp, env);
         Item.ArithItem max_v = (Item.ArithItem) max_e.evaluate(scp, env);
         Item.ArithItem var = (min_v.type.name.equals(Type.REAL) || max_v.type.name.equals(Type.REAL)) ? scp.getCore().newReal() : scp.getCore().newInt();

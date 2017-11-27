@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,26 @@ class FunctionExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
+        IScope sc = scp;
+        for (String id : ids) {
+            sc = sc.getType(id);
+        }
+
+        List<Item> args = new ArrayList<>(xprs.size());
+        List<Type> par_types = new ArrayList<>(xprs.size());
+        for (Expression xpr : xprs) {
+            Item arg = xpr.evaluate(scp, env);
+            args.add(arg);
+            par_types.add(arg.type);
+        }
+
+        Method m = sc.getMethod(function_name, par_types.toArray(new Type[par_types.size()]));
+        if (m.return_type != null) {
+            return m.invoke(env, args.toArray(new Item[args.size()]));
+        } else {
+            m.invoke(env, args.toArray(new Item[args.size()]));
+            return scp.getCore().newBool(true);
+        }
     }
 }

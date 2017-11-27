@@ -31,7 +31,7 @@ class EqExpression implements Expression {
     }
 
     @Override
-    public Item evaluate(IScope scp, IEnv env) throws UnsolvableException {
+    public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return scp.getCore().eq(xpr0.evaluate(scp, env), xpr1.evaluate(scp, env));
     }
 }

@@ -20,10 +20,21 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class ParsingException extends Exception {
+public class ParsingException extends CoreException {
 
     public final int start_line;
     public final int start_pos;
+
+    public ParsingException() {
+        this.start_line = 0;
+        this.start_pos = 0;
+    }
+
+    public ParsingException(String msg) {
+        super(msg);
+        this.start_line = 0;
+        this.start_pos = 0;
+    }
 
     public ParsingException(int start_line, int start_pos, String message) {
         super("[" + start_line + ", " + start_pos + "] " + message);

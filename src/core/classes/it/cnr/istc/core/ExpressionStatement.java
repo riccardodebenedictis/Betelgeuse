@@ -16,6 +16,8 @@
  */
 package it.cnr.istc.core;
 
+import static it.cnr.istc.smt.LBool.False;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
@@ -29,7 +31,12 @@ class ExpressionStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void execute(IScope scp, IEnv env) throws CoreException {
+        Item.BoolItem be = (Item.BoolItem) xpr.evaluate(scp, env);
+        if (scp.getCore().sat_core.value(be.l) != False) {
+            scp.getCore().assertFacts(be.l);
+        } else {
+            throw new InconsistencyException();
+        }
     }
 }

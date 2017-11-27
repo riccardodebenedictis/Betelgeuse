@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class Predicate extends Type {
 
-    private final List<Field> args;
+    final List<Field> arguments;
 
     public Predicate(final Core core, final IScope scope, final String name, final Field... args) {
         this(core, scope, name, Arrays.asList(args));
@@ -33,6 +33,11 @@ public class Predicate extends Type {
 
     Predicate(final Core core, final IScope scp, final String name, final List<Field> args) {
         super(core, scp, name);
-        this.args = args;
+        this.arguments = args;
+    }
+
+    @Override
+    public Atom newInstance(IEnv ctx) throws CoreException {
+        throw new UnsupportedOperationException("not supported yet..");
     }
 }

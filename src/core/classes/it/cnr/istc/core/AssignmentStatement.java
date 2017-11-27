@@ -35,7 +35,7 @@ class AssignmentStatement extends Statement {
     }
 
     @Override
-    public void execute(IScope scp, IEnv env) throws UnsolvableException {
+    public void execute(IScope scp, IEnv env) throws CoreException {
         IEnv e = env;
         for (String id : ids) {
             e = e.get(id);

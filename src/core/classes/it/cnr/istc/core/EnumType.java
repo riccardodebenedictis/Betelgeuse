@@ -16,23 +16,33 @@
  */
 package it.cnr.istc.core;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class TypedefType extends Type {
+class EnumType extends Type {
 
-    private final Type base_type;
-    private final Expression xpr;
+    final Collection<EnumType> enum_types = new ArrayList<>();
 
-    TypedefType(Core core, IScope scope, String name, final Type base_type, final Expression xpr) {
+    EnumType(Core core, IScope scope, String name) {
         super(core, scope, name);
-        this.base_type = base_type;
-        this.xpr = xpr;
     }
 
     @Override
     public Item newInstance(IEnv ctx) throws CoreException {
-        return xpr.evaluate(this, ctx);
+        return core.newEnum(this, getAllInstances());
+    }
+
+    private Set<Item> getAllInstances() {
+        Set<Item> itms = new HashSet<>(instances);
+        for (EnumType et : enum_types) {
+            itms.addAll(et.getAllInstances());
+        }
+        return itms;
     }
 }
