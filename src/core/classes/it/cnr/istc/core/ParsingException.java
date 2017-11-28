@@ -25,18 +25,18 @@ public class ParsingException extends CoreException {
     public final int start_line;
     public final int start_pos;
 
-    public ParsingException() {
+    ParsingException() {
         this.start_line = 0;
         this.start_pos = 0;
     }
 
-    public ParsingException(String msg) {
+    ParsingException(String msg) {
         super(msg);
         this.start_line = 0;
         this.start_pos = 0;
     }
 
-    public ParsingException(int start_line, int start_pos, String message) {
+    ParsingException(int start_line, int start_pos, String message) {
         super("[" + start_line + ", " + start_pos + "] " + message);
         this.start_line = start_line;
         this.start_pos = start_pos;

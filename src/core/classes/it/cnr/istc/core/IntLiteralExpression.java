@@ -32,4 +32,9 @@ class IntLiteralExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) {
         return scp.getCore().newInt(val);
     }
+
+    @Override
+    public String toString() {
+        return Long.toString(val);
+    }
 }

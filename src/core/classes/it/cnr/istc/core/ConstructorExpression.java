@@ -19,6 +19,7 @@ package it.cnr.istc.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -50,5 +51,10 @@ class ConstructorExpression implements Expression {
         }
 
         return ((Type) sc).getConstructor(par_types.toArray(new Type[par_types.size()])).newInstance(env, args.toArray(new Item[args.size()]));
+    }
+
+    @Override
+    public String toString() {
+        return "new " + type.stream().collect(Collectors.joining(".")) + "(" + xprs.stream().map(xpr -> xpr.toString()).collect(Collectors.joining(", ")) + ")";
     }
 }

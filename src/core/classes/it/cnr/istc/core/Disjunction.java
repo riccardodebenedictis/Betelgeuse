@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,5 +30,9 @@ public class Disjunction extends Scope {
     Disjunction(final Core core, final IScope scope, final List<Conjunction> conjunctions) {
         super(core, scope);
         this.conjunctions = conjunctions;
+    }
+
+    public List<Conjunction> getConjunctions() {
+        return Collections.unmodifiableList(conjunctions);
     }
 }

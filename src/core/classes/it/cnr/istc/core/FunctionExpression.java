@@ -18,6 +18,7 @@ package it.cnr.istc.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -57,5 +58,10 @@ class FunctionExpression implements Expression {
             m.invoke(env, args.toArray(new Item[args.size()]));
             return scp.getCore().newBool(true);
         }
+    }
+
+    @Override
+    public String toString() {
+        return ids.stream().collect(Collectors.joining(".")) + "." + function_name + "(" + xprs.stream().map(xpr -> xpr.toString()).collect(Collectors.joining(", ")) + ")";
     }
 }

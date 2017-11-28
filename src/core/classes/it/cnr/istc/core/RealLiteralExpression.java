@@ -34,4 +34,9 @@ class RealLiteralExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) {
         return scp.getCore().newReal(val);
     }
+
+    @Override
+    public String toString() {
+        return val.toString();
+    }
 }

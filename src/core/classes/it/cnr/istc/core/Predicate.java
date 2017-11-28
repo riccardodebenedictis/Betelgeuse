@@ -16,8 +16,10 @@
  */
 package it.cnr.istc.core;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
 
 /**
  *
@@ -34,10 +36,23 @@ public class Predicate extends Type {
     Predicate(final Core core, final IScope scp, final String name, final List<Field> args) {
         super(core, scp, name);
         this.arguments = args;
+        if (scp instanceof Type) {
+            fields.put(THIS, new Field((Type) scp, THIS, null, true));
+        }
+        for (Field arg : args) {
+            fields.put(arg.name, arg);
+        }
     }
 
     @Override
-    public Atom newInstance(IEnv ctx) throws CoreException {
-        throw new UnsupportedOperationException("not supported yet..");
+    public Atom newInstance(IEnv env) throws CoreException {
+        Atom atm = new Atom(core, env, this);
+        Queue<Type> q = new ArrayDeque<>();
+        q.add(this);
+        while (!q.isEmpty()) {
+            q.poll().instances.add(atm);
+            q.addAll(q.peek().supertypes);
+        }
+        return atm;
     }
 }

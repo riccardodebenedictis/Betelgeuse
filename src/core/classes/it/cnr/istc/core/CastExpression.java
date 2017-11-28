@@ -17,6 +17,7 @@
 package it.cnr.istc.core;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -35,5 +36,10 @@ class CastExpression implements Expression {
     @Override
     public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return xpr.evaluate(scp, env);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + type.stream().collect(Collectors.joining(".")) + ") " + xpr.toString();
     }
 }

@@ -34,4 +34,9 @@ class ImplicationExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return scp.getCore().disj(scp.getCore().negate((Item.BoolItem) xpr0.evaluate(scp, env)), (Item.BoolItem) xpr1.evaluate(scp, env));
     }
+
+    @Override
+    public String toString() {
+        return xpr0.toString() + " -> " + xpr1.toString();
+    }
 }

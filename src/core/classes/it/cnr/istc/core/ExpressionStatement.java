@@ -22,7 +22,7 @@ import static it.cnr.istc.smt.LBool.False;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ExpressionStatement extends Statement {
+class ExpressionStatement implements Statement {
 
     private final Expression xpr;
 
@@ -38,5 +38,10 @@ class ExpressionStatement extends Statement {
         } else {
             throw new InconsistencyException();
         }
+    }
+
+    @Override
+    public String toString() {
+        return xpr.toString() + ";";
     }
 }

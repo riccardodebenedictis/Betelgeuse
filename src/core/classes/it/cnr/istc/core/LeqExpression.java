@@ -34,4 +34,9 @@ class LeqExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return scp.getCore().leq((Item.ArithItem) xpr0.evaluate(scp, env), (Item.ArithItem) xpr1.evaluate(scp, env));
     }
+
+    @Override
+    public String toString() {
+        return xpr0.toString() + " <= " + xpr1.toString();
+    }
 }

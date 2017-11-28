@@ -32,4 +32,9 @@ class StringLiteralExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) {
         return scp.getCore().newString(val);
     }
+
+    @Override
+    public String toString() {
+        return "\"" + val + "\"";
+    }
 }

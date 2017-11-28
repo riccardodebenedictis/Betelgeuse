@@ -35,14 +35,16 @@ public class Method extends Scope {
         this(core, scope, name, null, Arrays.asList(args), Collections.emptyList());
     }
 
-    Method(final Core core, final IScope scope, final String name, final Type return_type, final List<Field> args, final List<Statement> statements) {
-        super(core, scope);
+    Method(final Core core, final IScope scp, final String name, final Type return_type, final List<Field> args, final List<Statement> statements) {
+        super(core, scp);
         this.name = name;
         this.arguments = args;
         if (return_type != null) {
             fields.put(RETURN, new Field(return_type, RETURN));
         }
-        fields.put(THIS, new Field(((Type) scope), THIS));
+        if (scp instanceof Type) {
+            fields.put(THIS, new Field(((Type) scp), THIS, null, true));
+        }
         for (Field arg : args) {
             fields.put(arg.name, arg);
         }

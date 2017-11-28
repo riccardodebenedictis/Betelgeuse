@@ -32,7 +32,7 @@ public class TypedefType extends Type {
     }
 
     @Override
-    public Item newInstance(IEnv ctx) throws CoreException {
-        return xpr.evaluate(this, ctx);
+    public Item newInstance(IEnv env) throws CoreException {
+        return xpr.evaluate(this, env);
     }
 }

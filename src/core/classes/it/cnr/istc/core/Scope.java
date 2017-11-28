@@ -30,9 +30,9 @@ public class Scope implements IScope {
     protected final IScope scope;
     final Map<String, Field> fields = new HashMap<>();
 
-    Scope(final Core core, final IScope scope) {
+    Scope(final Core core, final IScope scp) {
         this.core = core;
-        this.scope = scope;
+        this.scope = scp;
     }
 
     @Override

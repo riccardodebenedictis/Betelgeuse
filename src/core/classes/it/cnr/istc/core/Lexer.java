@@ -44,7 +44,7 @@ class Lexer {
         ch = nextChar();
     }
 
-    public Token next() throws ParsingException {
+    Token next() throws ParsingException {
         switch (ch) {
             case '"': {
                 // string literal..
@@ -82,6 +82,7 @@ class Lexer {
                             switch (ch = nextChar()) {
                                 case '*':
                                     if ((ch = nextChar()) == '/') {
+                                        ch = nextChar();
                                         return next();
                                     }
                                     break;
@@ -91,16 +92,19 @@ class Lexer {
                 return mkToken(SLASH);
             case '=':
                 if ((ch = nextChar()) == '=') {
+                    ch = nextChar();
                     return mkToken(EQEQ);
                 }
                 return mkToken(EQ);
             case '>':
                 if ((ch = nextChar()) == '=') {
+                    ch = nextChar();
                     return mkToken(GTEQ);
                 }
                 return mkToken(GT);
             case '<':
                 if ((ch = nextChar()) == '=') {
+                    ch = nextChar();
                     return mkToken(LTEQ);
                 }
                 return mkToken(LT);
@@ -775,7 +779,7 @@ class Lexer {
         EOF
     }
 
-    public static class Token {
+    static class Token {
 
         public final Symbol sym;
         public final int start_line;
@@ -797,7 +801,7 @@ class Lexer {
         }
     }
 
-    public static class IdToken extends Token {
+    static class IdToken extends Token {
 
         public final String id;
 
@@ -812,7 +816,7 @@ class Lexer {
         }
     }
 
-    public static class IntToken extends Token {
+    static class IntToken extends Token {
 
         public final long val;
 
@@ -827,7 +831,7 @@ class Lexer {
         }
     }
 
-    public static class RealToken extends Token {
+    static class RealToken extends Token {
 
         public final Rational val;
 
@@ -842,7 +846,7 @@ class Lexer {
         }
     }
 
-    public static class StringToken extends Token {
+    static class StringToken extends Token {
 
         public final String val;
 

@@ -22,7 +22,10 @@ package it.cnr.istc.core;
  */
 public class Atom extends Item {
 
+    public final int sigma; // this variable represents the state of the atom: if the variable is true, the atom is active; if the variable is false, the atom is unified; if the variable is undefined, the atom is not justified..
+
     public Atom(final Core core, final IEnv env, final Predicate p) {
         super(core, env, p);
+        this.sigma = core.sat_core.newVar();
     }
 }

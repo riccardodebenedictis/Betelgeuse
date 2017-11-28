@@ -33,4 +33,11 @@ public class Conjunction extends Scope {
         this.cost = cost;
         this.statements = statements;
     }
+
+    public void apply(final IEnv env) throws CoreException {
+        IEnv c_env = new Env(core, env);
+        for (Statement stmnt : statements) {
+            stmnt.execute(this, c_env);
+        }
+    }
 }

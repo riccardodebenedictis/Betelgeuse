@@ -27,12 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class FormulaStatement extends Statement {
+class FormulaStatement implements Statement {
 
     private final boolean is_fact;
     private final String formula_name;
@@ -51,29 +52,29 @@ class FormulaStatement extends Statement {
     @Override
     public void execute(IScope scp, IEnv env) throws CoreException {
         Predicate p;
-        Map<String, Item> assignments = new HashMap<>();
+        Map<String, Item> assignmnts = new HashMap<>();
         if (!formula_scope.isEmpty()) {
             // the scope is explicitely declared..
             IEnv e = env;
             for (String id : formula_scope) {
                 e = e.get(id);
             }
-            assignments.put(TAU, (Item) e);
+            assignmnts.put(TAU, (Item) e);
             p = ((Item) e).type.getPredicate(predicate_name);
         } else {
             // we inherit the scope..
             p = scp.getPredicate(predicate_name);
             if (p.getScope() != p.getCore()) {
-                assignments.put(TAU, (Item) env);
+                assignmnts.put(TAU, (Item) env);
             }
         }
 
-        for (Pair<String, Expression> asgnmnt : this.assignments) {
+        for (Pair<String, Expression> asgnmnt : assignments) {
             Item xpr = asgnmnt.second.evaluate(scp, env);
             Type tp = p.getField(asgnmnt.first).type; // the target type..
             if (tp.isAssignableFrom(xpr.type)) {
                 // the target type is a superclass of the assignment..
-                assignments.put(asgnmnt.first, xpr);
+                assignmnts.put(asgnmnt.first, xpr);
             } else if (xpr.type.isAssignableFrom(tp)) {
                 // the target type is a subclass of the assignment..
                 if (xpr instanceof Item.VarItem) {
@@ -102,7 +103,7 @@ class FormulaStatement extends Statement {
         }
 
         Atom a;
-        Item tau = assignments.get(TAU);
+        Item tau = assignmnts.get(TAU);
         if (tau != null) {
             // we have computed the new atom's scope above..
             a = p.newInstance(tau);
@@ -112,7 +113,7 @@ class FormulaStatement extends Statement {
         }
 
         // we assign fields..
-        a.items.putAll(assignments);
+        a.items.putAll(assignmnts);
 
         Queue<Predicate> q = new ArrayDeque<>();
         q.add(p);
@@ -142,5 +143,10 @@ class FormulaStatement extends Statement {
         if (scp instanceof Core) {
             ((Core) scp).items.put(formula_name, a);
         }
+    }
+
+    @Override
+    public String toString() {
+        return (is_fact ? "fact " : "goal ") + formula_name + " = new " + formula_scope.stream().collect(Collectors.joining(".")) + (formula_scope.isEmpty() ? "" : ".") + predicate_name + "(" + assignments.stream().map(assgnmnt -> assgnmnt.first + ": " + assgnmnt.second.toString()).collect(Collectors.joining(", ")) + ");";
     }
 }

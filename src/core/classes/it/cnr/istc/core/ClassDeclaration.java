@@ -42,7 +42,7 @@ class ClassDeclaration extends TypeDeclaration {
     }
 
     @Override
-    public void declare(final IScope scp) {
+    void declare(final IScope scp) {
         // A new type has been declared..
         Type tp = new Type(scp.getCore(), scp, name);
         if (scp instanceof Core) {
@@ -57,7 +57,7 @@ class ClassDeclaration extends TypeDeclaration {
     }
 
     @Override
-    public void refine(final IScope scp) {
+    void refine(final IScope scp) {
         Type tp = scp.getType(name);
         for (List<String> base_class : base_classes) {
             IScope sc = scp;

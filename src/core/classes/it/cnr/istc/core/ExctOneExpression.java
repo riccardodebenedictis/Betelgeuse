@@ -18,6 +18,7 @@ package it.cnr.istc.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -38,5 +39,10 @@ class ExctOneExpression implements Expression {
             itms.add((Item.BoolItem) xpr.evaluate(scp, env));
         }
         return scp.getCore().exct_one(itms.toArray(new Item.BoolItem[itms.size()]));
+    }
+
+    @Override
+    public String toString() {
+        return xprs.stream().map(xpr -> xpr.toString()).collect(Collectors.joining(" ^ "));
     }
 }

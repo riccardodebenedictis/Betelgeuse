@@ -17,6 +17,7 @@
 package it.cnr.istc.core;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -24,18 +25,23 @@ import java.util.List;
  */
 class IdExpression implements Expression {
 
-    private final List<String> is;
+    private final List<String> ids;
 
-    IdExpression(final List<String> is) {
-        this.is = is;
+    IdExpression(final List<String> ids) {
+        this.ids = ids;
     }
 
     @Override
     public Item evaluate(IScope scp, IEnv env) {
         IEnv e = env;
-        for (String id : is) {
+        for (String id : ids) {
             e = e.get(id);
         }
         return (Item) e;
+    }
+
+    @Override
+    public String toString() {
+        return ids.stream().collect(Collectors.joining("."));
     }
 }

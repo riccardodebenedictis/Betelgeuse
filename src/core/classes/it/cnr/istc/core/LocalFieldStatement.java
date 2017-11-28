@@ -17,12 +17,13 @@
 package it.cnr.istc.core;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class LocalFieldStatement extends Statement {
+class LocalFieldStatement implements Statement {
 
     private final List<String> field_type;
     private final String name;
@@ -41,10 +42,28 @@ class LocalFieldStatement extends Statement {
             sc = sc.getType(id);
         }
         Type tp = (Type) sc;
-        if (env instanceof Core) {
+        if (xpr != null) {
+            Item itm = xpr.evaluate(scp, env);
+            assert tp.isAssignableFrom(itm.type);
+            if (env instanceof Core) {
+                ((Core) env).items.put(name, itm);
+            } else {
+                ((Env) env).items.put(name, itm);
+            }
+        } else if (env instanceof Core) {
             ((Core) env).items.put(name, tp.primitive ? tp.newInstance(env) : tp.newExistential());
         } else {
             ((Env) env).items.put(name, tp.primitive ? tp.newInstance(env) : tp.newExistential());
         }
+    }
+
+    @Override
+    public String toString() {
+        String lf_str = field_type.stream().collect(Collectors.joining(".")) + name;
+        if (xpr != null) {
+            lf_str += " = " + xpr.toString();
+        }
+        lf_str += ";";
+        return lf_str;
     }
 }

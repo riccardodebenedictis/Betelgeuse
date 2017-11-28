@@ -43,8 +43,8 @@ public class Type extends Scope {
     final Map<String, Predicate> predicates = new HashMap<>();
     final Collection<Item> instances = new ArrayList<>();
 
-    public Type(Core core, IScope scope, final String name) {
-        this(core, scope, name, false);
+    public Type(Core core, IScope scp, final String name) {
+        this(core, scp, name, false);
     }
 
     Type(Core core, IScope scope, final String name, final boolean primitive) {
@@ -181,8 +181,8 @@ public class Type extends Scope {
         throw new NoClassDefFoundError(name);
     }
 
-    public Item newInstance(IEnv ctx) throws CoreException {
-        Item i = new Item(core, ctx, this);
+    public Item newInstance(IEnv env) throws CoreException {
+        Item i = new Item(core, env, this);
         Queue<Type> q = new ArrayDeque<>();
         q.add(this);
         while (!q.isEmpty()) {
@@ -204,7 +204,7 @@ public class Type extends Scope {
 
         @Override
         public Item newInstance(IEnv ctx) {
-            throw new UnsupportedOperationException("not supported yet..");
+            return core.newBool();
         }
     }
 
@@ -216,7 +216,7 @@ public class Type extends Scope {
 
         @Override
         public Item newInstance(IEnv ctx) {
-            throw new UnsupportedOperationException("not supported yet..");
+            return core.newInt();
         }
     }
 
@@ -228,7 +228,7 @@ public class Type extends Scope {
 
         @Override
         public Item newInstance(IEnv ctx) {
-            throw new UnsupportedOperationException("not supported yet..");
+            return core.newReal();
         }
     }
 
@@ -240,7 +240,7 @@ public class Type extends Scope {
 
         @Override
         public Item newInstance(IEnv ctx) {
-            throw new UnsupportedOperationException("not supported yet..");
+            return core.newString();
         }
     }
 }

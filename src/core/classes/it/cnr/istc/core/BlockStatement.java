@@ -17,12 +17,13 @@
 package it.cnr.istc.core;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class BlockStatement extends Statement {
+class BlockStatement implements Statement {
 
     private final List<Statement> statements;
 
@@ -35,5 +36,10 @@ class BlockStatement extends Statement {
         for (Statement stmnt : statements) {
             stmnt.execute(scp, env);
         }
+    }
+
+    @Override
+    public String toString() {
+        return statements.stream().map(stmnt -> stmnt.toString()).collect(Collectors.joining("\n"));
     }
 }

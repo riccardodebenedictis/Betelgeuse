@@ -95,6 +95,11 @@ class Parser {
                 case BANG:
                 case FACT:
                 case GOAL:
+                case IntLiteral:
+                case RealLiteral:
+                case StringLiteral:
+                case TRUE:
+                case FALSE:
                     ss.add(statement());
                     break;
                 case ID: {

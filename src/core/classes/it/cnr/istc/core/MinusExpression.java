@@ -32,4 +32,9 @@ class MinusExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) throws CoreException {
         return scp.getCore().minus((Item.ArithItem) xpr.evaluate(scp, env));
     }
+
+    @Override
+    public String toString() {
+        return "-" + xpr.toString();
+    }
 }

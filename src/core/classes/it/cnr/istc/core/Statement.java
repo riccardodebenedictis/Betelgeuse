@@ -20,7 +20,7 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-abstract class Statement {
+interface Statement {
 
-    abstract void execute(final IScope scp, final IEnv env) throws CoreException;
+    void execute(final IScope scp, final IEnv env) throws CoreException;
 }

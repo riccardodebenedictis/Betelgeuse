@@ -20,7 +20,7 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ReturnStatement extends Statement {
+class ReturnStatement implements Statement {
 
     private final Expression xpr;
 
@@ -35,5 +35,10 @@ class ReturnStatement extends Statement {
         } else {
             ((Env) env).items.put(IScope.RETURN, xpr.evaluate(scp, env));
         }
+    }
+
+    @Override
+    public String toString() {
+        return "return " + xpr.toString() + ";";
     }
 }

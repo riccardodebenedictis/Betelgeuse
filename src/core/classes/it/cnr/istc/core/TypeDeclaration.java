@@ -28,9 +28,9 @@ abstract class TypeDeclaration {
         this.name = name;
     }
 
-    public void declare(final IScope scp) {
+    void declare(final IScope scp) {
     }
 
-    public void refine(final IScope scp) {
+    void refine(final IScope scp) {
     }
 }

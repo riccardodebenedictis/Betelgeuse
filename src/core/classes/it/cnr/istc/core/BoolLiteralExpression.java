@@ -32,4 +32,9 @@ class BoolLiteralExpression implements Expression {
     public Item evaluate(IScope scp, IEnv env) {
         return scp.getCore().newBool(val);
     }
+
+    @Override
+    public String toString() {
+        return Boolean.toString(val);
+    }
 }

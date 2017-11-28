@@ -17,12 +17,13 @@
 package it.cnr.istc.core;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class AssignmentStatement extends Statement {
+class AssignmentStatement implements Statement {
 
     private final List<String> ids;
     private final String id;
@@ -45,5 +46,10 @@ class AssignmentStatement extends Statement {
         } else {
             ((Env) e).items.put(id, xpr.evaluate(scp, env));
         }
+    }
+
+    @Override
+    public String toString() {
+        return ids.stream().collect(Collectors.joining(".")) + "." + id + " = " + xpr.toString() + ";";
     }
 }

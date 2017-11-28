@@ -19,12 +19,13 @@ package it.cnr.istc.core;
 import it.cnr.istc.common.Pair;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class DisjunctionStatement extends Statement {
+class DisjunctionStatement implements Statement {
 
     private final List<Pair<List<Statement>, Expression>> disjunctions;
 
@@ -39,5 +40,10 @@ class DisjunctionStatement extends Statement {
             conjs.add(new Conjunction(scp.getCore(), scp, ((Item.ArithItem) conj.second.evaluate(scp, env)).l, conj.first));
         }
         scp.getCore().newDisjunction(env, new Disjunction(scp.getCore(), scp, conjs));
+    }
+
+    @Override
+    public String toString() {
+        return "{" + disjunctions.stream().map(dsj -> "[" + dsj.second.toString() + "] " + dsj.first.stream().map(stmnt -> stmnt.toString()).collect(Collectors.joining("\n"))).collect(Collectors.joining("} or {")) + "}";
     }
 }

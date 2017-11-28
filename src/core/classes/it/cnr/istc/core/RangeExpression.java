@@ -38,4 +38,9 @@ class RangeExpression implements Expression {
         scp.getCore().assertFacts(scp.getCore().geq(var, min_v).l, scp.getCore().leq(var, max_v).l);
         return var;
     }
+
+    @Override
+    public String toString() {
+        return "[" + min_e.toString() + ", " + max_e.toString() + "]";
+    }
 }

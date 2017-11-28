@@ -16,25 +16,21 @@
  */
 package it.cnr.istc.core;
 
+import java.io.StringReader;
+import org.junit.Test;
+
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Field {
+public class ParserTest {
 
-    public final Type type;
-    public final String name;
-    final Expression expression;
-    public final boolean synthetic;
+    @Test
+    public void testParser() throws Exception {
+        Parser p0 = new Parser(new Lexer(new StringReader("real a;\n1 <= a;")));
+        CompilationUnit cu0 = p0.compilation_unit();
 
-    public Field(final Type type, final String name) {
-        this(type, name, null, false);
-    }
-
-    Field(final Type type, final String name, final Expression expression, final boolean synthetic) {
-        this.type = type;
-        this.name = name;
-        this.expression = expression;
-        this.synthetic = synthetic;
+        Parser p1 = new Parser(new Lexer(new StringReader("real a = 5 +2;\nfalse;")));
+        CompilationUnit cu1 = p1.compilation_unit();
     }
 }

@@ -32,7 +32,7 @@ class FieldDeclaration {
         this.declarations = ds;
     }
 
-    public void refine(final IScope scp) {
+    void refine(final IScope scp) {
         // we add fields to the current scope..
         IScope sc = scp;
         for (String id : field_type) {

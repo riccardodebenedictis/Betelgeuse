@@ -36,7 +36,7 @@ class ConstructorDeclaration {
         this.statements = stmnts;
     }
 
-    public void refine(final IScope scp) {
+    void refine(final IScope scp) {
         List<Field> args = new ArrayList<>(parameters.size());
         for (Pair<List<String>, String> par : parameters) {
             IScope sc = scp;

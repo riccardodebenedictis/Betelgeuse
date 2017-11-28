@@ -39,7 +39,7 @@ class MethodDeclaration {
         this.statements = stmnts;
     }
 
-    public void refine(final IScope scp) {
+    void refine(final IScope scp) {
         Type rt = null;
         if (!(return_type.isEmpty())) {
             IScope sc = scp;
