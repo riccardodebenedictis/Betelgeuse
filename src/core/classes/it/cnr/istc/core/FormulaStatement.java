@@ -118,7 +118,8 @@ class FormulaStatement implements Statement {
         Queue<Predicate> q = new ArrayDeque<>();
         q.add(p);
         while (!q.isEmpty()) {
-            for (Field arg : q.peek().arguments) {
+            Predicate pred = q.poll();
+            for (Field arg : pred.arguments) {
                 if (!a.items.containsKey(arg.name)) {
                     // the field is uninstantiated..
                     if (arg.type.primitive) {
@@ -128,10 +129,9 @@ class FormulaStatement implements Statement {
                     }
                 }
             }
-            for (Type st : q.peek().supertypes) {
+            for (Type st : pred.supertypes) {
                 q.add((Predicate) st);
             }
-            q.poll();
         }
 
         if (is_fact) {

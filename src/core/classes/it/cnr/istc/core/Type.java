@@ -57,12 +57,11 @@ public class Type extends Scope {
         Queue<Type> q = new ArrayDeque<>();
         q.add(t);
         while (!q.isEmpty()) {
-            if (q.peek() == this) {
+            Type tp = q.poll();
+            if (tp == this) {
                 return true;
-            } else {
-                q.addAll(q.peek().supertypes);
-                q.poll();
             }
+            q.addAll(tp.supertypes);
         }
         return false;
     }
@@ -186,8 +185,9 @@ public class Type extends Scope {
         Queue<Type> q = new ArrayDeque<>();
         q.add(this);
         while (!q.isEmpty()) {
-            q.poll().instances.add(i);
-            q.addAll(q.peek().supertypes);
+            Type type = q.poll();
+            type.instances.add(i);
+            q.addAll(type.supertypes);
         }
         return i;
     }

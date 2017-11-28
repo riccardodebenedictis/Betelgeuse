@@ -50,8 +50,9 @@ public class Predicate extends Type {
         Queue<Type> q = new ArrayDeque<>();
         q.add(this);
         while (!q.isEmpty()) {
-            q.poll().instances.add(atm);
-            q.addAll(q.peek().supertypes);
+            Type pred = q.poll();
+            pred.instances.add(atm);
+            q.addAll(pred.supertypes);
         }
         return atm;
     }

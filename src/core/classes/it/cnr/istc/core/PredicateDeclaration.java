@@ -67,8 +67,9 @@ class PredicateDeclaration {
             Queue<Type> q = new ArrayDeque<>();
             q.add((Type) scp);
             while (!q.isEmpty()) {
-                q.poll().newPredicate(p);
-                q.addAll(q.peek().supertypes);
+                Type tp = q.poll();
+                tp.newPredicate(p);
+                q.addAll(tp.supertypes);
             }
         }
     }
