@@ -32,5 +32,8 @@ public class ParserTest {
 
         Parser p1 = new Parser(new Lexer(new StringReader("real a = 5 +2;\nfalse;")));
         CompilationUnit cu1 = p1.compilation_unit();
+
+        Parser p2 = new Parser(new Lexer(new StringReader("goal g0 = new At(l:5+3);")));
+        CompilationUnit cu2 = p2.compilation_unit();
     }
 }

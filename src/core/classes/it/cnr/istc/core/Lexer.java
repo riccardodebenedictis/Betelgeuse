@@ -254,7 +254,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(BOOL);
@@ -280,7 +279,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(CLASS);
@@ -302,7 +300,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(BOOL);
@@ -323,7 +320,6 @@ class Lexer {
                         }
                         str.append((char) ch);
                         if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                            str.append((char) ch);
                             return finishId(str);
                         } else {
                             return mkToken(FACT);
@@ -339,13 +335,11 @@ class Lexer {
                         }
                         str.append((char) ch);
                         if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                            str.append((char) ch);
                             return finishId(str);
                         } else {
                             return mkToken(FALSE);
                         }
                     default:
-                        str.append((char) ch);
                         return finishId(str);
                 }
             }
@@ -365,7 +359,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(GOAL);
@@ -383,7 +376,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(INT);
@@ -401,7 +393,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(NEW);
@@ -415,7 +406,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(OR);
@@ -457,7 +447,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(PREDICATE);
@@ -478,7 +467,6 @@ class Lexer {
                         }
                         str.append((char) ch);
                         if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                            str.append((char) ch);
                             return finishId(str);
                         } else {
                             return mkToken(REAL);
@@ -498,13 +486,11 @@ class Lexer {
                         }
                         str.append((char) ch);
                         if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                            str.append((char) ch);
                             return finishId(str);
                         } else {
                             return mkToken(RETURN);
                         }
                     default:
-                        str.append((char) ch);
                         return finishId(str);
                 }
             }
@@ -523,7 +509,6 @@ class Lexer {
                         }
                         str.append((char) ch);
                         if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                            str.append((char) ch);
                             return finishId(str);
                         } else {
                             return mkToken(TRUE);
@@ -551,13 +536,11 @@ class Lexer {
                         }
                         str.append((char) ch);
                         if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                            str.append((char) ch);
                             return finishId(str);
                         } else {
                             return mkToken(TYPEDEF);
                         }
                     default:
-                        str.append((char) ch);
                         return finishId(str);
                 }
             }
@@ -577,7 +560,6 @@ class Lexer {
                 }
                 str.append((char) ch);
                 if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
-                    str.append((char) ch);
                     return finishId(str);
                 } else {
                     return mkToken(OR);
@@ -622,11 +604,8 @@ class Lexer {
             case 'X':
             case 'Y':
             case 'Z':
-            case '_': {
-                StringBuilder str = new StringBuilder();
-                str.append((char) ch);
-                return finishId(str);
-            }
+            case '_':
+                return finishId(new StringBuilder());
             case '\t':
             case ' ':
             case '\r':
@@ -718,6 +697,8 @@ class Lexer {
     }
 
     private Token finishId(final StringBuilder str) throws ParsingException {
+        assert is_id_part((char) ch);
+        str.append((char) ch);
         while ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
             str.append((char) ch);
         }
