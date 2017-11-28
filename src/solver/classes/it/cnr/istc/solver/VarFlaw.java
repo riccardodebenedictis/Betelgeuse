@@ -16,25 +16,45 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.common.Rational;
 import it.cnr.istc.core.Item.VarItem;
+import it.cnr.istc.smt.var.IVarVal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class VarFlaw extends Flaw {
+public class VarFlaw extends Flaw {
 
-    private final VarItem varItem;
+    private final VarItem var_item;
 
-    public VarFlaw(final Solver slv, final Resolver cause, final VarItem varItem) {
+    public VarFlaw(final Solver slv, final Resolver cause, final VarItem var_item) {
         super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);
-        this.varItem = varItem;
+        this.var_item = var_item;
     }
 
     @Override
     void compute_resolvers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Set<IVarVal> vals = slv.var_theory.value(var_item.var);
+        for (IVarVal val : vals) {
+            add_resolver(new ChooseVal(slv, new Rational(1, vals.size()), this, val));
+        }
+    }
+
+    private class ChooseVal extends Resolver {
+
+        private final IVarVal val;
+
+        private ChooseVal(Solver slv, Rational cost, VarFlaw effect, final IVarVal val) {
+            super(slv, slv.var_theory.allows(effect.var_item.var, val), cost, effect);
+            this.val = val;
+        }
+
+        @Override
+        void apply() {
+        }
     }
 }

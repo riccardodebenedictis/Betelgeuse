@@ -18,6 +18,7 @@ package it.cnr.istc.core;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
@@ -28,12 +29,13 @@ import java.util.Queue;
 public class Predicate extends Type {
 
     final List<Field> arguments;
+    private final List<Statement> statements;
 
     public Predicate(final Core core, final IScope scope, final String name, final Field... args) {
-        this(core, scope, name, Arrays.asList(args));
+        this(core, scope, name, Arrays.asList(args), Collections.emptyList());
     }
 
-    Predicate(final Core core, final IScope scp, final String name, final List<Field> args) {
+    Predicate(final Core core, final IScope scp, final String name, final List<Field> args, final List<Statement> statements) {
         super(core, scp, name);
         this.arguments = args;
         if (scp instanceof Type) {
@@ -42,6 +44,7 @@ public class Predicate extends Type {
         for (Field arg : args) {
             fields.put(arg.name, arg);
         }
+        this.statements = statements;
     }
 
     @Override
@@ -55,5 +58,16 @@ public class Predicate extends Type {
             q.addAll(pred.supertypes);
         }
         return atm;
+    }
+
+    public void applyRule(final Atom atom) throws CoreException {
+        for (Type st : supertypes) {
+            ((Predicate) st).applyRule(atom);
+        }
+        Env c_env = new Env(core, atom);
+        c_env.items.put(THIS, atom);
+        for (Statement stmnt : statements) {
+            stmnt.execute(this, c_env);
+        }
     }
 }

@@ -17,6 +17,7 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.common.Rational;
+import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.UnsolvableException;
 import it.cnr.istc.smt.Lit;
 import static it.cnr.istc.smt.SatCore.TRUE_var;
@@ -84,7 +85,11 @@ public abstract class Flaw {
         }
     }
 
-    void expand() throws UnsolvableException {
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    void expand() throws CoreException {
         assert !expanded;
 
         // we compute the resolvers..
@@ -104,7 +109,7 @@ public abstract class Flaw {
         }
     }
 
-    abstract void compute_resolvers();
+    abstract void compute_resolvers() throws CoreException;
 
     protected void add_resolver(Resolver r) {
         resolvers.add(r);

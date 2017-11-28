@@ -16,7 +16,10 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.core.Conjunction;
+import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Disjunction;
+import it.cnr.istc.core.IEnv;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -24,17 +27,36 @@ import java.util.Collections;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class DisjunctionFlaw extends Flaw {
+public class DisjunctionFlaw extends Flaw {
 
+    private final IEnv env;
     private final Disjunction dsj;
 
-    DisjunctionFlaw(final Solver slv, final Resolver cause, final Disjunction dsj) {
+    DisjunctionFlaw(final Solver slv, final Resolver cause, final IEnv env, final Disjunction dsj) {
         super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);
+        this.env = env;
         this.dsj = dsj;
     }
 
     @Override
     void compute_resolvers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Conjunction cnj : dsj.getConjunctions()) {
+            add_resolver(new ChooseConjunction(slv, this, cnj));
+        }
+    }
+
+    private class ChooseConjunction extends Resolver {
+
+        private final Conjunction cnj;
+
+        private ChooseConjunction(Solver slv, DisjunctionFlaw effect, final Conjunction cnj) {
+            super(slv, cnj.getCost(), effect);
+            this.cnj = cnj;
+        }
+
+        @Override
+        void apply() throws CoreException {
+            cnj.apply(env);
+        }
     }
 }

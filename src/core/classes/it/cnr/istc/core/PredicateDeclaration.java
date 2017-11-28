@@ -50,7 +50,7 @@ class PredicateDeclaration {
             args.add(new Field((Type) sc, par.second));
         }
 
-        Predicate p = new Predicate(scp.getCore(), scp, name, args);
+        Predicate p = new Predicate(scp.getCore(), scp, name, args, statements);
 
         for (List<String> pls : predicate_list) {
             IScope sc = scp;

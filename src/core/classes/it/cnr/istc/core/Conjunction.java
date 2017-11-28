@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.Lin;
+import it.cnr.istc.common.Rational;
 import java.util.List;
 
 /**
@@ -25,13 +25,17 @@ import java.util.List;
  */
 public class Conjunction extends Scope {
 
-    private final Lin cost;
+    private final Rational cost;
     private final List<Statement> statements;
 
-    Conjunction(final Core core, final IScope scope, final Lin cost, final List<Statement> statements) {
+    Conjunction(final Core core, final IScope scope, final Rational cost, final List<Statement> statements) {
         super(core, scope);
         this.cost = cost;
         this.statements = statements;
+    }
+
+    public Rational getCost() {
+        return new Rational(cost);
     }
 
     public void apply(final IEnv env) throws CoreException {

@@ -37,7 +37,7 @@ class DisjunctionStatement implements Statement {
     public void execute(IScope scp, IEnv env) throws CoreException {
         List<Conjunction> conjs = new ArrayList<>(disjunctions.size());
         for (Pair<List<Statement>, Expression> conj : disjunctions) {
-            conjs.add(new Conjunction(scp.getCore(), scp, ((Item.ArithItem) conj.second.evaluate(scp, env)).l, conj.first));
+            conjs.add(new Conjunction(scp.getCore(), scp, ((Item.ArithItem) conj.second.evaluate(scp, env)).l.known_term, conj.first));
         }
         scp.getCore().newDisjunction(env, new Disjunction(scp.getCore(), scp, conjs));
     }

@@ -58,6 +58,10 @@ public class Type extends Scope {
         return Collections.unmodifiableCollection(supertypes);
     }
 
+    public Collection<Item> getInstances() {
+        return Collections.unmodifiableCollection(instances);
+    }
+
     public boolean isAssignableFrom(final Type t) {
         Queue<Type> q = new ArrayDeque<>();
         q.add(t);

@@ -36,11 +36,13 @@ public interface SolverListener {
         r.slv.sat_core.listen(r.rho, (int v) -> resolverStateChanged(r));
     }
 
-    void resolverCreated(final Resolver f);
+    void resolverCreated(final Resolver r);
 
-    void resolverStateChanged(final Resolver f);
+    void resolverStateChanged(final Resolver r);
 
-    void resolverCostChanged(final Resolver f);
+    void resolverCostChanged(final Resolver r);
 
-    void currentResolver(final Resolver f);
+    void currentResolver(final Resolver r);
+
+    void newCausalLink(final Flaw f, final Resolver r);
 }

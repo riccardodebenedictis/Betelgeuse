@@ -365,9 +365,8 @@ public class SatCore {
         do {
             // trace reason for 'p'..
             for (Lit q : p_reason) { // the order in which these literals are visited is not relevant..
-                if (!seen.contains(q.v)) {
+                if (seen.add(q.v)) {
                     assert value(q) == False; // this literal should have propagated the clause..
-                    seen.add(q.v);
                     if (level.get(q.v) == decisionLevel()) {
                         counter++;
                     } else if (level.get(q.v) > 0) { // exclude variables from decision level 0..
