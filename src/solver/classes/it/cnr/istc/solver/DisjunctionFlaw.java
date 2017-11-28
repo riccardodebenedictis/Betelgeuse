@@ -55,7 +55,7 @@ public class DisjunctionFlaw extends Flaw {
         }
 
         @Override
-        void apply() throws CoreException {
+        void expand() throws CoreException {
             cnj.apply(env);
         }
     }

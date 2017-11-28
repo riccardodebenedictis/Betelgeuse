@@ -63,5 +63,5 @@ public abstract class Resolver {
         return cost.plus(est_cost);
     }
 
-    abstract void apply() throws CoreException;
+    abstract void expand() throws CoreException;
 }

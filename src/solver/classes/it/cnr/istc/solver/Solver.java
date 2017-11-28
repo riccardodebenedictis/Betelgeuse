@@ -17,14 +17,19 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.common.Rational;
+import static it.cnr.istc.common.Rational.POSITIVE_INFINITY;
+import static it.cnr.istc.common.Rational.ZERO;
 import it.cnr.istc.core.Atom;
 import it.cnr.istc.core.Core;
+import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Disjunction;
 import it.cnr.istc.core.IEnv;
+import it.cnr.istc.core.InconsistencyException;
 import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Item.VarItem;
 import it.cnr.istc.core.Type;
 import it.cnr.istc.core.UnsolvableException;
+import static it.cnr.istc.smt.LBool.False;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.Theory;
 import it.cnr.istc.solver.types.ReusableResource;
@@ -126,6 +131,33 @@ public class Solver extends Core implements Theory {
         }
     }
 
+    private void expandFlaw(final Flaw f) throws CoreException {
+        // we expand the flaw..
+        f.expand();
+        if (!sat_core.check()) {
+            throw new UnsolvableException();
+        }
+        for (Resolver r : f.resolvers) {
+            res = r;
+            setVar(r.rho);
+            try {
+                r.expand();
+            } catch (InconsistencyException e) {
+                if (!sat_core.newClause(new Lit(r.rho, false))) {
+                    throw new UnsolvableException();
+                }
+            }
+            if (!sat_core.check()) {
+                throw new UnsolvableException();
+            }
+            restoreVar();
+            res = null;
+            if (r.preconditions.isEmpty() && sat_core.value(r.rho) != False) {
+                setEstimatedCost(r, ZERO);
+            }
+        }
+    }
+
     void newResolver(final Resolver r) {
         r.init(); // resolvers' initialization requires being at root-level..
         // we notify the listeners that a new resolver has arised..
@@ -201,22 +233,78 @@ public class Solver extends Core implements Theory {
 
     @Override
     public boolean propagate(Lit p, Collection<Lit> cnfl) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        assert cnfl.isEmpty();
+
+        if (res == null) {
+            Collection<Flaw> fs = phis.get(p.v);
+            if (fs != null) {
+                // a decision has been taken about the presence of some flaws within the current partial solution..
+                for (Flaw f : fs) {
+                    assert !flaws.contains(f);
+                    if (p.sign) {
+                        // this flaw has been added to the current partial solution..
+                        flaws.add(f);
+                        if (!trail.isEmpty()) {
+                            trail.peekLast().new_flaws.add(f);
+                        }
+                        // we notify the listeners that the state of the flaw has changed..
+                        for (SolverListener l : listeners) {
+                            l.flawStateChanged(f);
+                        }
+                    }
+                }
+            }
+
+            Collection<Resolver> rs;
+            if (p.sign && (rs = rhos.get(p.v)) != null) {
+                for (Resolver r : rs) {
+                    setEstimatedCost(r, POSITIVE_INFINITY);
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean check(Collection<Lit> cnfl) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        assert cnfl.isEmpty();
+        return true;
     }
 
     @Override
     public void push() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (res != null) {
+            Layer layer = new Layer(res);
+            layer.solved_flaws.add(res.effect);
+            flaws.remove(res.effect);
+            trail.push(layer);
+        }
     }
 
     @Override
     public void pop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (res != null) {
+            // we reintroduce the solved flaw..
+            Layer layer = trail.pop();
+            for (SolverListener l : listeners) {
+                l.currentResolver(layer.res);
+            }
+            // we reintroduce the solved flaw..
+            flaws.addAll(layer.solved_flaws);
+            // we erase the new flaws..
+            flaws.removeAll(layer.new_flaws);
+            // we restore the resolvers' estimated costs..
+            for (Map.Entry<Resolver, Rational> cost : layer.old_costs.entrySet()) {
+                cost.getKey().est_cost = cost.getValue();
+            }
+            // we notify the listeners that the cost of some resolvers has been restored..
+            for (SolverListener l : listeners) {
+                for (Map.Entry<Resolver, Rational> cost : layer.old_costs.entrySet()) {
+                    l.resolverCostChanged(cost.getKey());
+                }
+            }
+        }
     }
 
     public void listen(final SolverListener l) {

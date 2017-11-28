@@ -54,7 +54,7 @@ public class VarFlaw extends Flaw {
         }
 
         @Override
-        void apply() {
+        void expand() {
         }
     }
 }
