@@ -32,4 +32,10 @@ public abstract class SmartType extends Type {
     }
 
     public abstract Collection<Flaw> getFlaws();
+
+    void newFact(final SupportFlaw f) {
+    }
+
+    void newGoal(final SupportFlaw f) {
+    }
 }

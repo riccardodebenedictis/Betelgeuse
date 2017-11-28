@@ -17,7 +17,8 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.core.Disjunction;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  *
@@ -27,8 +28,8 @@ class DisjunctionFlaw extends Flaw {
 
     private final Disjunction dsj;
 
-    DisjunctionFlaw(final Solver slv, final Collection<Resolver> causes, final Disjunction dsj) {
-        super(slv, causes, true, true);
+    DisjunctionFlaw(final Solver slv, final Resolver cause, final Disjunction dsj) {
+        super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);
         this.dsj = dsj;
     }
 

@@ -20,7 +20,7 @@ package it.cnr.istc.common;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Rational {
+public class Rational implements Comparable<Rational> {
 
     public static final Rational ZERO = new Rational();
     public static final Rational ONE = new Rational(1);
@@ -116,6 +116,20 @@ public class Rational {
 
     public boolean gt(final long rhs) {
         return num > den * rhs;
+    }
+
+    @Override
+    public int compareTo(Rational o) {
+        if (eq(o)) {
+            return 0;
+        }
+        if (lt(o)) {
+            return -1;
+        }
+        if (gt(o)) {
+            return 1;
+        }
+        throw new AssertionError();
     }
 
     public void add(final Rational rhs) {

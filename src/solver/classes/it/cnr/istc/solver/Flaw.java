@@ -16,6 +16,10 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.common.Rational;
+import it.cnr.istc.core.UnsolvableException;
+import it.cnr.istc.smt.Lit;
+import static it.cnr.istc.smt.SatCore.TRUE_var;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -53,25 +57,73 @@ public abstract class Flaw {
     }
 
     void init() {
+        assert !expanded;
+        if (causes.isEmpty()) {
+            // the flaw is necessarily active..
+            phi = TRUE_var;
+        } else {
+            // we create a new variable: the flaw is active if all of its causes are active..
+            phi = slv.sat_core.newConj(causes.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new));
+        }
+
+        switch (slv.sat_core.value(phi)) {
+            case True: // we have a top-level (a landmark) flaw..
+                slv.flaws.add(this);
+                break;
+            case Undefined: // we listen for the flaw to become active..
+                Collection<Flaw> fls = slv.phis.get(phi);
+                if (fls == null) {
+                    fls = new ArrayList<>();
+                    slv.phis.put(phi, fls);
+                }
+                fls.add(this);
+                slv.sat_core.bind(phi, slv);
+                break;
+            default:
+                throw new AssertionError(slv.sat_core.value(phi).name());
+        }
     }
 
-    void expand() {
+    void expand() throws UnsolvableException {
+        assert !expanded;
+
+        // we compute the resolvers..
+        compute_resolvers();
+        expanded = true;
+
+        // we add causal relations between the flaw and its resolvers (i.e., if the flaw is phi exactly one of its resolvers should be in plan)..
+        if (resolvers.isEmpty()) {
+            // there is no way for solving this flaw..
+            if (!slv.sat_core.newClause(new Lit(phi, false))) {
+                throw new UnsolvableException();
+            }
+        } else {
+            // we need to take a decision for solving this flaw..
+            if (!slv.sat_core.newClause(new Lit(phi, false), new Lit(exclusive ? slv.sat_core.newExctOne(resolvers.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new)) : slv.sat_core.newDisj(resolvers.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new)))));
+            throw new UnsolvableException();
+        }
     }
 
     abstract void compute_resolvers();
 
     protected void add_resolver(Resolver r) {
+        resolvers.add(r);
+        slv.newResolver(r);
+    }
+
+    public Rational getEstimatedCost() {
+        return getBestResolver().getEstimatedCost();
     }
 
     /**
      * Returns the least expensive resolver according to their estimated cost.
-     * This method can be extended in order to further refine the resolver
+     * This method can be overridden in order to further refine the resolver
      * selection procedure.
      *
      * @return the least expensive resolver.
      */
     public Resolver getBestResolver() {
         assert expanded;
-        return resolvers.stream().min((Resolver r0, Resolver r1) -> Double.compare(r0.est_cost, r1.est_cost)).get();
+        return resolvers.stream().min((Resolver r0, Resolver r1) -> r0.getEstimatedCost().compareTo(r1.getEstimatedCost())).get();
     }
 }

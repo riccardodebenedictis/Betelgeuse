@@ -19,6 +19,7 @@ package it.cnr.istc.core;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -51,6 +52,10 @@ public class Type extends Scope {
         super(core, scope);
         this.name = name;
         this.primitive = primitive;
+    }
+
+    public Collection<Type> getSupertypes() {
+        return Collections.unmodifiableCollection(supertypes);
     }
 
     public boolean isAssignableFrom(final Type t) {

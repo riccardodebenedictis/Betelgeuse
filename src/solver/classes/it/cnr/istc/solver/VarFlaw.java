@@ -17,7 +17,8 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.core.Item.VarItem;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  *
@@ -27,8 +28,8 @@ class VarFlaw extends Flaw {
 
     private final VarItem varItem;
 
-    public VarFlaw(final Solver slv, final Collection<Resolver> causes, final VarItem varItem) {
-        super(slv, causes, true, true);
+    public VarFlaw(final Solver slv, final Resolver cause, final VarItem varItem) {
+        super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);
         this.varItem = varItem;
     }
 

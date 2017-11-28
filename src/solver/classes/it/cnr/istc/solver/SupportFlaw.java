@@ -17,7 +17,8 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.core.Atom;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  *
@@ -26,10 +27,12 @@ import java.util.Collection;
 class SupportFlaw extends Flaw {
 
     private final Atom atom;
+    private final boolean is_fact;
 
-    SupportFlaw(final Solver slv, final Collection<Resolver> causes, final Atom atom) {
-        super(slv, causes);
+    SupportFlaw(final Solver slv, final Resolver cause, final Atom atom, final boolean is_fact) {
+        super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);
         this.atom = atom;
+        this.is_fact = is_fact;
     }
 
     @Override

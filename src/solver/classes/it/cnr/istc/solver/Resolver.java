@@ -16,7 +16,8 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.common.Lin;
+import it.cnr.istc.common.Rational;
+import static it.cnr.istc.smt.LBool.Undefined;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -27,16 +28,33 @@ import java.util.Collection;
 public class Resolver {
 
     protected final Solver slv; // the solver this resolver belongs to..
-    final int rho; // the propositional variable indicating whether the resolver is active or not..
-    final Lin cost; // the intrinsic cost of the resolver..
+    public final int rho; // the propositional variable indicating whether the resolver is active or not..
+    final Rational cost; // the intrinsic cost of the resolver..
     final Collection<Flaw> preconditions = new ArrayList<>(); // the preconditions of this resolver..
     final Flaw effect;  // the flaw solved by this resolver..
-    double est_cost = Double.POSITIVE_INFINITY; // the estimated cost of the resolver..
+    Rational est_cost = new Rational(Rational.POSITIVE_INFINITY); // the estimated cost of the resolver..
 
-    public Resolver(Solver slv, int rho, Lin cost, Flaw effect) {
+    public Resolver(Solver slv, int rho, Rational cost, Flaw effect) {
         this.slv = slv;
         this.rho = rho;
         this.cost = cost;
         this.effect = effect;
+    }
+
+    void init() {
+        if (slv.sat_core.value(rho) == Undefined) {
+            // we do not have a top-level (a landmark) resolver..
+            Collection<Resolver> ress = slv.rhos.get(rho);
+            if (ress == null) {
+                ress = new ArrayList<>();
+                slv.rhos.put(rho, ress);
+            }
+            ress.add(this);
+            slv.sat_core.bind(rho, slv);
+        }
+    }
+
+    public Rational getEstimatedCost() {
+        return cost.plus(est_cost);
     }
 }
