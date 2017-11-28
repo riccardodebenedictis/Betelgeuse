@@ -248,7 +248,7 @@ public class LRATheory implements Theory {
      * @return the value of variable 'v'.
      */
     public InfRational value(final int v) {
-        return vals.get(v);
+        return new InfRational(vals.get(v).rat, vals.get(v).inf);
     }
 
     /**

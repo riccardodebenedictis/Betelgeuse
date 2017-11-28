@@ -16,9 +16,11 @@
  */
 package it.cnr.istc.smt.lra;
 
+import it.cnr.istc.common.InfRational;
 import it.cnr.istc.common.Lin;
 import it.cnr.istc.common.Rational;
 import static it.cnr.istc.common.Rational.ONE;
+import static it.cnr.istc.common.Rational.ZERO;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
 import org.junit.Assert;
@@ -53,5 +55,63 @@ public class LRATheoryTest {
         // s2 >= -3
         boolean asm = core.assume(new Lit(lra.newGEq(new Lin(s2), new Lin(new Rational(-3)))));
         Assert.assertFalse(asm);
+    }
+
+    @Test
+    public void testInequalities() {
+        SatCore core = new SatCore();
+        LRATheory lra = new LRATheory(core);
+
+        int x = lra.newVar();
+        int y = lra.newVar();
+
+        // x >= y;
+        boolean nc = core.newClause(new Lit(lra.newGEq(new Lin(x), new Lin(y)))) && core.check();
+        Assert.assertTrue(nc);
+
+        InfRational x_val = lra.value(x);
+        Assert.assertTrue(x_val.eq(ZERO));
+
+        InfRational y_val = lra.value(y);
+        Assert.assertTrue(y_val.eq(ZERO));
+
+        // y >= 1
+        nc = core.newClause(new Lit(lra.newGEq(new Lin(y), new Lin(ONE)))) && core.check();
+        Assert.assertTrue(nc);
+
+        x_val = lra.value(x);
+        Assert.assertTrue(x_val.eq(ONE));
+
+        y_val = lra.value(y);
+        Assert.assertTrue(y_val.eq(ONE));
+    }
+
+    @Test
+    public void testStrictInequalities() {
+        SatCore core = new SatCore();
+        LRATheory lra = new LRATheory(core);
+
+        int x = lra.newVar();
+        int y = lra.newVar();
+
+        // x > y;
+        boolean nc = core.newClause(new Lit(lra.newGt(new Lin(x), new Lin(y)))) && core.check();
+        Assert.assertTrue(nc);
+
+        InfRational x_val = lra.value(x);
+        Assert.assertTrue(x_val.eq(new InfRational(ZERO, ONE)));
+
+        InfRational y_val = lra.value(y);
+        Assert.assertTrue(y_val.eq(ZERO));
+
+        // y >= 1
+        nc = core.newClause(new Lit(lra.newGEq(new Lin(y), new Lin(ONE)))) && core.check();
+        Assert.assertTrue(nc);
+
+        x_val = lra.value(x);
+        Assert.assertTrue(x_val.eq(new InfRational(ONE, ONE)));
+
+        y_val = lra.value(y);
+        Assert.assertTrue(y_val.eq(ONE));
     }
 }
