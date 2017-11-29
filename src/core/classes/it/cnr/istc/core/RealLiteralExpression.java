@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.Rational;
+import it.cnr.istc.smt.lra.Rational;
 
 /**
  *

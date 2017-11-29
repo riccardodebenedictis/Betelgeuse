@@ -16,10 +16,10 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.InfRational;
-import it.cnr.istc.common.Lin;
-import it.cnr.istc.common.Rational;
-import static it.cnr.istc.common.Rational.ZERO;
+import it.cnr.istc.smt.lra.InfRational;
+import it.cnr.istc.smt.lra.Lin;
+import it.cnr.istc.smt.lra.Rational;
+import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.core.Item.ArithItem;
 import it.cnr.istc.core.Item.BoolItem;
 import it.cnr.istc.core.Item.StringItem;

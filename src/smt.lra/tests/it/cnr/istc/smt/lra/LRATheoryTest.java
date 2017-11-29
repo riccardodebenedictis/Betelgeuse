@@ -16,11 +16,8 @@
  */
 package it.cnr.istc.smt.lra;
 
-import it.cnr.istc.common.InfRational;
-import it.cnr.istc.common.Lin;
-import it.cnr.istc.common.Rational;
-import static it.cnr.istc.common.Rational.ONE;
-import static it.cnr.istc.common.Rational.ZERO;
+import static it.cnr.istc.smt.lra.Rational.ONE;
+import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
 import org.junit.Assert;

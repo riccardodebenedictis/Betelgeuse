@@ -16,9 +16,9 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.common.Rational;
-import static it.cnr.istc.common.Rational.POSITIVE_INFINITY;
-import static it.cnr.istc.common.Rational.ZERO;
+import it.cnr.istc.smt.lra.Rational;
+import static it.cnr.istc.smt.lra.Rational.POSITIVE_INFINITY;
+import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.core.Atom;
 import it.cnr.istc.core.Core;
 import it.cnr.istc.core.CoreException;

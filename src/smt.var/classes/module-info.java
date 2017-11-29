@@ -16,5 +16,5 @@
  */
 module smt.var {
     exports it.cnr.istc.smt.var;
-    requires smt;
+    requires transitive smt;
 }

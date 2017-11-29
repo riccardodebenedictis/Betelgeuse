@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.common.Rational;
+import it.cnr.istc.smt.lra.Rational;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.UnsolvableException;
 import it.cnr.istc.smt.Lit;

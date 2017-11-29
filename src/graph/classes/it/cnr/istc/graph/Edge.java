@@ -14,30 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.solver;
-
-import it.cnr.istc.smt.lra.InfRational;
-import it.cnr.istc.core.CoreException;
-import it.cnr.istc.core.Item;
-import org.junit.Assert;
-import org.junit.Test;
+package it.cnr.istc.graph;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class SolverTest {
+public class Edge {
 
-    @Test
-    public void testNewFact() throws CoreException {
-        Solver s = new Solver();
-        s.read("real a; a >= 5;");
+    final Node from;
+    final Node to;
 
-        Item.ArithItem a = s.get("a");
-        InfRational a_val = s.value(a);
-        Assert.assertTrue(a_val.eq(5));
-
-        s.read("predicate P(int x) {}");
-        s.read("goal x = new P();");
+    Edge(Node from, Node to) {
+        this.from = from;
+        this.to = to;
     }
 }

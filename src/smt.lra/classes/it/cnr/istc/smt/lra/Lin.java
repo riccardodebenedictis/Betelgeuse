@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.common;
+package it.cnr.istc.smt.lra;
 
-import static it.cnr.istc.common.Rational.ONE;
-import static it.cnr.istc.common.Rational.ZERO;
+import static it.cnr.istc.smt.lra.Rational.ONE;
+import static it.cnr.istc.smt.lra.Rational.ZERO;
 import java.util.Map;
 import java.util.TreeMap;
 

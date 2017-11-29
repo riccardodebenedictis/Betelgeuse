@@ -16,8 +16,10 @@
  */
 package it.cnr.istc.common;
 
-import static it.cnr.istc.common.Rational.NEGATIVE_INFINITY;
-import static it.cnr.istc.common.Rational.ONE;
+import it.cnr.istc.smt.lra.Lin;
+import it.cnr.istc.smt.lra.Rational;
+import static it.cnr.istc.smt.lra.Rational.NEGATIVE_INFINITY;
+import static it.cnr.istc.smt.lra.Rational.ONE;
 import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;

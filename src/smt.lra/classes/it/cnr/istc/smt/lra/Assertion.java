@@ -16,7 +16,6 @@
  */
 package it.cnr.istc.smt.lra;
 
-import it.cnr.istc.common.InfRational;
 import it.cnr.istc.smt.Lit;
 import java.util.Collection;
 

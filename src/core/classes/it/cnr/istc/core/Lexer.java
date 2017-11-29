@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.Rational;
+import it.cnr.istc.smt.lra.Rational;
 import static it.cnr.istc.core.Lexer.Symbol.*;
 import java.io.IOException;
 import java.io.Reader;

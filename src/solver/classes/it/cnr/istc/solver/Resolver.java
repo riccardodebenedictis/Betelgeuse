@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.common.Rational;
+import it.cnr.istc.smt.lra.Rational;
 import it.cnr.istc.core.CoreException;
 import static it.cnr.istc.smt.LBool.Undefined;
 import java.util.ArrayList;

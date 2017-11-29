@@ -16,6 +16,5 @@
  */
 module smt.lra {
     exports it.cnr.istc.smt.lra;
-    requires smt;
-    requires common;
+    requires transitive smt;
 }

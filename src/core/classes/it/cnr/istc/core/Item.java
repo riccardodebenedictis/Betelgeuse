@@ -16,7 +16,7 @@
  */
 package it.cnr.istc.core;
 
-import it.cnr.istc.common.Lin;
+import it.cnr.istc.smt.lra.Lin;
 import static it.cnr.istc.core.Type.BOOL;
 import it.cnr.istc.smt.LBool;
 import static it.cnr.istc.smt.LBool.Undefined;
