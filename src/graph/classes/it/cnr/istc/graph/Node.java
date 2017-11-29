@@ -31,6 +31,8 @@ public class Node {
     double pos_y;
     double disp_x;
     double disp_y;
+    double width = 60;
+    double height = 30;
     Collection<Edge> incoming_edges = new ArrayList<>();
     Collection<Edge> outgoing_edges = new ArrayList<>();
     private Color fill_color = Color.ALICEBLUE;
@@ -46,8 +48,8 @@ public class Node {
     void draw(GraphicsContext gc) {
         gc.setFill(fill_color);
         gc.setStroke(stroke_color);
-        gc.fillRoundRect(pos_x - 10, pos_y - 10, 20, 20, 5, 5);
-        gc.setLineDashes(2);
-        gc.strokeRoundRect(pos_x - 10, pos_y - 10, 20, 20, 5, 5);
+        gc.fillRoundRect(pos_x - width / 2, pos_y - height / 2, width, height, 10, 10);
+        gc.setLineDashes(2, 5);
+        gc.strokeRoundRect(pos_x - width / 2, pos_y - height / 2, width, height, 10, 10);
     }
 }
