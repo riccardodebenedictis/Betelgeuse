@@ -18,4 +18,5 @@ module graph {
     requires solver;
     requires prefuse;
     requires java.desktop;
+    requires java.logging;
 }

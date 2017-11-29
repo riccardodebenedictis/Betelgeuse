@@ -32,6 +32,11 @@ public class IntegerFlaw extends Flaw {
     }
 
     @Override
+    public String getLabel() {
+        return "φ" + getPhi() + " int";
+    }
+
+    @Override
     void compute_resolvers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -16,9 +16,5 @@
  */
 module solver {
     exports it.cnr.istc.solver;
-    requires core;
-    requires smt;
-    requires smt.lra;
-    requires smt.var;
-    requires common;
+    requires transitive core;
 }

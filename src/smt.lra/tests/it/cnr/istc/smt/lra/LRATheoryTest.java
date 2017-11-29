@@ -20,6 +20,7 @@ import static it.cnr.istc.smt.lra.Rational.ONE;
 import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
+import static it.cnr.istc.smt.lra.Rational.NEGATIVE_INFINITY;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +29,32 @@ import org.junit.Test;
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
 public class LRATheoryTest {
+
+    @Test
+    public void testRational() {
+        Rational r0 = new Rational();
+        r0.add(ONE);
+        r0.add(new Rational(1, 2));
+        r0.add(NEGATIVE_INFINITY);
+        Rational r1 = new Rational(4, 2);
+        Rational r2 = r1.divide(r0);
+        r2.add(2);
+        r2.sub(-2);
+        r2.mult(2);
+    }
+
+    @Test
+    public void testLin() {
+        Lin l0 = new Lin();
+        l0.add(0, ONE);
+        l0.add(1, new Rational(2));
+
+        Lin l1 = new Lin();
+        l1.add(1, ONE);
+        l1.add(2, new Rational(2));
+
+        Lin l2 = l0.plus(l1);
+    }
 
     @Test
     public void testLRATheory() {

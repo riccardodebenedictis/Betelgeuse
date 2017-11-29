@@ -137,6 +137,11 @@ public class SupportFlaw extends Flaw {
         }
     }
 
+    @Override
+    public String getLabel() {
+        return "φ" + getPhi() + (is_fact ? " fact σ" : " goal σ") + atom.sigma + " " + atom.type.name;
+    }
+
     private class ActivateFact extends Resolver {
 
         private final Atom atom;
@@ -151,6 +156,11 @@ public class SupportFlaw extends Flaw {
             if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(atom.sigma))) {
                 throw new UnsolvableException();
             }
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " activate fact";
         }
     }
 
@@ -169,6 +179,11 @@ public class SupportFlaw extends Flaw {
                 throw new UnsolvableException();
             }
             ((Predicate) atom.type).applyRule(atom);
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " expand goal";
         }
     }
 
@@ -192,6 +207,11 @@ public class SupportFlaw extends Flaw {
                     throw new UnsolvableException();
                 }
             }
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " unify";
         }
     }
 }

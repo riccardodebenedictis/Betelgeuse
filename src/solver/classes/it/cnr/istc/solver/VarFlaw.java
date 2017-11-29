@@ -44,6 +44,11 @@ public class VarFlaw extends Flaw {
         }
     }
 
+    @Override
+    public String getLabel() {
+        return "φ" + getPhi() + " var";
+    }
+
     private class ChooseVal extends Resolver {
 
         private final IVarVal val;
@@ -55,6 +60,11 @@ public class VarFlaw extends Flaw {
 
         @Override
         void expand() {
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " val";
         }
     }
 }

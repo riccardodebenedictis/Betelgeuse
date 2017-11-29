@@ -23,6 +23,7 @@ import it.cnr.istc.smt.Lit;
 import static it.cnr.istc.smt.SatCore.TRUE_var;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -53,8 +54,20 @@ public abstract class Flaw {
         }
     }
 
+    public Solver getSolver() {
+        return slv;
+    }
+
     public int getPhi() {
         return phi;
+    }
+
+    public Collection<Resolver> getCauses() {
+        return Collections.unmodifiableCollection(causes);
+    }
+
+    public Collection<Resolver> getResolvers() {
+        return Collections.unmodifiableCollection(resolvers);
     }
 
     void init() {
@@ -131,4 +144,6 @@ public abstract class Flaw {
         assert expanded;
         return resolvers.stream().min((Resolver r0, Resolver r1) -> r0.getEstimatedCost().compareTo(r1.getEstimatedCost())).get();
     }
+
+    public abstract String getLabel();
 }

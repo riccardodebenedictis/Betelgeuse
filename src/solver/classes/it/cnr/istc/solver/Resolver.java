@@ -46,6 +46,14 @@ public abstract class Resolver {
         this.effect = effect;
     }
 
+    public Solver getSolver() {
+        return slv;
+    }
+
+    public Flaw getEffect() {
+        return effect;
+    }
+
     void init() {
         if (slv.sat_core.value(rho) == Undefined) {
             // we do not have a top-level (a landmark) resolver..
@@ -64,4 +72,6 @@ public abstract class Resolver {
     }
 
     abstract void expand() throws CoreException;
+
+    public abstract String getLabel();
 }

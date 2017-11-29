@@ -45,6 +45,11 @@ public class DisjunctionFlaw extends Flaw {
         }
     }
 
+    @Override
+    public String getLabel() {
+        return "φ" + getPhi() + " disj";
+    }
+
     private class ChooseConjunction extends Resolver {
 
         private final Conjunction cnj;
@@ -57,6 +62,11 @@ public class DisjunctionFlaw extends Flaw {
         @Override
         void expand() throws CoreException {
             cnj.apply(env);
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " conj";
         }
     }
 }
