@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 module graph {
-    exports it.cnr.istc.graph to javafx.graphics;
-    requires javafx.graphics;
+    requires solver;
     requires prefuse;
+    requires java.desktop;
 }

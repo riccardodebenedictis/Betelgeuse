@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 module solver {
+    exports it.cnr.istc.solver;
     requires core;
     requires smt;
     requires smt.lra;
