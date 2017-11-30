@@ -323,11 +323,11 @@ public abstract class Core implements IScope, IEnv {
         ctr_var = tmp_var;
     }
 
-    protected abstract void newFact(final Atom atom);
+    protected abstract void newFact(final Atom atom) throws CoreException;
 
-    protected abstract void newGoal(final Atom atom);
+    protected abstract void newGoal(final Atom atom) throws CoreException;
 
-    protected abstract void newDisjunction(final IEnv env, final Disjunction dsj);
+    protected abstract void newDisjunction(final IEnv env, final Disjunction dsj) throws CoreException;
 
     @Override
     public Core getCore() {

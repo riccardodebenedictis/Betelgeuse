@@ -258,6 +258,14 @@ public class Type extends Scope {
         return core.newEnum(this, new HashSet<>(instances));
     }
 
+    protected void setVar(final int v) {
+        core.setVar(v);
+    }
+
+    protected void restoreVar() {
+        core.restoreVar();
+    }
+
     static class BoolType extends Type {
 
         BoolType(final Core core) {

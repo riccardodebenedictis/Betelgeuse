@@ -17,6 +17,7 @@
 package it.cnr.istc.solver;
 
 import it.cnr.istc.core.Atom;
+import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Field;
 import it.cnr.istc.core.IScope;
 import it.cnr.istc.core.Item;
@@ -42,17 +43,17 @@ public abstract class SmartType extends Type {
 
     public abstract Collection<Flaw> getFlaws();
 
-    void newFact(final SupportFlaw f) {
+    protected void newFact(final SupportFlaw f) throws CoreException {
     }
 
-    void newGoal(final SupportFlaw f) {
+    protected void newGoal(final SupportFlaw f) throws CoreException {
     }
 
     protected static abstract class AtomListener implements SatValueListener, LRAValueListener, VarValueListener {
 
         protected final Atom atom;
 
-        protected AtomListener(Atom atom) {
+        protected AtomListener(final Atom atom) {
             this.atom = atom;
             Queue<Type> q = new ArrayDeque<>();
             q.add((Type) atom.type.getScope());

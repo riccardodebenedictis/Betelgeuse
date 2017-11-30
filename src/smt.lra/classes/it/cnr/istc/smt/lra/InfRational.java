@@ -18,12 +18,13 @@ package it.cnr.istc.smt.lra;
 
 import static it.cnr.istc.smt.lra.Rational.ONE;
 import static it.cnr.istc.smt.lra.Rational.ZERO;
+import java.util.Objects;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class InfRational {
+public class InfRational implements Comparable<InfRational> {
 
     public Rational rat; // the rational part..
     public Rational inf; // the infinitesimal part..
@@ -214,6 +215,35 @@ public class InfRational {
 
     public InfRational minus() {
         return new InfRational(rat.minus(), inf.minus());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.rat);
+        hash = 37 * hash + Objects.hashCode(this.inf);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final InfRational other = (InfRational) obj;
+        return Objects.equals(this.rat, other.rat) && Objects.equals(this.inf, other.inf);
+    }
+
+    @Override
+    public int compareTo(InfRational o) {
+        int rat_comp = rat.compareTo(o.rat);
+        return rat_comp != 0 ? rat_comp : inf.compareTo(o.inf);
     }
 
     @Override

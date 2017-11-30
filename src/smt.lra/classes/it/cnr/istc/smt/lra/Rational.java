@@ -389,6 +389,29 @@ public class Rational implements Comparable<Rational> {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + (int) (this.num ^ (this.num >>> 32));
+        hash = 29 * hash + (int) (this.den ^ (this.den >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Rational other = (Rational) obj;
+        return this.num == other.num && this.den == other.den;
+    }
+
+    @Override
     public String toString() {
         if (den == 0) {
             return num > 0 ? "+inf" : "-inf";

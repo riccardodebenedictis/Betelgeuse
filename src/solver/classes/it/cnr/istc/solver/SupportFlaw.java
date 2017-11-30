@@ -41,8 +41,8 @@ import java.util.stream.Collectors;
  */
 public class SupportFlaw extends Flaw {
 
-    private final Atom atom;
-    private final boolean is_fact;
+    public final Atom atom;
+    public final boolean is_fact;
 
     SupportFlaw(final Solver slv, final Resolver cause, final Atom atom, final boolean is_fact) {
         super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);

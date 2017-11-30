@@ -90,7 +90,7 @@ public class Solver extends Core implements Theory {
     }
 
     @Override
-    protected void newFact(Atom atom) {
+    protected void newFact(Atom atom) throws CoreException {
         // we create a new support flaw representing a fact..
         SupportFlaw sf = new SupportFlaw(this, res, atom, true);
         reason.put(atom, sf);
@@ -109,7 +109,7 @@ public class Solver extends Core implements Theory {
     }
 
     @Override
-    protected void newGoal(Atom atom) {
+    protected void newGoal(Atom atom) throws CoreException {
         // we create a new support flaw representing a goal..
         SupportFlaw sf = new SupportFlaw(this, res, atom, false);
         reason.put(atom, sf);
