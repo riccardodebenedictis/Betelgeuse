@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,12 +67,27 @@ public class Scope implements IScope {
     }
 
     @Override
+    public Map<String, Collection<Method>> getMethods() {
+        return scope.getMethods();
+    }
+
+    @Override
     public Type getType(String name) {
         return scope.getType(name);
     }
 
     @Override
+    public Map<String, Type> getTypes() {
+        return scope.getTypes();
+    }
+
+    @Override
     public Predicate getPredicate(String name) {
         return scope.getPredicate(name);
+    }
+
+    @Override
+    public Map<String, Predicate> getPredicates() {
+        return scope.getPredicates();
     }
 }

@@ -30,6 +30,8 @@ import it.cnr.istc.core.Item.VarItem;
 import it.cnr.istc.core.Type;
 import it.cnr.istc.core.UnsolvableException;
 import static it.cnr.istc.smt.LBool.False;
+import static it.cnr.istc.smt.LBool.True;
+import static it.cnr.istc.smt.LBool.Undefined;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.Theory;
 import it.cnr.istc.solver.types.ReusableResource;
@@ -45,6 +47,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -56,6 +59,7 @@ import java.util.Set;
 public class Solver extends Core implements Theory {
 
     private Resolver res = null;
+    private int gamma; // this variable represents the validity of the current graph..
     private Queue<Flaw> flaw_q = new ArrayDeque<>();
     final Set<Flaw> flaws = new HashSet<>(); // the current active flaws..
     private final Map<Atom, SupportFlaw> reason = new IdentityHashMap<>(); // the reason for having introduced an atom..
@@ -90,6 +94,7 @@ public class Solver extends Core implements Theory {
         // we create a new support flaw representing a fact..
         SupportFlaw sf = new SupportFlaw(this, res, atom, true);
         reason.put(atom, sf);
+        newFlaw(sf);
         if (atom.type.getScope() != this) {
             Queue<Type> q = new ArrayDeque<>();
             q.add((Type) atom.type.getScope());
@@ -108,6 +113,7 @@ public class Solver extends Core implements Theory {
         // we create a new support flaw representing a goal..
         SupportFlaw sf = new SupportFlaw(this, res, atom, false);
         reason.put(atom, sf);
+        newFlaw(sf);
         if (atom.type.getScope() != this) {
             Queue<Type> q = new ArrayDeque<>();
             q.add((Type) atom.type.getScope());
@@ -131,16 +137,108 @@ public class Solver extends Core implements Theory {
         return reason.get(atm);
     }
 
-    private void newFlaw(final Flaw f) {
-        f.init(); // flaws' initialization requires being at root-level..
-        flaw_q.add(f);
-        // we notify the listeners that a new flaw has arised..
-        for (SolverListener l : listeners) {
-            l.newFlaw(f);
+    public void solve() throws CoreException {
+        // we build the causal graph..
+        build();
+
+        while (sat_core.rootLevel()) {
+            // we have exhausted the search within the graph: we extend the graph..
+            add_layer();
+        }
+
+        while (true) {
+            // this is the next flaw to be solved..
+            Flaw f_next = select_flaw();
+            if (f_next != null) {
+                for (SolverListener l : listeners) {
+                    l.currentFlaw(f_next);
+                }
+                assert !f_next.getEstimatedCost().isPositiveInfinite();
+                if (!f_next.structural && !hasInconsistencies()) { // we run out of structural flaws, thus, we renew them..
+                    // this is the next resolver to be assumed..
+                    res = f_next.getBestResolver();
+
+                    // we apply the resolver..
+                    if (!sat_core.assume(new Lit(res.rho)) || !sat_core.check()) {
+                        throw new UnsolvableException();
+                    }
+
+                    res = null;
+                    while (sat_core.rootLevel()) {
+                        if (sat_core.value(gamma) == Undefined) {
+                            // we have learnt a unit clause! thus, we reassume the graph var and restart the search..
+                            if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
+                                throw new UnsolvableException();
+                            }
+                        } else {
+                            // we have exhausted the search within the graph: we extend the graph..
+                            assert sat_core.value(gamma) == False;
+                            add_layer();
+                        }
+                    }
+                }
+            } else if (!hasInconsistencies()) { // we run out of structural flaws, we check for inconsistencies one last time..
+                // Hurray!! we have found a solution..
+                return;
+            }
+        }
+    }
+
+    private void build() throws CoreException {
+        while (flaws.stream().anyMatch(flaw -> flaw.getEstimatedCost().isPositiveInfinite())) {
+            if (flaw_q.isEmpty()) {
+                throw new UnsolvableException("no more flaws to expand..");
+            }
+            Queue<Flaw> c_q = flaw_q;
+            flaw_q = new ArrayDeque<>();
+            for (Flaw flaw : c_q) {
+                expandFlaw(flaw);
+            }
+        }
+
+        // we create a new graph var..
+        gamma = sat_core.newVar();
+        // these flaws have not been expanded, hence, cannot have a solution..
+        for (Flaw flaw : flaw_q) {
+            if (!sat_core.newClause(new Lit(gamma, false), new Lit(flaw.getPhi(), false))) {
+                throw new UnsolvableException();
+            }
+        }
+        // we assume the new graph var to allow search within the current graph..
+        if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
+            throw new UnsolvableException();
+        }
+    }
+
+    private void add_layer() throws CoreException {
+        Collection<Flaw> fringe = new ArrayList<>(flaw_q);
+        while (fringe.stream().allMatch(flaw -> flaw.getEstimatedCost().isPositiveInfinite())) {
+            if (flaw_q.isEmpty()) {
+                throw new UnsolvableException("no more flaws to expand..");
+            }
+            Queue<Flaw> c_q = flaw_q;
+            flaw_q = new ArrayDeque<>();
+            for (Flaw flaw : c_q) {
+                expandFlaw(flaw);
+            }
+        }
+
+        // we create a new graph var..
+        gamma = sat_core.newVar();
+        // these flaws have not been expanded, hence, cannot have a solution..
+        for (Flaw flaw : flaw_q) {
+            if (!sat_core.newClause(new Lit(gamma, false), new Lit(flaw.getPhi(), false))) {
+                throw new UnsolvableException();
+            }
+        }
+        // we assume the new graph var to allow search within the current graph..
+        if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
+            throw new UnsolvableException();
         }
     }
 
     private void expandFlaw(final Flaw f) throws CoreException {
+        assert !f.isExpanded();
         // we expand the flaw..
         f.expand();
         if (!sat_core.check()) {
@@ -164,6 +262,51 @@ public class Solver extends Core implements Theory {
             if (r.preconditions.isEmpty() && sat_core.value(r.rho) != False) {
                 setEstimatedCost(r, ZERO);
             }
+        }
+    }
+
+    private boolean hasInconsistencies() throws CoreException {
+        Collection<Flaw> incs = new ArrayList<>();
+        Queue<Type> q = new ArrayDeque<>();
+        q.addAll(getTypes().values());
+        while (!q.isEmpty()) {
+            Type tp = q.poll();
+            if (tp instanceof SmartType) {
+                incs.addAll(((SmartType) tp).getFlaws());
+            }
+            q.addAll(tp.getTypes().values());
+        }
+
+        if (incs.isEmpty()) {
+            return false;
+        } else {
+            // we go back to root level..
+            while (!sat_core.rootLevel()) {
+                sat_core.pop();
+            }
+            // we initialize and expand the new flaws..
+            for (Flaw f : incs) {
+                f.init();
+                // we notify the listeners that a new flaw has arised..
+                for (SolverListener l : listeners) {
+                    l.newFlaw(f);
+                }
+                expandFlaw(f);
+            }
+            // we re-assume the current graph var to allow search within the current graph..
+            if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
+                throw new UnsolvableException();
+            }
+            return true;
+        }
+    }
+
+    private void newFlaw(final Flaw f) {
+        f.init(); // flaws' initialization requires being at root-level..
+        flaw_q.add(f);
+        // we notify the listeners that a new flaw has arised..
+        for (SolverListener l : listeners) {
+            l.newFlaw(f);
         }
     }
 
@@ -238,6 +381,31 @@ public class Solver extends Core implements Theory {
                 }
             }
         }
+    }
+
+    private Flaw select_flaw() {
+        assert flaws.stream().allMatch(flaw -> flaw.isExpanded() && sat_core.value(flaw.getPhi()) == True);
+        // this is the next flaw to be solved (i.e., the most expensive one)..
+        Flaw f_next = null;
+        Iterator<Flaw> f_it = flaws.iterator();
+        while (f_it.hasNext()) {
+            Flaw next = f_it.next();
+            if (next.resolvers.stream().anyMatch(res -> sat_core.value(res.rho) == True)) {
+                // we have either a trivial (i.e. has only one resolver) or an already solved flaw..
+                if (!trail.isEmpty()) {
+                    trail.peekLast().solved_flaws.add(next);
+                }
+                f_it.remove();
+            } else {
+                // the current flaw is not trivial nor already solved: let's see if it's better than the previous one..
+                if (f_next == null /* this is the first flaw we see.. */
+                        || f_next.structural && !next.structural /* we prefere non-structural flaws (i.e., inconsistencies) to structural ones.. */
+                        || f_next.structural == next.structural && f_next.getEstimatedCost().lt(next.getEstimatedCost()) /* this flaw is actually better than the previous one.. */) {
+                    f_next = next;
+                }
+            }
+        }
+        return f_next;
     }
 
     @Override

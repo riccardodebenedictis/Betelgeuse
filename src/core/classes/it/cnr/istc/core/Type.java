@@ -117,6 +117,11 @@ public class Type extends Scope {
     }
 
     @Override
+    public Map<String, Field> getFields() {
+        return Collections.unmodifiableMap(fields);
+    }
+
+    @Override
     public Method getMethod(String name, Type... pars) {
         Collection<Method> c_ms = methods.get(name);
         if (c_ms != null) {
@@ -150,6 +155,15 @@ public class Type extends Scope {
     }
 
     @Override
+    public Map<String, Collection<Method>> getMethods() {
+        Map<String, Collection<Method>> c_methods = new HashMap<>();
+        for (Map.Entry<String, Collection<Method>> ms : methods.entrySet()) {
+            c_methods.put(ms.getKey(), Collections.unmodifiableCollection(ms.getValue()));
+        }
+        return Collections.unmodifiableMap(c_methods);
+    }
+
+    @Override
     public Type getType(String name) {
         Type tp = types.get(name);
         if (tp != null) {
@@ -170,6 +184,11 @@ public class Type extends Scope {
     }
 
     @Override
+    public Map<String, Type> getTypes() {
+        return Collections.unmodifiableMap(types);
+    }
+
+    @Override
     public Predicate getPredicate(String name) {
         Predicate p = predicates.get(name);
         if (p != null) {
@@ -187,6 +206,11 @@ public class Type extends Scope {
             }
         }
         throw new NoClassDefFoundError(name);
+    }
+
+    @Override
+    public Map<String, Predicate> getPredicates() {
+        return Collections.unmodifiableMap(predicates);
     }
 
     public Item newInstance(IEnv env) throws CoreException {

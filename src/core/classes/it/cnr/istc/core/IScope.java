@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -38,7 +39,13 @@ public interface IScope {
 
     public Method getMethod(final String name, final Type... pars);
 
+    public Map<String, Collection<Method>> getMethods();
+
     public Type getType(final String name);
 
+    public Map<String, Type> getTypes();
+
     public Predicate getPredicate(final String name);
+
+    public Map<String, Predicate> getPredicates();
 }

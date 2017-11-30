@@ -381,6 +381,15 @@ public abstract class Core implements IScope, IEnv {
     }
 
     @Override
+    public Map<String, Collection<Method>> getMethods() {
+        Map<String, Collection<Method>> c_methods = new HashMap<>();
+        for (Map.Entry<String, Collection<Method>> ms : methods.entrySet()) {
+            c_methods.put(ms.getKey(), Collections.unmodifiableCollection(ms.getValue()));
+        }
+        return Collections.unmodifiableMap(c_methods);
+    }
+
+    @Override
     public Type getType(String name) {
         Type tp = types.get(name);
         if (tp != null) {
@@ -390,12 +399,22 @@ public abstract class Core implements IScope, IEnv {
     }
 
     @Override
+    public Map<String, Type> getTypes() {
+        return Collections.unmodifiableMap(types);
+    }
+
+    @Override
     public Predicate getPredicate(String name) {
         Predicate p = predicates.get(name);
         if (p != null) {
             return p;
         }
         throw new NoClassDefFoundError(name);
+    }
+
+    @Override
+    public Map<String, Predicate> getPredicates() {
+        return Collections.unmodifiableMap(predicates);
     }
 
     @Override
