@@ -51,7 +51,7 @@ public class SupportFlaw extends Flaw {
     }
 
     @Override
-    void compute_resolvers() throws UnsolvableException {
+    protected void compute_resolvers() throws UnsolvableException {
         assert slv.sat_core.value(getPhi()) != False;
         assert slv.sat_core.value(atom.sigma) != False;
 
@@ -142,7 +142,7 @@ public class SupportFlaw extends Flaw {
         return "φ" + getPhi() + (is_fact ? " fact σ" : " goal σ") + atom.sigma + " " + atom.type.name;
     }
 
-    private class ActivateFact extends Resolver {
+    public class ActivateFact extends Resolver {
 
         private final Atom atom;
 
@@ -164,7 +164,7 @@ public class SupportFlaw extends Flaw {
         }
     }
 
-    private class ActivateGoal extends Resolver {
+    public class ActivateGoal extends Resolver {
 
         private final Atom atom;
 

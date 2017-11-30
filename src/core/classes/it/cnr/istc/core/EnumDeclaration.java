@@ -43,9 +43,9 @@ class EnumDeclaration extends TypeDeclaration {
         }
 
         if (scp instanceof Core) {
-            ((Core) scp).types.put(et.name, et);
+            ((Core) scp).newTypes(et);
         } else {
-            ((Type) scp).types.put(et.name, et);
+            ((Type) scp).newTypes(et);
         }
     }
 

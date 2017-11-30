@@ -18,6 +18,7 @@ package it.cnr.istc.core;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,21 +38,29 @@ public class Type extends Scope {
     public static final String STRING = "string";
     public final String name;
     public final boolean primitive;
-    final Collection<Type> supertypes = new ArrayList<>();
-    final Collection<Constructor> constructors = new ArrayList<>();
-    final Map<String, Collection<Method>> methods = new HashMap<>();
-    final Map<String, Type> types = new HashMap<>();
-    final Map<String, Predicate> predicates = new HashMap<>();
+    private final Collection<Type> supertypes = new ArrayList<>();
+    private final Collection<Constructor> constructors = new ArrayList<>();
+    private final Map<String, Collection<Method>> methods = new HashMap<>();
+    private final Map<String, Type> types = new HashMap<>();
+    private final Map<String, Predicate> predicates = new HashMap<>();
     final Collection<Item> instances = new ArrayList<>();
 
-    public Type(Core core, IScope scp, final String name) {
+    public Type(final Core core, final IScope scp, final String name) {
         this(core, scp, name, false);
     }
 
-    Type(Core core, IScope scope, final String name, final boolean primitive) {
+    Type(final Core core, final IScope scope, final String name, final boolean primitive) {
         super(core, scope);
         this.name = name;
         this.primitive = primitive;
+    }
+
+    protected static void newSupertypes(final Type base, final Type... super_types) {
+        base.supertypes.addAll(Arrays.asList(super_types));
+    }
+
+    protected void newSupertypes(final Type... super_types) {
+        supertypes.addAll(Arrays.asList(super_types));
     }
 
     public Collection<Type> getSupertypes() {
@@ -75,10 +84,14 @@ public class Type extends Scope {
         return false;
     }
 
-    void newPredicate(final Predicate p) {
+    protected void newPredicate(final Predicate p) {
     }
 
-    public Constructor getConstructor(Type... pars) {
+    protected void addConstructor(final Constructor constructor) {
+        constructors.add(constructor);
+    }
+
+    public Constructor getConstructor(final Type... pars) {
         for (Constructor cstr : constructors) {
             if (cstr.arguments.size() == pars.length) {
                 boolean found = true;
@@ -97,14 +110,9 @@ public class Type extends Scope {
     }
 
     @Override
-    public Field getField(String name) {
-        Field f = fields.get(name);
-        if (f != null) {
-            return f;
-        }
-        // if not here, check any enclosing scope
+    public Field getField(final String name) {
         try {
-            return scope.getField(name);
+            return super.getField(name);
         } catch (NoSuchFieldError e0) {
             for (Type st : supertypes) {
                 try {
@@ -116,13 +124,20 @@ public class Type extends Scope {
         throw new NoSuchFieldError(name);
     }
 
-    @Override
-    public Map<String, Field> getFields() {
-        return Collections.unmodifiableMap(fields);
+    protected void newMethods(final Method... ms) {
+        for (Method m : ms) {
+            Collection<Method> c_ms = methods.get(m.name);
+            if (c_ms == null) {
+                c_ms = new ArrayList<>();
+                methods.put(m.name, c_ms);
+            }
+            assert !methods.get(m.name).contains(m);
+            c_ms.add(m);
+        }
     }
 
     @Override
-    public Method getMethod(String name, Type... pars) {
+    public Method getMethod(final String name, final Type... pars) {
         Collection<Method> c_ms = methods.get(name);
         if (c_ms != null) {
             for (Method mthd : c_ms) {
@@ -163,8 +178,15 @@ public class Type extends Scope {
         return Collections.unmodifiableMap(c_methods);
     }
 
+    protected final void newTypes(final Type... ts) {
+        for (Type t : ts) {
+            assert !types.containsKey(t.name);
+            types.put(t.name, t);
+        }
+    }
+
     @Override
-    public Type getType(String name) {
+    public Type getType(final String name) {
         Type tp = types.get(name);
         if (tp != null) {
             return tp;
@@ -188,8 +210,15 @@ public class Type extends Scope {
         return Collections.unmodifiableMap(types);
     }
 
+    protected final void newPredicates(final Predicate... ps) {
+        for (Predicate p : ps) {
+            assert !predicates.containsKey(p.name);
+            predicates.put(p.name, p);
+        }
+    }
+
     @Override
-    public Predicate getPredicate(String name) {
+    public Predicate getPredicate(final String name) {
         Predicate p = predicates.get(name);
         if (p != null) {
             return p;
@@ -213,7 +242,7 @@ public class Type extends Scope {
         return Collections.unmodifiableMap(predicates);
     }
 
-    public Item newInstance(IEnv env) throws CoreException {
+    public Item newInstance(final IEnv env) throws CoreException {
         Item i = new Item(core, env, this);
         Queue<Type> q = new ArrayDeque<>();
         q.add(this);
@@ -231,48 +260,48 @@ public class Type extends Scope {
 
     static class BoolType extends Type {
 
-        BoolType(Core core) {
+        BoolType(final Core core) {
             super(core, core, BOOL, true);
         }
 
         @Override
-        public Item newInstance(IEnv ctx) {
+        public Item newInstance(final IEnv ctx) {
             return core.newBool();
         }
     }
 
     static class IntType extends Type {
 
-        IntType(Core core) {
+        IntType(final Core core) {
             super(core, core, INT, true);
         }
 
         @Override
-        public Item newInstance(IEnv ctx) {
+        public Item newInstance(final IEnv ctx) {
             return core.newInt();
         }
     }
 
     static class RealType extends Type {
 
-        RealType(Core core) {
+        RealType(final Core core) {
             super(core, core, REAL, true);
         }
 
         @Override
-        public Item newInstance(IEnv ctx) {
+        public Item newInstance(final IEnv ctx) {
             return core.newReal();
         }
     }
 
     static class StringType extends Type {
 
-        StringType(Core core) {
+        StringType(final Core core) {
             super(core, core, STRING, true);
         }
 
         @Override
-        public Item newInstance(IEnv ctx) {
+        public Item newInstance(final IEnv ctx) {
             return core.newString();
         }
     }

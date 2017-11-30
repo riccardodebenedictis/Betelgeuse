@@ -29,7 +29,7 @@ public class Scope implements IScope {
 
     protected final Core core;
     protected final IScope scope;
-    final Map<String, Field> fields = new HashMap<>();
+    private final Map<String, Field> fields = new HashMap<>();
 
     Scope(final Core core, final IScope scp) {
         this.core = core;
@@ -44,6 +44,20 @@ public class Scope implements IScope {
     @Override
     public IScope getScope() {
         return scope;
+    }
+
+    protected static void newFields(final Scope csp, final Field... fs) {
+        for (Field f : fs) {
+            assert !csp.fields.containsKey(f.name);
+            csp.fields.put(f.name, f);
+        }
+    }
+
+    protected final void newFields(final Field... fs) {
+        for (Field f : fs) {
+            assert !fields.containsKey(f.name);
+            fields.put(f.name, f);
+        }
     }
 
     @Override

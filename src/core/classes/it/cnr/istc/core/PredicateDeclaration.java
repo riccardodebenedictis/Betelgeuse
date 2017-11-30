@@ -52,24 +52,24 @@ class PredicateDeclaration {
 
         Predicate p = new Predicate(scp.getCore(), scp, name, args, statements);
 
-        for (List<String> pls : predicate_list) {
+        p.newSupertypes(predicate_list.stream().map(ids -> {
             IScope sc = scp;
-            for (String id : pls) {
+            for (String id : ids) {
                 sc = sc.getType(id);
             }
-            p.supertypes.add((Predicate) sc);
-        }
+            return (Predicate) sc;
+        }).toArray(Predicate[]::new));
 
         if (scp instanceof Core) {
-            ((Core) scp).predicates.put(name, p);
+            ((Core) scp).newPredicates(p);
         } else {
-            ((Type) scp).predicates.put(name, p);
+            ((Type) scp).newPredicates(p);
             Queue<Type> q = new ArrayDeque<>();
             q.add((Type) scp);
             while (!q.isEmpty()) {
                 Type tp = q.poll();
                 tp.newPredicate(p);
-                q.addAll(tp.supertypes);
+                q.addAll(tp.getSupertypes());
             }
         }
     }

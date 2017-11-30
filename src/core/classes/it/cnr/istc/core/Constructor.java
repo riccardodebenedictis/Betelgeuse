@@ -40,10 +40,8 @@ public class Constructor extends Scope {
     Constructor(final Core core, final IScope scope, final List<Field> args, final List<Statement> statements, final List<Pair<String, List<Expression>>> init_list) {
         super(core, scope);
         this.arguments = args;
-        fields.put(THIS, new Field(((Type) scope), THIS));
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
+        newFields(new Field(((Type) scope), THIS, null, true));
+        newFields(args.toArray(new Field[args.size()]));
         this.statements = statements;
         this.init_list = init_list;
     }
@@ -62,7 +60,7 @@ public class Constructor extends Scope {
 
         // we initialize the supertypes..
         int il_idx = 0;
-        for (Type st : ((Type) scope).supertypes) {
+        for (Type st : ((Type) scope).getSupertypes()) {
             if (il_idx < init_list.size() && init_list.get(il_idx).first.equals(st.name)) {
                 // explicit supertype constructor invocation..
                 List<Item> c_args = new ArrayList<>(arguments.size());

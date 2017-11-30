@@ -39,11 +39,9 @@ public class Predicate extends Type {
         super(core, scp, name);
         this.arguments = args;
         if (scp instanceof Type) {
-            fields.put(THIS, new Field((Type) scp, THIS, null, true));
+            newFields(new Field((Type) scp, THIS, null, true));
         }
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
+        newFields(args.toArray(new Field[args.size()]));
         this.statements = statements;
     }
 
@@ -55,13 +53,13 @@ public class Predicate extends Type {
         while (!q.isEmpty()) {
             Type pred = q.poll();
             pred.instances.add(atm);
-            q.addAll(pred.supertypes);
+            q.addAll(pred.getSupertypes());
         }
         return atm;
     }
 
     public void applyRule(final Atom atom) throws CoreException {
-        for (Type st : supertypes) {
+        for (Type st : getSupertypes()) {
             ((Predicate) st).applyRule(atom);
         }
         Env c_env = new Env(core, atom);

@@ -122,7 +122,7 @@ public abstract class Flaw {
         }
     }
 
-    abstract void compute_resolvers() throws CoreException;
+    protected abstract void compute_resolvers() throws CoreException;
 
     protected void add_resolver(Resolver r) {
         resolvers.add(r);

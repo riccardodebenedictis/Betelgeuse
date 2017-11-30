@@ -37,7 +37,7 @@ public class VarFlaw extends Flaw {
     }
 
     @Override
-    void compute_resolvers() {
+    protected void compute_resolvers() {
         Set<IVarVal> vals = slv.var_theory.value(var_item.var);
         for (IVarVal val : vals) {
             add_resolver(new ChooseVal(slv, new Rational(1, vals.size()), this, val));

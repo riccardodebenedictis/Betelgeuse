@@ -16,10 +16,19 @@
  */
 package it.cnr.istc.solver;
 
-import it.cnr.istc.core.Core;
+import it.cnr.istc.core.Atom;
+import it.cnr.istc.core.Field;
 import it.cnr.istc.core.IScope;
+import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Type;
+import it.cnr.istc.smt.SatValueListener;
+import it.cnr.istc.smt.lra.LRAValueListener;
+import it.cnr.istc.smt.lra.Rational;
+import it.cnr.istc.smt.var.VarValueListener;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Queue;
 
 /**
  *
@@ -27,8 +36,8 @@ import java.util.Collection;
  */
 public abstract class SmartType extends Type {
 
-    public SmartType(final Core core, final IScope scope, final String name) {
-        super(core, scope, name);
+    public SmartType(final Solver slv, final IScope scope, final String name) {
+        super(slv, scope, name);
     }
 
     public abstract Collection<Flaw> getFlaws();
@@ -37,5 +46,39 @@ public abstract class SmartType extends Type {
     }
 
     void newGoal(final SupportFlaw f) {
+    }
+
+    protected static abstract class AtomListener implements SatValueListener, LRAValueListener, VarValueListener {
+
+        protected final Atom atom;
+
+        protected AtomListener(Atom atom) {
+            this.atom = atom;
+            Queue<Type> q = new ArrayDeque<>();
+            q.add((Type) atom.type.getScope());
+            while (!q.isEmpty()) {
+                Type tp = q.poll();
+                for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
+                    if (!field.getValue().synthetic) {
+                        switch (field.getValue().name) {
+                            case Type.BOOL:
+                                atom.getCore().sat_core.listen(((Item.BoolItem) atom.get(field.getKey())).l.v, this);
+                                break;
+                            case Type.INT:
+                            case Type.REAL:
+                                for (Map.Entry<Integer, Rational> term : ((Item.ArithItem) atom.get(field.getKey())).l.vars.entrySet()) {
+                                    atom.getCore().la_theory.listen(term.getKey(), this);
+                                }
+                                break;
+                            case Type.STRING:
+                                break;
+                            default:
+                                atom.getCore().var_theory.listen(((Item.VarItem) atom.get(field.getKey())).var, this);
+                        }
+                    }
+                }
+                q.addAll(tp.getSupertypes());
+            }
+        }
     }
 }

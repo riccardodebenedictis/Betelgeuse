@@ -40,13 +40,9 @@ class FieldDeclaration {
         }
         Type tp = (Type) sc;
         if (scp instanceof Core) {
-            for (VariableDeclaration dec : declarations) {
-                ((Core) scp).fields.put(dec.name, new Field(tp, dec.name, dec.expression, false));
-            }
+            ((Core) scp).newFields(declarations.stream().map(dec -> new Field(tp, dec.name, dec.expression, false)).toArray(Field[]::new));
         } else {
-            for (VariableDeclaration dec : declarations) {
-                ((Scope) scp).fields.put(dec.name, new Field(tp, dec.name, dec.expression, false));
-            }
+            ((Scope) scp).newFields(declarations.stream().map(dec -> new Field(tp, dec.name, dec.expression, false)).toArray(Field[]::new));
         }
     }
 }

@@ -129,7 +129,7 @@ class FormulaStatement implements Statement {
                     }
                 }
             }
-            for (Type st : pred.supertypes) {
+            for (Type st : pred.getSupertypes()) {
                 q.add((Predicate) st);
             }
         }
@@ -140,8 +140,10 @@ class FormulaStatement implements Statement {
             scp.getCore().newGoal(a);
         }
 
-        if (scp instanceof Core) {
-            ((Core) scp).items.put(formula_name, a);
+        if (env instanceof Core) {
+            ((Core) env).items.put(formula_name, a);
+        } else {
+            ((Env) env).items.put(formula_name, a);
         }
     }
 

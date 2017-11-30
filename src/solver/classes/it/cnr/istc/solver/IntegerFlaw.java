@@ -37,7 +37,7 @@ public class IntegerFlaw extends Flaw {
     }
 
     @Override
-    void compute_resolvers() {
+    protected void compute_resolvers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

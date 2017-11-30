@@ -37,9 +37,9 @@ class TypedefDeclaration extends TypeDeclaration {
         // A new typedef type has been declared..
         TypedefType tt = new TypedefType(scp.getCore(), scp, name, scp.getType(primitive_type), xpr);
         if (scp instanceof Core) {
-            ((Core) scp).types.put(name, tt);
+            ((Core) scp).newTypes(tt);
         } else if (scp instanceof Type) {
-            ((Type) scp).types.put(name, tt);
+            ((Type) scp).newTypes(tt);
         }
     }
 }

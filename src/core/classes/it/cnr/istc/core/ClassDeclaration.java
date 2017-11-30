@@ -46,9 +46,9 @@ class ClassDeclaration extends TypeDeclaration {
         // A new type has been declared..
         Type tp = new Type(scp.getCore(), scp, name);
         if (scp instanceof Core) {
-            ((Core) scp).types.put(tp.name, tp);
+            ((Core) scp).newTypes(tp);
         } else if (scp instanceof Type) {
-            ((Type) scp).types.put(tp.name, tp);
+            ((Type) scp).newTypes(tp);
         }
 
         for (TypeDeclaration t : types) {
@@ -59,20 +59,21 @@ class ClassDeclaration extends TypeDeclaration {
     @Override
     void refine(final IScope scp) {
         Type tp = scp.getType(name);
-        for (List<String> base_class : base_classes) {
+
+        tp.newSupertypes(base_classes.stream().map(ids -> {
             IScope sc = scp;
-            for (String id : base_class) {
+            for (String id : ids) {
                 sc = sc.getType(id);
             }
-            tp.supertypes.add((Type) sc);
-        }
+            return (Type) sc;
+        }).toArray(Type[]::new));
 
         for (FieldDeclaration f : fields) {
             f.refine(tp);
         }
 
         if (constructors.isEmpty()) {
-            tp.constructors.add(new Constructor(scp.getCore(), tp));
+            tp.addConstructor(new Constructor(scp.getCore(), tp));
         } else {
             for (ConstructorDeclaration cnstr : constructors) {
                 cnstr.refine(tp);

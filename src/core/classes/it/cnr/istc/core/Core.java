@@ -38,6 +38,7 @@ import it.cnr.istc.smt.var.VarTheory;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,22 +55,16 @@ public abstract class Core implements IScope, IEnv {
     public final SatCore sat_core = new SatCore();
     public final LRATheory la_theory = new LRATheory(sat_core);
     public final VarTheory var_theory = new VarTheory(sat_core);
-    final Map<String, Field> fields = new HashMap<>();
-    final Map<String, Collection<Method>> methods = new HashMap<>();
-    final Map<String, Type> types = new HashMap<>();
-    final Map<String, Predicate> predicates = new HashMap<>();
+    private final Map<String, Field> fields = new HashMap<>();
+    private final Map<String, Collection<Method>> methods = new HashMap<>();
+    private final Map<String, Type> types = new HashMap<>();
+    private final Map<String, Predicate> predicates = new HashMap<>();
     final Map<String, Item> items = new HashMap<>();
     private int tmp_var = -1;
     private int ctr_var = TRUE_var;
 
     public Core() {
         newTypes(new Type.BoolType(this), new Type.IntType(this), new Type.RealType(this), new Type.StringType(this));
-    }
-
-    protected final void newTypes(final Type... ts) {
-        for (Type t : ts) {
-            types.put(t.name, t);
-        }
     }
 
     public void read(final String script) throws CoreException {
@@ -344,6 +339,13 @@ public abstract class Core implements IScope, IEnv {
         return null;
     }
 
+    protected final void newFields(final Field... fs) {
+        for (Field f : fs) {
+            assert !fields.containsKey(f.name);
+            fields.put(f.name, f);
+        }
+    }
+
     @Override
     public Field getField(String name) {
         Field f = fields.get(name);
@@ -356,6 +358,18 @@ public abstract class Core implements IScope, IEnv {
     @Override
     public Map<String, Field> getFields() {
         return Collections.unmodifiableMap(fields);
+    }
+
+    protected void newMethods(final Method... ms) {
+        for (Method m : ms) {
+            Collection<Method> c_ms = methods.get(m.name);
+            if (c_ms == null) {
+                c_ms = new ArrayList<>();
+                methods.put(m.name, c_ms);
+            }
+            assert !methods.get(m.name).contains(m);
+            c_ms.add(m);
+        }
     }
 
     @Override
@@ -389,6 +403,13 @@ public abstract class Core implements IScope, IEnv {
         return Collections.unmodifiableMap(c_methods);
     }
 
+    protected final void newTypes(final Type... ts) {
+        for (Type t : ts) {
+            assert !types.containsKey(t.name);
+            types.put(t.name, t);
+        }
+    }
+
     @Override
     public Type getType(String name) {
         Type tp = types.get(name);
@@ -401,6 +422,13 @@ public abstract class Core implements IScope, IEnv {
     @Override
     public Map<String, Type> getTypes() {
         return Collections.unmodifiableMap(types);
+    }
+
+    protected final void newPredicates(final Predicate... ps) {
+        for (Predicate p : ps) {
+            assert !predicates.containsKey(p.name);
+            predicates.put(p.name, p);
+        }
     }
 
     @Override

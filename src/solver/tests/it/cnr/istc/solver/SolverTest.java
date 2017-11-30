@@ -19,6 +19,7 @@ package it.cnr.istc.solver;
 import it.cnr.istc.smt.lra.InfRational;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Item;
+import it.cnr.istc.core.UnsolvableException;
 import java.io.File;
 import java.io.FileReader;
 import org.junit.Assert;
@@ -55,7 +56,7 @@ public class SolverTest {
         s.read(new FileReader(new File(Solver.class.getResource("test_1.rddl").toURI())));
     }
 
-    @Test
+    @Test(expected = UnsolvableException.class)
     public void testSolver2() throws Exception {
         Solver s = new Solver();
         s.read(new FileReader(new File(Solver.class.getResource("test_2.rddl").toURI())));

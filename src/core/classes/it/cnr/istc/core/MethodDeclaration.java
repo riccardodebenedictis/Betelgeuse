@@ -18,7 +18,6 @@ package it.cnr.istc.core;
 
 import it.cnr.istc.common.Pair;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,19 +60,9 @@ class MethodDeclaration {
         Method m = new Method(scp.getCore(), scp, name, rt, args, statements);
 
         if (scp instanceof Core) {
-            Collection<Method> ms = ((Core) scp).methods.get(name);
-            if (ms == null) {
-                ms = new ArrayList<>();
-                ((Core) scp).methods.put(name, ms);
-            }
-            ms.add(m);
+            ((Core) scp).newMethods(m);
         } else {
-            Collection<Method> ms = ((Type) scp).methods.get(name);
-            if (ms == null) {
-                ms = new ArrayList<>();
-                ((Type) scp).methods.put(name, ms);
-            }
-            ms.add(m);
+            ((Type) scp).newMethods(m);
         }
     }
 }

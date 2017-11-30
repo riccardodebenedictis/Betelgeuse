@@ -40,14 +40,12 @@ public class Method extends Scope {
         this.name = name;
         this.arguments = args;
         if (return_type != null) {
-            fields.put(RETURN, new Field(return_type, RETURN));
+            newFields(new Field(return_type, RETURN, null, true));
         }
         if (scp instanceof Type) {
-            fields.put(THIS, new Field(((Type) scp), THIS, null, true));
+            newFields(new Field(((Type) scp), THIS, null, true));
         }
-        for (Field arg : args) {
-            fields.put(arg.name, arg);
-        }
+        newFields(args.toArray(new Field[args.size()]));
         this.statements = statements;
         this.return_type = return_type;
     }

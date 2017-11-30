@@ -39,7 +39,7 @@ public class DisjunctionFlaw extends Flaw {
     }
 
     @Override
-    void compute_resolvers() {
+    protected void compute_resolvers() {
         for (Conjunction cnj : dsj.getConjunctions()) {
             add_resolver(new ChooseConjunction(slv, this, cnj));
         }
