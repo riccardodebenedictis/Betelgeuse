@@ -88,7 +88,7 @@ public abstract class Core implements IScope, IEnv {
         }
     }
 
-    public void read(final Reader[] readers) throws CoreException {
+    public void read(final Reader... readers) throws CoreException {
         try {
             CompilationUnit[] cus = new CompilationUnit[readers.length];
             for (int i = 0; i < readers.length; i++) {

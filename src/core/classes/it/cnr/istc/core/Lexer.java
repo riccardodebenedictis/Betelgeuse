@@ -494,6 +494,35 @@ class Lexer {
                         return finishId(str);
                 }
             }
+            case 's': {
+                StringBuilder str = new StringBuilder();
+                str.append((char) ch);
+                if ((ch = nextChar()) != 't') {
+                    return finishId(str);
+                }
+                str.append((char) ch);
+                if ((ch = nextChar()) != 'r') {
+                    return finishId(str);
+                }
+                str.append((char) ch);
+                if ((ch = nextChar()) != 'i') {
+                    return finishId(str);
+                }
+                str.append((char) ch);
+                if ((ch = nextChar()) != 'n') {
+                    return finishId(str);
+                }
+                str.append((char) ch);
+                if ((ch = nextChar()) != 'g') {
+                    return finishId(str);
+                }
+                str.append((char) ch);
+                if ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
+                    return finishId(str);
+                } else {
+                    return mkToken(STRING);
+                }
+            }
             case 't': {
                 StringBuilder str = new StringBuilder();
                 str.append((char) ch);
@@ -616,6 +645,7 @@ class Lexer {
                         case '\t':
                         case '\r':
                         case '\n':
+                            break;
                         case -1:
                             return mkToken(EOF);
                         default:

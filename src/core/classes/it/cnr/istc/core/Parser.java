@@ -388,19 +388,19 @@ class Parser {
                 List<String> p_ids = new ArrayList<>();
                 switch (tk.sym) {
                     case BOOL:
-                        p_ids.add("bool");
+                        p_ids.add(Type.BOOL);
                         tk = next();
                         break;
                     case INT:
-                        p_ids.add("int");
+                        p_ids.add(Type.INT);
                         tk = next();
                         break;
                     case REAL:
-                        p_ids.add("real");
+                        p_ids.add(Type.REAL);
                         tk = next();
                         break;
                     case STRING:
-                        p_ids.add("string");
+                        p_ids.add(Type.STRING);
                         tk = next();
                         break;
                     case ID:

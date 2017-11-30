@@ -34,6 +34,10 @@ import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.Theory;
 import it.cnr.istc.solver.types.ReusableResource;
 import it.cnr.istc.solver.types.StateVariable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.net.URISyntaxException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,8 +64,13 @@ public class Solver extends Core implements Theory {
     private final Deque<Layer> trail = new ArrayDeque<>(); // the list of resolvers in chronological order..
     private final Collection<SolverListener> listeners = new ArrayList<>();
 
-    public Solver() {
-        newTypes(new StateVariable(this), new ReusableResource(this));
+    public void init() {
+        try {
+            read(new FileReader(new File(Solver.class.getResource("init.rddl").toURI())));
+            newTypes(new StateVariable(this), new ReusableResource(this));
+        } catch (CoreException | FileNotFoundException | URISyntaxException ex) {
+            throw new AssertionError();
+        }
     }
 
     @Override
