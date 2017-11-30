@@ -30,7 +30,7 @@ class NegationExpression implements Expression {
 
     @Override
     public Item evaluate(IScope scp, IEnv env) throws CoreException {
-        return scp.getCore().minus((Item.ArithItem) xpr.evaluate(scp, env));
+        return scp.getCore().negate((Item.BoolItem) xpr.evaluate(scp, env));
     }
 
     @Override

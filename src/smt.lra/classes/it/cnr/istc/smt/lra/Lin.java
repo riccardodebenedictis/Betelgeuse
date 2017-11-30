@@ -273,7 +273,7 @@ public class Lin {
             str.append(" + ").append(known_term.toString());
         }
         if (known_term.isNegative()) {
-            str.append(" - ").append(known_term.toString());
+            str.append(" - ").append(known_term.minus().toString());
         }
         return str.toString();
     }

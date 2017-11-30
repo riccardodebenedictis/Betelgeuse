@@ -19,6 +19,8 @@ package it.cnr.istc.solver;
 import it.cnr.istc.smt.lra.InfRational;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Item;
+import java.io.File;
+import java.io.FileReader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,6 +40,24 @@ public class SolverTest {
         Assert.assertTrue(a_val.eq(5));
 
         s.read("predicate P(int x) {}");
-        s.read("goal x = new P();");
+        s.read("fact x = new P();");
+    }
+
+    @Test
+    public void testSolver0() throws Exception {
+        Solver s = new Solver();
+        s.read(new FileReader(new File(Solver.class.getResource("test_0.rddl").toURI())));
+    }
+
+    @Test
+    public void testSolver1() throws Exception {
+        Solver s = new Solver();
+        s.read(new FileReader(new File(Solver.class.getResource("test_1.rddl").toURI())));
+    }
+
+    @Test
+    public void testSolver2() throws Exception {
+        Solver s = new Solver();
+        s.read(new FileReader(new File(Solver.class.getResource("test_2.rddl").toURI())));
     }
 }

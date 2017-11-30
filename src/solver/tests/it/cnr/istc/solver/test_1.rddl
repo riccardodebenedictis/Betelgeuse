@@ -1,0 +1,7 @@
+// we create some boolean variable..
+bool b0;
+bool b1;
+
+// we add some constraints..
+b0 | b1;
+!b1;

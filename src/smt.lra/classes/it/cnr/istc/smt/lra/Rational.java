@@ -315,7 +315,7 @@ public class Rational implements Comparable<Rational> {
 
     public Rational divide(final Rational rhs) {
         Rational rec = new Rational();
-        if (num >= 0) {
+        if (rhs.num >= 0) {
             rec.num = rhs.den;
             rec.den = rhs.num;
         } else {

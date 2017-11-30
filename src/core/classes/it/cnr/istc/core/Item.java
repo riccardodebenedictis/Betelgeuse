@@ -128,6 +128,11 @@ public class Item extends Env implements IVarVal {
                 return false;
             }
         }
+
+        @Override
+        public String toString() {
+            return l + ": " + core.sat_core.value(l);
+        }
     }
 
     public static class ArithItem extends Item {
@@ -159,6 +164,11 @@ public class Item extends Env implements IVarVal {
             } else {
                 return false;
             }
+        }
+
+        @Override
+        public String toString() {
+            return l + ": " + core.la_theory.value(l) + " [" + core.la_theory.lb(l) + ", " + core.la_theory.ub(l) + "]";
         }
     }
 
@@ -199,6 +209,11 @@ public class Item extends Env implements IVarVal {
             } else {
                 return false;
             }
+        }
+
+        @Override
+        public String toString() {
+            return val;
         }
     }
 
