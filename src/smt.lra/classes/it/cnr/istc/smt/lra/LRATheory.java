@@ -88,10 +88,10 @@ public class LRATheory implements Theory {
 
     public int newLt(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
-            Row row = tableau.get(v);
+        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+            Row row = tableau.get(term.getKey());
             if (row != null) {
-                xpr.add(row.l.times(xpr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
             }
         }
 
@@ -120,10 +120,10 @@ public class LRATheory implements Theory {
 
     public int newLEq(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
-            Row row = tableau.get(v);
+        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+            Row row = tableau.get(term.getKey());
             if (row != null) {
-                xpr.add(row.l.times(xpr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
             }
         }
 
@@ -156,10 +156,10 @@ public class LRATheory implements Theory {
 
     public int newGEq(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
-            Row row = tableau.get(v);
+        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+            Row row = tableau.get(term.getKey());
             if (row != null) {
-                xpr.add(row.l.times(xpr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
             }
         }
 
@@ -188,10 +188,10 @@ public class LRATheory implements Theory {
 
     public int newGt(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Integer v : new ArrayList<>(xpr.vars.keySet())) {
-            Row row = tableau.get(v);
+        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+            Row row = tableau.get(term.getKey());
             if (row != null) {
-                xpr.add(row.l.times(xpr.vars.remove(v)));
+                xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
             }
         }
 
@@ -513,12 +513,12 @@ public class LRATheory implements Theory {
         xpr.vars.put(x_i, ONE.divide(c));
 
         for (Row r : new ArrayList<>(t_watches.get(x_j))) {
-            for (Integer v : r.l.vars.keySet()) {
-                t_watches.get(v).remove(r);
+            for (Map.Entry<Integer, Rational> term : r.l.vars.entrySet()) {
+                t_watches.get(term.getKey()).remove(r);
             }
             r.l.add(xpr.times(r.l.vars.remove(x_j)));
-            for (Integer v : r.l.vars.keySet()) {
-                t_watches.get(v).add(r);
+            for (Map.Entry<Integer, Rational> term : r.l.vars.entrySet()) {
+                t_watches.get(term.getKey()).add(r);
             }
         }
 
