@@ -119,8 +119,9 @@ public abstract class Flaw {
             }
         } else {
             // we need to take a decision for solving this flaw..
-            if (!slv.sat_core.newClause(new Lit(phi, false), new Lit(exclusive ? slv.sat_core.newExctOne(resolvers.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new)) : slv.sat_core.newDisj(resolvers.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new)))));
-            throw new UnsolvableException();
+            if (!slv.sat_core.newClause(new Lit(phi, false), new Lit(exclusive ? slv.sat_core.newExctOne(resolvers.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new)) : slv.sat_core.newDisj(resolvers.stream().map(res -> new Lit(res.rho)).toArray(Lit[]::new))))) {
+                throw new UnsolvableException();
+            }
         }
     }
 

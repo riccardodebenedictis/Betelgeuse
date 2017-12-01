@@ -24,6 +24,7 @@ public interface SolverListener {
 
     default void newFlaw(final Flaw f) {
         f.slv.sat_core.listen(f.getPhi(), (int v) -> flawStateChanged(f));
+        flawCreated(f);
     }
 
     void flawCreated(final Flaw f);
@@ -34,6 +35,7 @@ public interface SolverListener {
 
     default void newResolver(final Resolver r) {
         r.slv.sat_core.listen(r.rho, (int v) -> resolverStateChanged(r));
+        resolverCreated(r);
     }
 
     void resolverCreated(final Resolver r);

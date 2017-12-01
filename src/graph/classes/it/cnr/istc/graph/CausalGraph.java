@@ -313,8 +313,7 @@ public class CausalGraph extends Display implements SolverListener {
     @Override
     public void resolverCostChanged(Resolver r) {
         synchronized (m_vis) {
-            assert !resolvers.containsKey(r) : "the resolver already exists..";
-            assert flaws.containsKey(r.getEffect()) : "the resolver's solved flaw does not exist..";
+            assert resolvers.containsKey(r) : "the resolver does not yet exist..";
             Node resolver_node = resolvers.get(r);
             Rational est_cst = r.getEstimatedCost();
             resolver_node.set(NODE_COST, -(double) est_cst.num / est_cst.den);
