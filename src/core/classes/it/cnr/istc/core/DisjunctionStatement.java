@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class DisjunctionStatement implements Statement {
+public class DisjunctionStatement implements Statement {
 
     private final List<Pair<List<Statement>, Expression>> disjunctions;
 
-    DisjunctionStatement(final List<Pair<List<Statement>, Expression>> disjs) {
+    public DisjunctionStatement(final List<Pair<List<Statement>, Expression>> disjs) {
         this.disjunctions = disjs;
     }
 

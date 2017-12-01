@@ -73,7 +73,7 @@ class ClassDeclaration extends TypeDeclaration {
         }
 
         if (constructors.isEmpty()) {
-            tp.addConstructor(new Constructor(scp.getCore(), tp));
+            tp.newConstructors(new Constructor(scp.getCore(), tp));
         } else {
             for (ConstructorDeclaration cnstr : constructors) {
                 cnstr.refine(tp);

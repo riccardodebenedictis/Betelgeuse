@@ -22,6 +22,7 @@ import it.cnr.istc.core.UnsolvableException;
 import static it.cnr.istc.smt.LBool.False;
 import it.cnr.istc.smt.Lit;
 import static it.cnr.istc.smt.SatCore.TRUE_var;
+import static it.cnr.istc.smt.lra.Rational.POSITIVE_INFINITY;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -136,7 +137,7 @@ public abstract class Flaw {
     }
 
     public Rational getEstimatedCost() {
-        return getBestResolver().getEstimatedCost();
+        return expanded ? getBestResolver().getEstimatedCost() : POSITIVE_INFINITY;
     }
 
     /**

@@ -17,6 +17,7 @@
 package it.cnr.istc.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ConjunctionExpression implements Expression {
+public class ConjunctionExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    ConjunctionExpression(final List<Expression> xprs) {
+    public ConjunctionExpression(final Expression... xprs) {
+        this(Arrays.asList(xprs));
+    }
+
+    public ConjunctionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

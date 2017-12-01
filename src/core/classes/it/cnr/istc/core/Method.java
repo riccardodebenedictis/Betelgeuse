@@ -35,7 +35,7 @@ public class Method extends Scope {
         this(core, scope, name, null, Arrays.asList(args), Collections.emptyList());
     }
 
-    Method(final Core core, final IScope scp, final String name, final Type return_type, final List<Field> args, final List<Statement> statements) {
+    public Method(final Core core, final IScope scp, final String name, final Type return_type, final List<Field> args, final List<Statement> statements) {
         super(core, scp);
         this.name = name;
         this.arguments = args;

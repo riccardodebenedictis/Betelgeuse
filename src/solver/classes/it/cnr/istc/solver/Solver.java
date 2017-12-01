@@ -73,7 +73,7 @@ public class Solver extends Core implements Theory {
             read(new FileReader(new File(Solver.class.getResource("init.rddl").toURI())));
             newTypes(new StateVariable(this), new ReusableResource(this));
         } catch (CoreException | FileNotFoundException | URISyntaxException ex) {
-            throw new AssertionError();
+            throw new AssertionError("something went wrong..", ex);
         }
     }
 

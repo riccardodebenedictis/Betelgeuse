@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Stream;
 
 /**
  *
@@ -56,10 +57,12 @@ public class Type extends Scope {
     }
 
     protected static void newSupertypes(final Type base, final Type... super_types) {
+        assert Stream.of(super_types).noneMatch(st -> base.supertypes.contains(st));
         base.supertypes.addAll(Arrays.asList(super_types));
     }
 
     protected void newSupertypes(final Type... super_types) {
+        assert Stream.of(super_types).noneMatch(st -> supertypes.contains(st));
         supertypes.addAll(Arrays.asList(super_types));
     }
 
@@ -87,8 +90,11 @@ public class Type extends Scope {
     protected void newPredicate(final Predicate p) {
     }
 
-    protected void addConstructor(final Constructor constructor) {
-        constructors.add(constructor);
+    protected final void newConstructors(final Constructor... cnstrctrs) {
+        for (Constructor cnstrctr : cnstrctrs) {
+            assert !constructors.contains(cnstrctr);
+            constructors.add(cnstrctr);
+        }
     }
 
     public Constructor getConstructor(final Type... pars) {

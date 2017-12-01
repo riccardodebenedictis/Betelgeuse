@@ -20,11 +20,11 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class MinusExpression implements Expression {
+public class MinusExpression implements Expression {
 
     private final Expression xpr;
 
-    MinusExpression(final Expression xpr) {
+    public MinusExpression(final Expression xpr) {
         this.xpr = xpr;
     }
 

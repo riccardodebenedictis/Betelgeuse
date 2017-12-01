@@ -19,6 +19,7 @@ package it.cnr.istc.solver.types;
 import it.cnr.istc.common.CombinationGenerator;
 import it.cnr.istc.core.Atom;
 import it.cnr.istc.core.AtomListener;
+import it.cnr.istc.core.Constructor;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Field;
 import static it.cnr.istc.core.IScope.TAU;
@@ -26,6 +27,7 @@ import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Predicate;
 import it.cnr.istc.core.Type;
 import static it.cnr.istc.smt.LBool.True;
+import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.InfRational;
 import it.cnr.istc.smt.lra.Rational;
 import it.cnr.istc.smt.var.IVarVal;
@@ -57,6 +59,7 @@ public class StateVariable extends SmartType {
 
     public StateVariable(final Solver slv) {
         super(slv, slv, STATE_VARIABLE);
+        newConstructors(new Constructor(core, this));
     }
 
     @Override
@@ -233,7 +236,7 @@ public class StateVariable extends SmartType {
                     Set<IVarVal> vals = slv.value((Item.VarItem) a0_tau);
                     if (vals.size() > 1) {
                         for (IVarVal val : vals) {
-                            add_resolver(new DisplaceResolver(slv, slv.var_theory.allows(((Item.VarItem) a0_tau).var, val), this, atms[0], a0_tau, (Item) val));
+                            add_resolver(new DisplaceResolver(slv, this, atms[0], (Item.VarItem) a0_tau, (Item) val));
                         }
                     }
                 }
@@ -242,7 +245,7 @@ public class StateVariable extends SmartType {
                     Set<IVarVal> vals = slv.value((Item.VarItem) a1_tau);
                     if (vals.size() > 1) {
                         for (IVarVal val : vals) {
-                            add_resolver(new DisplaceResolver(slv, slv.var_theory.allows(((Item.VarItem) a1_tau).var, val), this, atms[1], a1_tau, (Item) val));
+                            add_resolver(new DisplaceResolver(slv, this, atms[1], (Item.VarItem) a1_tau, (Item) val));
                         }
                     }
                 }
@@ -251,7 +254,7 @@ public class StateVariable extends SmartType {
 
         @Override
         public String getLabel() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return "φ" + getPhi() + " sv-flaw";
         }
     }
 
@@ -272,18 +275,18 @@ public class StateVariable extends SmartType {
 
         @Override
         public String getLabel() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return "ρ" + rho + " σ" + before_atm.sigma + " <= σ" + after_atm.sigma;
         }
     }
 
     private static class DisplaceResolver extends Resolver {
 
         private final Atom atom;
-        private final Item tau;
+        private final Item.VarItem tau;
         private final Item sv;
 
-        private DisplaceResolver(final Solver slv, final int rho, final SVFlaw effect, final Atom atom, final Item tau, final Item sv) {
-            super(slv, rho, new Rational(), effect);
+        private DisplaceResolver(final Solver slv, final SVFlaw effect, final Atom atom, final Item.VarItem tau, final Item sv) {
+            super(slv, new Rational(), effect);
             this.atom = atom;
             this.tau = tau;
             this.sv = sv;
@@ -291,12 +294,12 @@ public class StateVariable extends SmartType {
 
         @Override
         protected void expand() throws CoreException {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(slv.var_theory.allows(tau.var, sv), false)));
         }
 
         @Override
         public String getLabel() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return "ρ" + rho + " displ (τ" + tau.var + ") != " + sv;
         }
     }
 }

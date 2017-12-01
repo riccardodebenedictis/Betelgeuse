@@ -17,6 +17,7 @@
 package it.cnr.istc.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class SubtractionExpression implements Expression {
+public class SubtractionExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    SubtractionExpression(final List<Expression> xprs) {
+    public SubtractionExpression(final Expression... xprs) {
+        this(Arrays.asList(xprs));
+    }
+
+    public SubtractionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

@@ -46,6 +46,6 @@ class ConstructorDeclaration {
             args.add(new Field((Type) sc, par.second));
         }
 
-        ((Type) scp).addConstructor(new Constructor(scp.getCore(), scp, args, statements, init_list));
+        ((Type) scp).newConstructors(new Constructor(scp.getCore(), scp, args, statements, init_list));
     }
 }

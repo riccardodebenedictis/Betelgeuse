@@ -22,11 +22,11 @@ import it.cnr.istc.smt.lra.Rational;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class RealLiteralExpression implements Expression {
+public class RealLiteralExpression implements Expression {
 
     private final Rational val;
 
-    RealLiteralExpression(final Rational val) {
+    public RealLiteralExpression(final Rational val) {
         this.val = val;
     }
 

@@ -16,19 +16,33 @@
  */
 package it.cnr.istc.solver.types;
 
+import it.cnr.istc.common.CombinationGenerator;
+import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.Atom;
+import it.cnr.istc.core.Constructor;
 import it.cnr.istc.core.CoreException;
+import it.cnr.istc.core.ExpressionStatement;
+import it.cnr.istc.core.Field;
+import it.cnr.istc.core.GeqExpression;
 import static it.cnr.istc.core.IScope.TAU;
+import it.cnr.istc.core.IdExpression;
 import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Predicate;
+import it.cnr.istc.core.RealLiteralExpression;
+import it.cnr.istc.core.Type;
 import static it.cnr.istc.smt.LBool.True;
+import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.InfRational;
+import it.cnr.istc.smt.lra.Rational;
+import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.smt.var.IVarVal;
 import it.cnr.istc.solver.Flaw;
+import it.cnr.istc.solver.Resolver;
 import it.cnr.istc.solver.SmartType;
 import it.cnr.istc.solver.Solver;
 import it.cnr.istc.solver.SupportFlaw;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,18 +60,22 @@ import java.util.stream.Collectors;
 public class ReusableResource extends SmartType {
 
     public static final String REUSABLE_RESOURCE = "ReusableResource";
-    public static final String REUSABLE_RESOURCE_CAPACITY = "Capacity";
+    public static final String REUSABLE_RESOURCE_CAPACITY = "capacity";
     public static final String REUSABLE_RESOURCE_USE = "Use";
+    public static final String REUSABLE_RESOURCE_AMOUNT = "amount";
     private final Collection<Atom> atoms = new ArrayList<>();
     private Collection<Item> to_check = new HashSet<>();
 
     public ReusableResource(final Solver slv) {
         super(slv, slv, REUSABLE_RESOURCE);
-    }
-
-    @Override
-    protected void newPredicate(Predicate p) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        newConstructors(new Constructor(core, this,
+                Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_CAPACITY)),
+                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)), new RealLiteralExpression(ZERO)))),
+                Arrays.asList(new Pair<>(REUSABLE_RESOURCE_CAPACITY, Arrays.asList(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)))))));
+        newPredicates(new Predicate(core, this, REUSABLE_RESOURCE_USE,
+                Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_AMOUNT)),
+                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_AMOUNT)), new RealLiteralExpression(ZERO))))));
+        newSupertypes(getPredicate(REUSABLE_RESOURCE_USE), new Predicate[]{getPredicate("IntervalPredicate")});
     }
 
     @Override
@@ -154,18 +172,93 @@ public class ReusableResource extends SmartType {
 
     private static class RRFlaw extends Flaw {
 
+        private final Collection<Atom> overlapping_atoms;
+
         private RRFlaw(Solver slv, Collection<Atom> overlapping_atoms) {
             super(slv, overlapping_atoms.stream().flatMap(atom -> slv.getReason(atom).getResolvers().stream()).filter(res -> (res instanceof SupportFlaw.ActivateFact) || (res instanceof SupportFlaw.ActivateGoal)).collect(Collectors.toList()));
+            this.overlapping_atoms = overlapping_atoms;
         }
 
         @Override
         protected void compute_resolvers() throws CoreException {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            for (Atom[] atms : new CombinationGenerator<>(2, overlapping_atoms.toArray(new Atom[overlapping_atoms.size()]))) {
+                Item.ArithItem a0_start = atms[0].get("start");
+                Item.ArithItem a0_end = atms[0].get("end");
+                Item.ArithItem a1_start = atms[1].get("start");
+                Item.ArithItem a1_end = atms[1].get("end");
+
+                add_resolver(new OrderResolver(slv, slv.leq(a0_end, a1_start).l.v, this, atms[0], atms[1]));
+                add_resolver(new OrderResolver(slv, slv.leq(a1_end, a0_start).l.v, this, atms[1], atms[0]));
+
+                Item a0_tau = atms[0].get(TAU);
+                if (a0_tau instanceof Item.VarItem) {
+                    Set<IVarVal> vals = slv.value((Item.VarItem) a0_tau);
+                    if (vals.size() > 1) {
+                        for (IVarVal val : vals) {
+                            add_resolver(new DisplaceResolver(slv, this, atms[0], (Item.VarItem) a0_tau, (Item) val));
+                        }
+                    }
+                }
+                Item a1_tau = atms[1].get(TAU);
+                if (a1_tau instanceof Item.VarItem) {
+                    Set<IVarVal> vals = slv.value((Item.VarItem) a1_tau);
+                    if (vals.size() > 1) {
+                        for (IVarVal val : vals) {
+                            add_resolver(new DisplaceResolver(slv, this, atms[1], (Item.VarItem) a1_tau, (Item) val));
+                        }
+                    }
+                }
+            }
         }
 
         @Override
         public String getLabel() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return "φ" + getPhi() + " rr-flaw";
+        }
+    }
+
+    private static class OrderResolver extends Resolver {
+
+        private final Atom before_atm;
+        private final Atom after_atm;
+
+        private OrderResolver(final Solver slv, final int rho, final RRFlaw effect, final Atom before, final Atom after) {
+            super(slv, rho, new Rational(), effect);
+            this.before_atm = before;
+            this.after_atm = after;
+        }
+
+        @Override
+        protected void expand() throws CoreException {
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " σ" + before_atm.sigma + " <= σ" + after_atm.sigma;
+        }
+    }
+
+    private static class DisplaceResolver extends Resolver {
+
+        private final Atom atom;
+        private final Item.VarItem tau;
+        private final Item rr;
+
+        private DisplaceResolver(final Solver slv, final RRFlaw effect, final Atom atom, final Item.VarItem tau, final Item rr) {
+            super(slv, new Rational(), effect);
+            this.atom = atom;
+            this.tau = tau;
+            this.rr = rr;
+        }
+
+        @Override
+        protected void expand() throws CoreException {
+            if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(slv.var_theory.allows(tau.var, rr), false)));
+        }
+
+        @Override
+        public String getLabel() {
+            return "ρ" + rho + " displ (τ" + tau.var + ") != " + rr;
         }
     }
 }

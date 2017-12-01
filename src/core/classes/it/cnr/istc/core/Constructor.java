@@ -37,7 +37,7 @@ public class Constructor extends Scope {
         this(core, scope, Arrays.asList(args), Collections.emptyList(), Collections.emptyList());
     }
 
-    Constructor(final Core core, final IScope scope, final List<Field> args, final List<Statement> statements, final List<Pair<String, List<Expression>>> init_list) {
+    public Constructor(final Core core, final IScope scope, final List<Field> args, final List<Statement> statements, final List<Pair<String, List<Expression>>> init_list) {
         super(core, scope);
         this.arguments = args;
         newFields(new Field(((Type) scope), THIS, null, true));

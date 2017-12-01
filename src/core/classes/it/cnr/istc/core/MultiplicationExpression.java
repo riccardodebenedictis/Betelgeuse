@@ -17,6 +17,7 @@
 package it.cnr.istc.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class MultiplicationExpression implements Expression {
+public class MultiplicationExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    MultiplicationExpression(final List<Expression> xprs) {
+    public MultiplicationExpression(final Expression... xprs) {
+        this(Arrays.asList(xprs));
+    }
+
+    public MultiplicationExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

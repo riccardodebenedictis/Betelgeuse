@@ -35,7 +35,7 @@ public class Predicate extends Type {
         this(core, scope, name, Arrays.asList(args), Collections.emptyList());
     }
 
-    Predicate(final Core core, final IScope scp, final String name, final List<Field> args, final List<Statement> statements) {
+    public Predicate(final Core core, final IScope scp, final String name, final List<Field> args, final List<Statement> statements) {
         super(core, scp, name);
         this.arguments = args;
         if (scp instanceof Type) {

@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.core;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +24,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class BlockStatement implements Statement {
+public class BlockStatement implements Statement {
 
     private final List<Statement> statements;
 
-    BlockStatement(final List<Statement> stmnts) {
+    public BlockStatement(final Statement... stmnts) {
+        this(Arrays.asList(stmnts));
+    }
+
+    public BlockStatement(final List<Statement> stmnts) {
         this.statements = stmnts;
     }
 
