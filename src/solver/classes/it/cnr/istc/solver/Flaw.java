@@ -19,6 +19,7 @@ package it.cnr.istc.solver;
 import it.cnr.istc.smt.lra.Rational;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.UnsolvableException;
+import static it.cnr.istc.smt.LBool.False;
 import it.cnr.istc.smt.Lit;
 import static it.cnr.istc.smt.SatCore.TRUE_var;
 import java.util.ArrayList;
@@ -124,9 +125,14 @@ public abstract class Flaw {
 
     protected abstract void compute_resolvers() throws CoreException;
 
-    protected void add_resolver(Resolver r) {
-        resolvers.add(r);
-        slv.newResolver(r);
+    protected boolean add_resolver(Resolver r) {
+        if (slv.sat_core.value(r.rho) != False) {
+            resolvers.add(r);
+            slv.newResolver(r);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Rational getEstimatedCost() {

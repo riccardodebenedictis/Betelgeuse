@@ -59,7 +59,7 @@ public class VarFlaw extends Flaw {
         }
 
         @Override
-        void expand() {
+        protected void expand() {
         }
 
         @Override

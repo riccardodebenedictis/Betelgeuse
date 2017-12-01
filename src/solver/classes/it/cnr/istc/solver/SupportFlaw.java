@@ -152,7 +152,7 @@ public class SupportFlaw extends Flaw {
         }
 
         @Override
-        void expand() throws CoreException {
+        protected void expand() throws CoreException {
             if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(atom.sigma))) {
                 throw new UnsolvableException();
             }
@@ -174,7 +174,7 @@ public class SupportFlaw extends Flaw {
         }
 
         @Override
-        void expand() throws CoreException {
+        protected void expand() throws CoreException {
             if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(atom.sigma))) {
                 throw new UnsolvableException();
             }
@@ -201,7 +201,7 @@ public class SupportFlaw extends Flaw {
         }
 
         @Override
-        void expand() throws CoreException {
+        protected void expand() throws CoreException {
             for (Lit l : unif_lits) {
                 if (!slv.sat_core.newClause(new Lit(rho, false), l)) {
                     throw new UnsolvableException();

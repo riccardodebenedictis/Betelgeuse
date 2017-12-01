@@ -17,4 +17,5 @@
 module solver {
     exports it.cnr.istc.solver;
     requires transitive core;
+    requires common;
 }

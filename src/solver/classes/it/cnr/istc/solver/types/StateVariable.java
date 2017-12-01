@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.solver.types;
 
+import it.cnr.istc.common.CombinationGenerator;
 import it.cnr.istc.core.Atom;
 import it.cnr.istc.core.AtomListener;
 import it.cnr.istc.core.CoreException;
@@ -26,8 +27,10 @@ import it.cnr.istc.core.Predicate;
 import it.cnr.istc.core.Type;
 import static it.cnr.istc.smt.LBool.True;
 import it.cnr.istc.smt.lra.InfRational;
+import it.cnr.istc.smt.lra.Rational;
 import it.cnr.istc.smt.var.IVarVal;
 import it.cnr.istc.solver.Flaw;
+import it.cnr.istc.solver.Resolver;
 import it.cnr.istc.solver.SmartType;
 import it.cnr.istc.solver.Solver;
 import it.cnr.istc.solver.SupportFlaw;
@@ -207,12 +210,87 @@ public class StateVariable extends SmartType {
 
     private static class SVFlaw extends Flaw {
 
-        private SVFlaw(Solver slv, Collection<Atom> overlapping_atoms) {
+        private final Collection<Atom> overlapping_atoms;
+
+        private SVFlaw(final Solver slv, final Collection<Atom> overlapping_atoms) {
             super(slv, overlapping_atoms.stream().flatMap(atom -> slv.getReason(atom).getResolvers().stream()).filter(res -> (res instanceof SupportFlaw.ActivateFact) || (res instanceof SupportFlaw.ActivateGoal)).collect(Collectors.toList()));
+            this.overlapping_atoms = overlapping_atoms;
         }
 
         @Override
         protected void compute_resolvers() throws CoreException {
+            for (Atom[] atms : new CombinationGenerator<>(2, overlapping_atoms.toArray(new Atom[overlapping_atoms.size()]))) {
+                Item.ArithItem a0_start = atms[0].get("start");
+                Item.ArithItem a0_end = atms[0].get("end");
+                Item.ArithItem a1_start = atms[1].get("start");
+                Item.ArithItem a1_end = atms[1].get("end");
+
+                add_resolver(new OrderResolver(slv, slv.leq(a0_end, a1_start).l.v, this, atms[0], atms[1]));
+                add_resolver(new OrderResolver(slv, slv.leq(a1_end, a0_start).l.v, this, atms[1], atms[0]));
+
+                Item a0_tau = atms[0].get(TAU);
+                if (a0_tau instanceof Item.VarItem) {
+                    Set<IVarVal> vals = slv.value((Item.VarItem) a0_tau);
+                    if (vals.size() > 1) {
+                        for (IVarVal val : vals) {
+                            add_resolver(new DisplaceResolver(slv, slv.var_theory.allows(((Item.VarItem) a0_tau).var, val), this, atms[0], a0_tau, (Item) val));
+                        }
+                    }
+                }
+                Item a1_tau = atms[1].get(TAU);
+                if (a1_tau instanceof Item.VarItem) {
+                    Set<IVarVal> vals = slv.value((Item.VarItem) a1_tau);
+                    if (vals.size() > 1) {
+                        for (IVarVal val : vals) {
+                            add_resolver(new DisplaceResolver(slv, slv.var_theory.allows(((Item.VarItem) a1_tau).var, val), this, atms[1], a1_tau, (Item) val));
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String getLabel() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+
+    private static class OrderResolver extends Resolver {
+
+        private final Atom before_atm;
+        private final Atom after_atm;
+
+        private OrderResolver(final Solver slv, final int rho, final SVFlaw effect, final Atom before, final Atom after) {
+            super(slv, rho, new Rational(), effect);
+            this.before_atm = before;
+            this.after_atm = after;
+        }
+
+        @Override
+        protected void expand() throws CoreException {
+        }
+
+        @Override
+        public String getLabel() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+
+    private static class DisplaceResolver extends Resolver {
+
+        private final Atom atom;
+        private final Item tau;
+        private final Item sv;
+
+        private DisplaceResolver(final Solver slv, final int rho, final SVFlaw effect, final Atom atom, final Item tau, final Item sv) {
+            super(slv, rho, new Rational(), effect);
+            this.atom = atom;
+            this.tau = tau;
+            this.sv = sv;
+        }
+
+        @Override
+        protected void expand() throws CoreException {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 

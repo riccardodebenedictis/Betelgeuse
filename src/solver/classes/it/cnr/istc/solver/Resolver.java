@@ -71,7 +71,7 @@ public abstract class Resolver {
         return cost.plus(est_cost);
     }
 
-    abstract void expand() throws CoreException;
+    protected abstract void expand() throws CoreException;
 
     public abstract String getLabel();
 }
