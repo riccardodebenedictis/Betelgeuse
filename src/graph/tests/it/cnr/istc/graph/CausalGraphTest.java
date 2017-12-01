@@ -32,7 +32,7 @@ public class CausalGraphTest {
     public void testGraph() {
         Solver s = new Solver();
 
-        if (GraphicsEnvironment.isHeadless()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             CausalGraph graph = new CausalGraph();
             s.listen(graph);
 
