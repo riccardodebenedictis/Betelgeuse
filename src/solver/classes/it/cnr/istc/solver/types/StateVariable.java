@@ -17,6 +17,7 @@
 package it.cnr.istc.solver.types;
 
 import it.cnr.istc.core.Atom;
+import it.cnr.istc.core.AtomListener;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Field;
 import static it.cnr.istc.core.IScope.TAU;
@@ -48,7 +49,7 @@ import java.util.stream.Collectors;
 public class StateVariable extends SmartType {
 
     public static final String STATE_VARIABLE = "StateVariable";
-    private final Map<Atom, SVAtomListener> atoms = new IdentityHashMap<>();
+    private final Collection<Atom> atoms = new ArrayList<>();
     private Collection<Item> to_check = new HashSet<>();
 
     public StateVariable(final Solver slv) {
@@ -68,19 +69,50 @@ public class StateVariable extends SmartType {
         core.getPredicate("IntervalPredicate").applyRule(f.atom);
         restoreVar();
 
-        atoms.put(f.atom, new SVAtomListener(f.atom, this));
-        Item tau = f.atom.get(TAU);
-        if (tau instanceof Item.VarItem) {
-            to_check.addAll(core.var_theory.value(((Item.VarItem) tau).var).stream().map(var_val -> (Item) var_val).collect(Collectors.toList()));
-        } else {
-            to_check.add(tau);
-        }
+        atoms.add(f.atom);
+        getCore().listen(f.atom, new AtomListener() {
+            @Override
+            public void satValueChange(int v) {
+                atom_changed(f.atom);
+            }
+
+            @Override
+            public void lraValueChange(int v) {
+                atom_changed(f.atom);
+            }
+
+            @Override
+            public void varValueChange(int v) {
+                atom_changed(f.atom);
+            }
+        });
+        atom_changed(f.atom);
     }
 
     @Override
     protected void newGoal(SupportFlaw f) throws CoreException {
-        atoms.put(f.atom, new SVAtomListener(f.atom, this));
-        Item tau = f.atom.get(TAU);
+        atoms.add(f.atom);
+        getCore().listen(f.atom, new AtomListener() {
+            @Override
+            public void satValueChange(int v) {
+                atom_changed(f.atom);
+            }
+
+            @Override
+            public void lraValueChange(int v) {
+                atom_changed(f.atom);
+            }
+
+            @Override
+            public void varValueChange(int v) {
+                atom_changed(f.atom);
+            }
+        });
+        atom_changed(f.atom);
+    }
+
+    private void atom_changed(final Atom atm) {
+        Item tau = atm.get(TAU);
         if (tau instanceof Item.VarItem) {
             to_check.addAll(core.var_theory.value(((Item.VarItem) tau).var).stream().map(var_val -> (Item) var_val).collect(Collectors.toList()));
         } else {
@@ -96,10 +128,10 @@ public class StateVariable extends SmartType {
         } else {
             // we collect atoms for each state variable..
             Map<Item, Collection<Atom>> sv_atoms = new IdentityHashMap<>();
-            for (Map.Entry<Atom, SVAtomListener> atom : atoms.entrySet()) {
+            for (Atom atom : atoms) {
                 // we filter out those which are not strictly active..
-                if (core.sat_core.value(atom.getKey().sigma) == True) {
-                    Item tau = atom.getKey().get(TAU);
+                if (core.sat_core.value(atom.sigma) == True) {
+                    Item tau = atom.get(TAU);
                     if (tau instanceof Item.VarItem) {
                         for (IVarVal val : core.var_theory.value(((Item.VarItem) tau).var)) {
                             Item c_val = (Item) val;
@@ -108,7 +140,7 @@ public class StateVariable extends SmartType {
                                 atms = new ArrayList<>();
                                 sv_atoms.put(c_val, atms);
                             }
-                            atms.add(atom.getKey());
+                            atms.add(atom);
                         }
                     } else {
                         Collection<Atom> atms = sv_atoms.get(tau);
@@ -116,7 +148,7 @@ public class StateVariable extends SmartType {
                             atms = new ArrayList<>();
                             sv_atoms.put(tau, atms);
                         }
-                        atms.add(atom.getKey());
+                        atms.add(atom);
                     }
                 }
             }
@@ -187,40 +219,6 @@ public class StateVariable extends SmartType {
         @Override
         public String getLabel() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-
-    private static class SVAtomListener extends AtomListener {
-
-        private final StateVariable sv;
-
-        private SVAtomListener(Atom atom, final StateVariable sv) {
-            super(atom);
-            this.sv = sv;
-        }
-
-        private void something_changed() {
-            Item tau = atom.get(TAU);
-            if (tau instanceof Item.VarItem) {
-                sv.to_check.addAll(sv.getCore().var_theory.value(((Item.VarItem) tau).var).stream().map(var_val -> (Item) var_val).collect(Collectors.toList()));
-            } else {
-                sv.to_check.add(tau);
-            }
-        }
-
-        @Override
-        public void satValueChange(int v) {
-            something_changed();
-        }
-
-        @Override
-        public void lraValueChange(int v) {
-            something_changed();
-        }
-
-        @Override
-        public void varValueChange(int v) {
-            something_changed();
         }
     }
 }

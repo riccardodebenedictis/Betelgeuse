@@ -14,28 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.cnr.istc.solver;
+package it.cnr.istc.core;
 
-import it.cnr.istc.core.CoreException;
-import it.cnr.istc.core.IScope;
-import it.cnr.istc.core.Type;
-import java.util.Collection;
+import it.cnr.istc.smt.SatValueListener;
+import it.cnr.istc.smt.lra.LRAValueListener;
+import it.cnr.istc.smt.var.VarValueListener;
 
 /**
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public abstract class SmartType extends Type {
-
-    public SmartType(final Solver slv, final IScope scope, final String name) {
-        super(slv, scope, name);
-    }
-
-    public abstract Collection<Flaw> getFlaws();
-
-    protected void newFact(final SupportFlaw f) throws CoreException {
-    }
-
-    protected void newGoal(final SupportFlaw f) throws CoreException {
-    }
+public interface AtomListener extends SatValueListener, LRAValueListener, VarValueListener {
 }

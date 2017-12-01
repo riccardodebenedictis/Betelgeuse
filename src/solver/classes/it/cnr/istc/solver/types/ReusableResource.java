@@ -48,7 +48,7 @@ public class ReusableResource extends SmartType {
     public static final String REUSABLE_RESOURCE = "ReusableResource";
     public static final String REUSABLE_RESOURCE_CAPACITY = "Capacity";
     public static final String REUSABLE_RESOURCE_USE = "Use";
-    private final Map<Atom, RRAtomListener> atoms = new IdentityHashMap<>();
+    private final Collection<Atom> atoms = new ArrayList<>();
     private Collection<Item> to_check = new HashSet<>();
 
     public ReusableResource(final Solver slv) {
@@ -68,10 +68,10 @@ public class ReusableResource extends SmartType {
         } else {
             // we collect atoms for each state variable..
             Map<Item, Collection<Atom>> rr_atoms = new IdentityHashMap<>();
-            for (Map.Entry<Atom, RRAtomListener> atom : atoms.entrySet()) {
+            for (Atom atom : atoms) {
                 // we filter out those which are not strictly active..
-                if (core.sat_core.value(atom.getKey().sigma) == True) {
-                    Item tau = atom.getKey().get(TAU);
+                if (core.sat_core.value(atom.sigma) == True) {
+                    Item tau = atom.get(TAU);
                     if (tau instanceof Item.VarItem) {
                         for (IVarVal val : core.var_theory.value(((Item.VarItem) tau).var)) {
                             Item c_val = (Item) val;
@@ -80,7 +80,7 @@ public class ReusableResource extends SmartType {
                                 atms = new ArrayList<>();
                                 rr_atoms.put(c_val, atms);
                             }
-                            atms.add(atom.getKey());
+                            atms.add(atom);
                         }
                     } else {
                         Collection<Atom> atms = rr_atoms.get(tau);
@@ -88,7 +88,7 @@ public class ReusableResource extends SmartType {
                             atms = new ArrayList<>();
                             rr_atoms.put(tau, atms);
                         }
-                        atms.add(atom.getKey());
+                        atms.add(atom);
                     }
                 }
             }
@@ -166,40 +166,6 @@ public class ReusableResource extends SmartType {
         @Override
         public String getLabel() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-
-    private static class RRAtomListener extends AtomListener {
-
-        private final ReusableResource rr;
-
-        private RRAtomListener(Atom atom, final ReusableResource rr) {
-            super(atom);
-            this.rr = rr;
-        }
-
-        private void something_changed() {
-            Item tau = atom.get(TAU);
-            if (tau instanceof Item.VarItem) {
-                rr.to_check.addAll(rr.getCore().var_theory.value(((Item.VarItem) tau).var).stream().map(var_val -> (Item) var_val).collect(Collectors.toList()));
-            } else {
-                rr.to_check.add(tau);
-            }
-        }
-
-        @Override
-        public void satValueChange(int v) {
-            something_changed();
-        }
-
-        @Override
-        public void lraValueChange(int v) {
-            something_changed();
-        }
-
-        @Override
-        public void varValueChange(int v) {
-            something_changed();
         }
     }
 }

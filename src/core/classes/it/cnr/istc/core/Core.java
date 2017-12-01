@@ -38,11 +38,13 @@ import it.cnr.istc.smt.var.VarTheory;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -457,5 +459,61 @@ public abstract class Core implements IScope, IEnv {
             return it;
         }
         throw new NoSuchFieldError(name);
+    }
+
+    public void listen(final Atom atm, final AtomListener l) {
+        Queue<Type> q = new ArrayDeque<>();
+        q.add((Type) atm.type.getScope());
+        while (!q.isEmpty()) {
+            Type tp = q.poll();
+            for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
+                if (!field.getValue().synthetic) {
+                    switch (field.getValue().name) {
+                        case Type.BOOL:
+                            sat_core.listen(((Item.BoolItem) atm.get(field.getKey())).l.v, l);
+                            break;
+                        case Type.INT:
+                        case Type.REAL:
+                            for (Map.Entry<Integer, Rational> term : ((Item.ArithItem) atm.get(field.getKey())).l.vars.entrySet()) {
+                                la_theory.listen(term.getKey(), l);
+                            }
+                            break;
+                        case Type.STRING:
+                            break;
+                        default:
+                            var_theory.listen(((Item.VarItem) atm.get(field.getKey())).var, l);
+                    }
+                }
+            }
+            q.addAll(tp.getSupertypes());
+        }
+    }
+
+    public void forget(final Atom atm, final AtomListener l) {
+        Queue<Type> q = new ArrayDeque<>();
+        q.add((Type) atm.type.getScope());
+        while (!q.isEmpty()) {
+            Type tp = q.poll();
+            for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
+                if (!field.getValue().synthetic) {
+                    switch (field.getValue().name) {
+                        case Type.BOOL:
+                            sat_core.forget(((Item.BoolItem) atm.get(field.getKey())).l.v, l);
+                            break;
+                        case Type.INT:
+                        case Type.REAL:
+                            for (Map.Entry<Integer, Rational> term : ((Item.ArithItem) atm.get(field.getKey())).l.vars.entrySet()) {
+                                la_theory.forget(term.getKey(), l);
+                            }
+                            break;
+                        case Type.STRING:
+                            break;
+                        default:
+                            var_theory.forget(((Item.VarItem) atm.get(field.getKey())).var, l);
+                    }
+                }
+            }
+            q.addAll(tp.getSupertypes());
+        }
     }
 }
