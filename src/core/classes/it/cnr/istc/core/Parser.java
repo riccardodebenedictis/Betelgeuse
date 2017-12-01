@@ -63,7 +63,7 @@ class Parser {
     }
 
     CompilationUnit compilation_unit() throws ParsingException {
-        tk = lexer.next();
+        tk = next();
 
         final List<MethodDeclaration> ms = new ArrayList<>();
         final List<PredicateDeclaration> ps = new ArrayList<>();
