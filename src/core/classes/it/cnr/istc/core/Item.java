@@ -58,7 +58,9 @@ public class Item extends Env implements IVarVal {
             while (!q.isEmpty()) {
                 Type tp = q.poll();
                 for (Map.Entry<String, Field> fld : tp.getFields().entrySet()) {
-                    eqs.add(new Lit(items.get(fld.getKey()).eq(i.items.get(fld.getKey()))));
+                    if (!fld.getValue().synthetic) {
+                        eqs.add(new Lit(items.get(fld.getKey()).eq(i.items.get(fld.getKey()))));
+                    }
                 }
                 q.addAll(tp.getSupertypes());
             }
@@ -86,7 +88,7 @@ public class Item extends Env implements IVarVal {
             while (!q.isEmpty()) {
                 Type tp = q.poll();
                 for (Map.Entry<String, Field> fld : tp.getFields().entrySet()) {
-                    if (!items.get(fld.getKey()).equates(i.items.get(fld.getKey()))) {
+                    if (!fld.getValue().synthetic && !items.get(fld.getKey()).equates(i.items.get(fld.getKey()))) {
                         return false;
                     }
                 }

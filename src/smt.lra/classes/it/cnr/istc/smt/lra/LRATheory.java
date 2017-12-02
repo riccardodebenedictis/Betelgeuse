@@ -551,6 +551,15 @@ public class LRATheory implements Theory {
         return (v << 1) ^ 1;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < vals.size(); i++) {
+            sb.append("x").append(i).append(": [").append(assigns.get(lb_index(i)).value).append(", ").append(assigns.get(ub_index(i)).value).append("] ").append(vals.get(i)).append('\n');
+        }
+        return sb.toString();
+    }
+
     /**
      * Represents the bound of a variable and the reason for its existence.
      */

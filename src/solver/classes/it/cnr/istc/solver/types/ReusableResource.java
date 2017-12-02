@@ -19,6 +19,7 @@ package it.cnr.istc.solver.types;
 import it.cnr.istc.common.CombinationGenerator;
 import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.Atom;
+import it.cnr.istc.core.AtomListener;
 import it.cnr.istc.core.Constructor;
 import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.ExpressionStatement;
@@ -30,6 +31,7 @@ import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Predicate;
 import it.cnr.istc.core.RealLiteralExpression;
 import it.cnr.istc.core.Type;
+import it.cnr.istc.core.UnsolvableException;
 import static it.cnr.istc.smt.LBool.True;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.InfRational;
@@ -76,6 +78,52 @@ public class ReusableResource extends SmartType {
                 Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_AMOUNT)),
                 Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_AMOUNT)), new RealLiteralExpression(ZERO))))));
         newSupertypes(getPredicate(REUSABLE_RESOURCE_USE), new Predicate[]{getPredicate("IntervalPredicate")});
+    }
+
+    @Override
+    protected void newFact(SupportFlaw f) throws CoreException {
+        // we apply interval-predicate if the fact becomes active..
+        setVar(f.atom.sigma);
+        core.getPredicate("IntervalPredicate").applyRule(f.atom);
+        restoreVar();
+
+        // we avoid unification..
+        if (!core.sat_core.newClause(new Lit(f.getPhi(), false), new Lit(f.atom.sigma))) {
+            throw new UnsolvableException();
+        }
+
+        atoms.add(f.atom);
+        getCore().listen(f.atom, new AtomListener() {
+            @Override
+            public void satValueChange(int v) {
+                atom_changed(f.atom);
+            }
+
+            @Override
+            public void lraValueChange(int v) {
+                atom_changed(f.atom);
+            }
+
+            @Override
+            public void varValueChange(int v) {
+                atom_changed(f.atom);
+            }
+        });
+        atom_changed(f.atom);
+    }
+
+    @Override
+    protected void newGoal(SupportFlaw f) throws CoreException {
+        throw new AssertionError("it is not possible to create goals on reusable resources..");
+    }
+
+    private void atom_changed(final Atom atm) {
+        Item tau = atm.get(TAU);
+        if (tau instanceof Item.VarItem) {
+            to_check.addAll(core.var_theory.value(((Item.VarItem) tau).var).stream().map(var_val -> (Item) var_val).collect(Collectors.toList()));
+        } else {
+            to_check.add(tau);
+        }
     }
 
     @Override
@@ -156,7 +204,7 @@ public class ReusableResource extends SmartType {
                     }
                     InfRational c_use = new InfRational();
                     for (Atom atm : overlapping_atoms) {
-                        Item.ArithItem use_amnt = atm.get(REUSABLE_RESOURCE_USE);
+                        Item.ArithItem use_amnt = atm.get(REUSABLE_RESOURCE_AMOUNT);
                         c_use.add(core.value(use_amnt));
                     }
                     if (c_use.gt(capacity_val)) {

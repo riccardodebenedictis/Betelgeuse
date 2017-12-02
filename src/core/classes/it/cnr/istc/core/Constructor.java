@@ -54,6 +54,7 @@ public class Constructor extends Scope {
 
     private void invoke(final Item itm, final Item... args) throws CoreException {
         Env e = new Env(core, itm);
+        e.items.put(THIS, itm);
         for (int i = 0; i < arguments.size(); i++) {
             e.items.put(arguments.get(i).name, args[i]);
         }
