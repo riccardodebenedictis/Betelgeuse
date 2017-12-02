@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -182,7 +183,7 @@ public class ReusableResource extends SmartType {
                     Collection<Atom> end_atms = ending_atoms.get(end_val);
                     if (end_atms == null) {
                         end_atms = new ArrayList<>();
-                        ending_atoms.put(start_val, end_atms);
+                        ending_atoms.put(end_val, end_atms);
                     }
                     end_atms.add(atom);
                     pulses.add(start_val);
@@ -208,7 +209,7 @@ public class ReusableResource extends SmartType {
                     }
                     if (c_use.gt(capacity_val)) {
                         // we have a peak..
-                        peaks.add(new RRFlaw((Solver) core, overlapping_atoms));
+                        peaks.add(new RRFlaw((Solver) core, overlapping_atoms.toArray(new Atom[overlapping_atoms.size()])));
                     }
                 }
             }
@@ -219,16 +220,16 @@ public class ReusableResource extends SmartType {
 
     private static class RRFlaw extends Flaw {
 
-        private final Collection<Atom> overlapping_atoms;
+        private final Atom[] overlapping_atoms;
 
-        private RRFlaw(Solver slv, Collection<Atom> overlapping_atoms) {
-            super(slv, overlapping_atoms.stream().flatMap(atom -> slv.getReason(atom).getResolvers().stream()).filter(res -> (res instanceof SupportFlaw.ActivateFact) || (res instanceof SupportFlaw.ActivateGoal)).collect(Collectors.toList()));
+        private RRFlaw(Solver slv, Atom[] overlapping_atoms) {
+            super(slv, Stream.of(overlapping_atoms).flatMap(atom -> slv.getReason(atom).getResolvers().stream()).filter(res -> (res instanceof SupportFlaw.ActivateFact) || (res instanceof SupportFlaw.ActivateGoal)).collect(Collectors.toList()));
             this.overlapping_atoms = overlapping_atoms;
         }
 
         @Override
         protected void compute_resolvers() throws CoreException {
-            for (Atom[] atms : new CombinationGenerator<>(2, overlapping_atoms.toArray(new Atom[overlapping_atoms.size()]))) {
+            for (Atom[] atms : new CombinationGenerator<>(2, overlapping_atoms)) {
                 Item.ArithItem a0_start = atms[0].get("start");
                 Item.ArithItem a0_end = atms[0].get("end");
                 Item.ArithItem a1_start = atms[1].get("start");

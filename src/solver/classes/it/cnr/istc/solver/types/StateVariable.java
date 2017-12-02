@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -202,7 +203,7 @@ public class StateVariable extends SmartType {
                     }
                     if (overlapping_atoms.size() > 1) {
                         // we have a peak..
-                        peaks.add(new SVFlaw((Solver) core, overlapping_atoms));
+                        peaks.add(new SVFlaw((Solver) core, overlapping_atoms.toArray(new Atom[overlapping_atoms.size()])));
                     }
                 }
             }
@@ -213,16 +214,16 @@ public class StateVariable extends SmartType {
 
     private static class SVFlaw extends Flaw {
 
-        private final Collection<Atom> overlapping_atoms;
+        private final Atom[] overlapping_atoms;
 
-        private SVFlaw(final Solver slv, final Collection<Atom> overlapping_atoms) {
-            super(slv, overlapping_atoms.stream().flatMap(atom -> slv.getReason(atom).getResolvers().stream()).filter(res -> (res instanceof SupportFlaw.ActivateFact) || (res instanceof SupportFlaw.ActivateGoal)).collect(Collectors.toList()));
+        private SVFlaw(final Solver slv, final Atom[] overlapping_atoms) {
+            super(slv, Stream.of(overlapping_atoms).flatMap(atom -> slv.getReason(atom).getResolvers().stream()).filter(res -> (res instanceof SupportFlaw.ActivateFact) || (res instanceof SupportFlaw.ActivateGoal)).collect(Collectors.toList()));
             this.overlapping_atoms = overlapping_atoms;
         }
 
         @Override
         protected void compute_resolvers() throws CoreException {
-            for (Atom[] atms : new CombinationGenerator<>(2, overlapping_atoms.toArray(new Atom[overlapping_atoms.size()]))) {
+            for (Atom[] atms : new CombinationGenerator<>(2, overlapping_atoms)) {
                 Item.ArithItem a0_start = atms[0].get("start");
                 Item.ArithItem a0_end = atms[0].get("end");
                 Item.ArithItem a1_start = atms[1].get("start");

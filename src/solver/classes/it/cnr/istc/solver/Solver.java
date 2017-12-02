@@ -153,9 +153,12 @@ public class Solver extends Core implements Theory {
                     l.currentFlaw(f_next);
                 }
                 assert !f_next.getEstimatedCost().isPositiveInfinite();
-                if (!f_next.structural && !hasInconsistencies()) { // we run out of structural flaws, thus, we renew them..
+                if (!f_next.structural || !hasInconsistencies()) { // we run out of structural flaws, thus, we renew them..
                     // this is the next resolver to be assumed..
                     res = f_next.getBestResolver();
+                    for (SolverListener l : listeners) {
+                        l.currentResolver(res);
+                    }
 
                     // we apply the resolver..
                     if (!sat_core.assume(new Lit(res.rho)) || !sat_core.check()) {

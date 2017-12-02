@@ -86,7 +86,7 @@ public class LRATheory implements Theory {
 
     public int newLt(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+        for (Map.Entry<Integer, Rational> term : new HashMap<>(xpr.vars).entrySet()) {
             Row row = tableau.get(term.getKey());
             if (row != null) {
                 xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
@@ -118,7 +118,7 @@ public class LRATheory implements Theory {
 
     public int newLEq(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+        for (Map.Entry<Integer, Rational> term : new HashMap<>(xpr.vars).entrySet()) {
             Row row = tableau.get(term.getKey());
             if (row != null) {
                 xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
@@ -154,7 +154,7 @@ public class LRATheory implements Theory {
 
     public int newGEq(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+        for (Map.Entry<Integer, Rational> term : new HashMap<>(xpr.vars).entrySet()) {
             Row row = tableau.get(term.getKey());
             if (row != null) {
                 xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
@@ -186,7 +186,7 @@ public class LRATheory implements Theory {
 
     public int newGt(final Lin left, final Lin right) {
         Lin xpr = left.minus(right);
-        for (Map.Entry<Integer, Rational> term : xpr.vars.entrySet()) {
+        for (Map.Entry<Integer, Rational> term : new HashMap<>(xpr.vars).entrySet()) {
             Row row = tableau.get(term.getKey());
             if (row != null) {
                 xpr.add(row.l.times(xpr.vars.remove(term.getKey())));
