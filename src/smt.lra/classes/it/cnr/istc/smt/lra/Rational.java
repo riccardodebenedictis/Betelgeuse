@@ -22,8 +22,6 @@ package it.cnr.istc.smt.lra;
  */
 public class Rational implements Comparable<Rational> {
 
-    public static final Rational ZERO = new Rational();
-    public static final Rational ONE = new Rational(1);
     public static final Rational POSITIVE_INFINITY = new Rational(1, 0);
     public static final Rational NEGATIVE_INFINITY = new Rational(-1, 0);
     public long num; // the numerator..
@@ -167,10 +165,10 @@ public class Rational implements Comparable<Rational> {
         assert den != 0 || rhs.num != 0; // inf*0..
 
         // special cases..
-        if (rhs.eq(ONE)) {
+        if (rhs.eq(1)) {
             return;
         }
-        if (eq(ONE)) {
+        if (eq(1)) {
             num = rhs.num;
             den = rhs.den;
             return;
@@ -235,7 +233,7 @@ public class Rational implements Comparable<Rational> {
         if (rhs == 1) {
             return;
         }
-        if (eq(ONE)) {
+        if (eq(1)) {
             num = rhs;
             return;
         }
@@ -295,10 +293,10 @@ public class Rational implements Comparable<Rational> {
         assert den != 0 || rhs.num != 0; // inf*0..
 
         // special cases..
-        if (rhs.eq(ONE)) {
+        if (rhs.eq(1)) {
             return this;
         }
-        if (eq(ONE)) {
+        if (eq(1)) {
             return rhs;
         }
         if (den == 1 && rhs.den == 1) {
@@ -354,7 +352,7 @@ public class Rational implements Comparable<Rational> {
         if (rhs == 1) {
             return this;
         }
-        if (eq(ONE)) {
+        if (eq(1)) {
             return new Rational(rhs);
         }
         if (den == 1) {

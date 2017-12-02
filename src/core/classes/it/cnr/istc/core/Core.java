@@ -19,7 +19,6 @@ package it.cnr.istc.core;
 import it.cnr.istc.smt.lra.InfRational;
 import it.cnr.istc.smt.lra.Lin;
 import it.cnr.istc.smt.lra.Rational;
-import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.core.Item.ArithItem;
 import it.cnr.istc.core.Item.BoolItem;
 import it.cnr.istc.core.Item.StringItem;
@@ -119,7 +118,7 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public ArithItem newInt() {
-        return new ArithItem(this, types.get(INT), new Lin(la_theory.newVar(), new Rational(Rational.ONE)));
+        return new ArithItem(this, types.get(INT), new Lin(la_theory.newVar(), new Rational(1)));
     }
 
     public ArithItem newInt(final long val) {
@@ -127,7 +126,7 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public ArithItem newReal() {
-        return new ArithItem(this, types.get(REAL), new Lin(la_theory.newVar(), new Rational(Rational.ONE)));
+        return new ArithItem(this, types.get(REAL), new Lin(la_theory.newVar(), new Rational(1)));
     }
 
     public ArithItem newReal(final Rational val) {
@@ -237,7 +236,7 @@ public abstract class Core implements IScope, IEnv {
         boolean is_real = false;
         for (ArithItem ai : ais) {
             assert la_theory.lb(ai.l).eq(la_theory.ub(ai.l)) : "non-linear expression..";
-            assert la_theory.value(ai.l).inf.eq(ZERO);
+            assert la_theory.value(ai.l).inf.eq(0);
             l.mult(la_theory.value(ai.l).rat);
             if (ai.type.name.equals(REAL)) {
                 is_real = true;
@@ -251,7 +250,7 @@ public abstract class Core implements IScope, IEnv {
         boolean is_real = false;
         for (ArithItem ai : ais) {
             assert la_theory.lb(ai.l).eq(la_theory.ub(ai.l)) : "non-linear expression..";
-            assert la_theory.value(ai.l).inf.eq(ZERO);
+            assert la_theory.value(ai.l).inf.eq(0);
             l.div(la_theory.value(ai.l).rat);
             if (ai.type.name.equals(REAL)) {
                 is_real = true;

@@ -16,8 +16,6 @@
  */
 package it.cnr.istc.smt.lra;
 
-import static it.cnr.istc.smt.lra.Rational.ONE;
-import static it.cnr.istc.smt.lra.Rational.ZERO;
 import java.util.Objects;
 
 /**
@@ -31,22 +29,22 @@ public class InfRational implements Comparable<InfRational> {
 
     public InfRational() {
         this.rat = new Rational();
-        this.inf = new Rational(ZERO);
+        this.inf = new Rational();
     }
 
     public InfRational(final long num) {
         this.rat = new Rational(num);
-        this.inf = new Rational(ZERO);
+        this.inf = new Rational();
     }
 
     public InfRational(final Rational rat) {
         this.rat = new Rational(rat);
-        this.inf = new Rational(ZERO);
+        this.inf = new Rational();
     }
 
     public InfRational(final long num, final long den) {
         this.rat = new Rational(num, den);
-        this.inf = new Rational(ZERO);
+        this.inf = new Rational();
     }
 
     public InfRational(final Rational rat, final long inf) {
@@ -248,20 +246,20 @@ public class InfRational implements Comparable<InfRational> {
 
     @Override
     public String toString() {
-        if (rat.isInfinite() || inf.eq(ZERO)) {
+        if (rat.isInfinite() || inf.eq(0)) {
             return rat.toString();
         }
         String c_str = new String();
-        if (rat.neq(ZERO)) {
+        if (rat.neq(0)) {
             c_str += rat.toString();
         }
-        if (inf.eq(ONE)) {
+        if (inf.eq(1)) {
             if (c_str.isEmpty()) {
                 c_str += "ε";
             } else {
                 c_str += " + ε";
             }
-        } else if (inf.eq(ONE.minus())) {
+        } else if (inf.eq(-1)) {
             if (c_str.isEmpty()) {
                 c_str += "-ε";
             } else {

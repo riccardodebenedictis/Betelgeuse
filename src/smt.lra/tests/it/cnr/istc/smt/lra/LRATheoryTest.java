@@ -16,8 +16,6 @@
  */
 package it.cnr.istc.smt.lra;
 
-import static it.cnr.istc.smt.lra.Rational.ONE;
-import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
 import static it.cnr.istc.smt.lra.Rational.NEGATIVE_INFINITY;
@@ -33,7 +31,7 @@ public class LRATheoryTest {
     @Test
     public void testRational() {
         Rational r0 = new Rational();
-        r0.add(ONE);
+        r0.add(1);
         r0.add(new Rational(1, 2));
         r0.add(NEGATIVE_INFINITY);
         Rational r1 = new Rational(4, 2);
@@ -46,11 +44,11 @@ public class LRATheoryTest {
     @Test
     public void testLin() {
         Lin l0 = new Lin();
-        l0.add(0, ONE);
+        l0.add(0, new Rational(1));
         l0.add(1, new Rational(2));
 
         Lin l1 = new Lin();
-        l1.add(1, ONE);
+        l1.add(1, new Rational(1));
         l1.add(2, new Rational(2));
 
         Lin l2 = l0.plus(l1);
@@ -63,8 +61,8 @@ public class LRATheoryTest {
 
         int x = lra.newVar();
         int y = lra.newVar();
-        int s1 = lra.newVar(new Lin(x, ONE.minus()).plus(new Lin(y)));
-        int s2 = lra.newVar(new Lin(x, ONE).plus(new Lin(y)));
+        int s1 = lra.newVar(new Lin(x, new Rational(-1)).plus(new Lin(y)));
+        int s2 = lra.newVar(new Lin(x, new Rational(1)).plus(new Lin(y)));
 
         // x <= -4
         boolean nc = core.newClause(new Lit(lra.newLEq(new Lin(x), new Lin(new Rational(-4))))) && core.check();
@@ -73,7 +71,7 @@ public class LRATheoryTest {
         nc = core.newClause(new Lit(lra.newGEq(new Lin(x), new Lin(new Rational(-8))))) && core.check();
         Assert.assertTrue(nc);
         // s1 <= 1
-        nc = core.newClause(new Lit(lra.newLEq(new Lin(s1), new Lin(ONE)))) && core.check();
+        nc = core.newClause(new Lit(lra.newLEq(new Lin(s1), new Lin(new Rational(1))))) && core.check();
         Assert.assertTrue(nc);
 
         // s2 >= -3
@@ -94,20 +92,20 @@ public class LRATheoryTest {
         Assert.assertTrue(nc);
 
         InfRational x_val = lra.value(x);
-        Assert.assertTrue(x_val.eq(ZERO));
+        Assert.assertTrue(x_val.eq(0));
 
         InfRational y_val = lra.value(y);
-        Assert.assertTrue(y_val.eq(ZERO));
+        Assert.assertTrue(y_val.eq(0));
 
         // y >= 1
-        nc = core.newClause(new Lit(lra.newGEq(new Lin(y), new Lin(ONE)))) && core.check();
+        nc = core.newClause(new Lit(lra.newGEq(new Lin(y), new Lin(new Rational(1))))) && core.check();
         Assert.assertTrue(nc);
 
         x_val = lra.value(x);
-        Assert.assertTrue(x_val.eq(ONE));
+        Assert.assertTrue(x_val.eq(1));
 
         y_val = lra.value(y);
-        Assert.assertTrue(y_val.eq(ONE));
+        Assert.assertTrue(y_val.eq(1));
     }
 
     @Test
@@ -123,19 +121,19 @@ public class LRATheoryTest {
         Assert.assertTrue(nc);
 
         InfRational x_val = lra.value(x);
-        Assert.assertTrue(x_val.eq(new InfRational(ZERO, ONE)));
+        Assert.assertTrue(x_val.eq(new InfRational(new Rational(), new Rational(1))));
 
         InfRational y_val = lra.value(y);
-        Assert.assertTrue(y_val.eq(ZERO));
+        Assert.assertTrue(y_val.eq(0));
 
         // y >= 1
-        nc = core.newClause(new Lit(lra.newGEq(new Lin(y), new Lin(ONE)))) && core.check();
+        nc = core.newClause(new Lit(lra.newGEq(new Lin(y), new Lin(new Rational(1))))) && core.check();
         Assert.assertTrue(nc);
 
         x_val = lra.value(x);
-        Assert.assertTrue(x_val.eq(new InfRational(ONE, ONE)));
+        Assert.assertTrue(x_val.eq(new InfRational(new Rational(1), new Rational(1))));
 
         y_val = lra.value(y);
-        Assert.assertTrue(y_val.eq(ONE));
+        Assert.assertTrue(y_val.eq(1));
     }
 }

@@ -147,7 +147,7 @@ public class SupportFlaw extends Flaw {
         private final Atom atom;
 
         private ActivateFact(Solver slv, SupportFlaw effect, final Atom atom) {
-            super(slv, new Rational(0), effect);
+            super(slv, new Rational(), effect);
             this.atom = atom;
         }
 

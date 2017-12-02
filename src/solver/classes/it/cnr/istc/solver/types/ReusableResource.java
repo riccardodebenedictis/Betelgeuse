@@ -36,7 +36,6 @@ import static it.cnr.istc.smt.LBool.True;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.InfRational;
 import it.cnr.istc.smt.lra.Rational;
-import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.smt.var.IVarVal;
 import it.cnr.istc.solver.Flaw;
 import it.cnr.istc.solver.Resolver;
@@ -72,11 +71,11 @@ public class ReusableResource extends SmartType {
         super(slv, slv, REUSABLE_RESOURCE);
         newConstructors(new Constructor(core, this,
                 Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_CAPACITY)),
-                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)), new RealLiteralExpression(ZERO)))),
+                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)), new RealLiteralExpression(new Rational())))),
                 Arrays.asList(new Pair<>(REUSABLE_RESOURCE_CAPACITY, Arrays.asList(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)))))));
         newPredicates(new Predicate(core, this, REUSABLE_RESOURCE_USE,
                 Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_AMOUNT)),
-                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_AMOUNT)), new RealLiteralExpression(ZERO))))));
+                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_AMOUNT)), new RealLiteralExpression(new Rational()))))));
         newSupertypes(getPredicate(REUSABLE_RESOURCE_USE), new Predicate[]{getPredicate("IntervalPredicate")});
     }
 

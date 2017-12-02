@@ -16,8 +16,6 @@
  */
 package it.cnr.istc.smt.lra;
 
-import static it.cnr.istc.smt.lra.Rational.ONE;
-import static it.cnr.istc.smt.lra.Rational.ZERO;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,7 +33,7 @@ public class Lin {
     }
 
     public Lin(final int v) {
-        vars.put(v, new Rational(ONE));
+        vars.put(v, new Rational(1));
         this.known_term = new Rational();
     }
 
@@ -52,7 +50,7 @@ public class Lin {
         Rational rat = vars.get(v);
         if (rat != null) {
             rat.add(c);
-            if (rat.eq(ZERO)) {
+            if (rat.eq(0)) {
                 vars.remove(v);
             }
         } else {
@@ -69,7 +67,7 @@ public class Lin {
                 vars.put(entry.getKey(), new Rational(entry.getValue()));
             }
         }
-        vars.entrySet().removeIf(term -> term.getValue().eq(ZERO));
+        vars.entrySet().removeIf(term -> term.getValue().eq(0));
         known_term.add(rhs.known_term);
     }
 
@@ -82,7 +80,7 @@ public class Lin {
                 vars.put(entry.getKey(), entry.getValue().minus());
             }
         }
-        vars.entrySet().removeIf(term -> term.getValue().eq(ZERO));
+        vars.entrySet().removeIf(term -> term.getValue().eq(0));
         known_term.sub(rhs.known_term);
     }
 
@@ -98,7 +96,7 @@ public class Lin {
         for (Map.Entry<Integer, Rational> entry : vars.entrySet()) {
             vars.get(entry.getKey()).mult(rhs);
         }
-        vars.entrySet().removeIf(term -> term.getValue().eq(ZERO));
+        vars.entrySet().removeIf(term -> term.getValue().eq(0));
         known_term.mult(rhs);
     }
 
@@ -106,7 +104,7 @@ public class Lin {
         for (Map.Entry<Integer, Rational> entry : vars.entrySet()) {
             vars.get(entry.getKey()).div(rhs);
         }
-        vars.entrySet().removeIf(term -> term.getValue().eq(ZERO));
+        vars.entrySet().removeIf(term -> term.getValue().eq(0));
         known_term.div(rhs);
     }
 
@@ -122,7 +120,7 @@ public class Lin {
         for (Map.Entry<Integer, Rational> entry : vars.entrySet()) {
             vars.get(entry.getKey()).mult(rhs);
         }
-        vars.entrySet().removeIf(term -> term.getValue().eq(ZERO));
+        vars.entrySet().removeIf(term -> term.getValue().eq(0));
         known_term.mult(rhs);
     }
 
@@ -130,7 +128,7 @@ public class Lin {
         for (Map.Entry<Integer, Rational> entry : vars.entrySet()) {
             vars.get(entry.getKey()).div(rhs);
         }
-        vars.entrySet().removeIf(term -> term.getValue().eq(ZERO));
+        vars.entrySet().removeIf(term -> term.getValue().eq(0));
         known_term.div(rhs);
     }
 
@@ -248,18 +246,18 @@ public class Lin {
         Map.Entry<Integer, Rational> first = vars.entrySet().iterator().next();
         for (Map.Entry<Integer, Rational> entry : vars.entrySet()) {
             if (entry == first) {
-                if (entry.getValue().eq(ONE)) {
+                if (entry.getValue().eq(1)) {
                     str.append("x");
-                } else if (entry.getValue().eq(ONE.minus())) {
+                } else if (entry.getValue().eq(-1)) {
                     str.append("-x");
                 } else {
                     str.append(entry.getValue().toString()).append("*x");
                 }
                 str.append(entry.getKey());
             } else {
-                if (entry.getValue().eq(ONE)) {
+                if (entry.getValue().eq(1)) {
                     str.append(" + x");
-                } else if (entry.getValue().eq(ONE.minus())) {
+                } else if (entry.getValue().eq(-1)) {
                     str.append(" - x");
                 } else if (entry.getValue().isPositive()) {
                     str.append(" + ").append(entry.getValue().toString()).append("*x");

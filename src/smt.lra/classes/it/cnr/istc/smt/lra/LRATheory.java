@@ -17,9 +17,7 @@
 package it.cnr.istc.smt.lra;
 
 import static it.cnr.istc.smt.lra.Rational.NEGATIVE_INFINITY;
-import static it.cnr.istc.smt.lra.Rational.ONE;
 import static it.cnr.istc.smt.lra.Rational.POSITIVE_INFINITY;
-import static it.cnr.istc.smt.lra.Rational.ZERO;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
 import static it.cnr.istc.smt.SatCore.FALSE_var;
@@ -64,7 +62,7 @@ public class LRATheory implements Theory {
         final int id = vals.size();
         assigns.add(new Bound(new InfRational(NEGATIVE_INFINITY), null));
         assigns.add(new Bound(new InfRational(POSITIVE_INFINITY), null));
-        vals.add(new InfRational(ZERO));
+        vals.add(new InfRational(0));
         exprs.put("x" + id, id);
         a_watches.add(new ArrayList<>());
         t_watches.add(new HashSet<>());
@@ -510,7 +508,7 @@ public class LRATheory implements Theory {
         final Lin xpr = row.l;
         final Rational c = xpr.vars.remove(x_j);
         xpr.div(c.minus());
-        xpr.vars.put(x_i, ONE.divide(c));
+        xpr.vars.put(x_i, new Rational(1).divide(c));
 
         for (Row r : new ArrayList<>(t_watches.get(x_j))) {
             for (Map.Entry<Integer, Rational> term : r.l.vars.entrySet()) {
