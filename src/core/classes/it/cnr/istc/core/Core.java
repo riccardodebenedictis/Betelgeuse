@@ -119,7 +119,7 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public ArithItem newInt() {
-        return new ArithItem(this, types.get(INT), new Lin(la_theory.newVar(), Rational.ONE));
+        return new ArithItem(this, types.get(INT), new Lin(la_theory.newVar(), new Rational(Rational.ONE)));
     }
 
     public ArithItem newInt(final long val) {
@@ -127,7 +127,7 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public ArithItem newReal() {
-        return new ArithItem(this, types.get(REAL), new Lin(la_theory.newVar(), Rational.ONE));
+        return new ArithItem(this, types.get(REAL), new Lin(la_theory.newVar(), new Rational(Rational.ONE)));
     }
 
     public ArithItem newReal(final Rational val) {

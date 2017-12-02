@@ -167,7 +167,7 @@ public class Rational implements Comparable<Rational> {
         assert den != 0 || rhs.num != 0; // inf*0..
 
         // special cases..
-        if (rhs == ONE) {
+        if (rhs.eq(ONE)) {
             return;
         }
         if (eq(ONE)) {
