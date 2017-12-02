@@ -20,7 +20,7 @@ package it.cnr.istc.smt.lra;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class Rational implements Comparable<Rational> {
+public class Rational extends Number implements Comparable<Rational> {
 
     public static final Rational POSITIVE_INFINITY = new Rational(1, 0);
     public static final Rational NEGATIVE_INFINITY = new Rational(-1, 0);
@@ -433,6 +433,26 @@ public class Rational implements Comparable<Rational> {
             den = -den;
             num = -num;
         }
+    }
+
+    @Override
+    public int intValue() {
+        return (int) (num / den);
+    }
+
+    @Override
+    public long longValue() {
+        return num / den;
+    }
+
+    @Override
+    public float floatValue() {
+        return (float) num / den;
+    }
+
+    @Override
+    public double doubleValue() {
+        return (double) num / den;
     }
 
     /**
