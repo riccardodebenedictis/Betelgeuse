@@ -184,7 +184,7 @@ public class StateVariable extends SmartType {
                     Collection<Atom> end_atms = ending_atoms.get(end_val);
                     if (end_atms == null) {
                         end_atms = new ArrayList<>();
-                        ending_atoms.put(start_val, end_atms);
+                        ending_atoms.put(end_val, end_atms);
                     }
                     end_atms.add(atom);
                     pulses.add(start_val);

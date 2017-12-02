@@ -46,7 +46,7 @@ public class CausalGraphTest {
         }
 
         s.init();
-        s.read(new FileReader("domains/test_sv_1.rddl"));
+        s.read(new FileReader("domains/test_sv_3.rddl"));
         s.solve();
     }
 }

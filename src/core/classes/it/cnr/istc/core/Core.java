@@ -482,7 +482,10 @@ public abstract class Core implements IScope, IEnv {
                         case Type.STRING:
                             break;
                         default:
-                            var_theory.listen(((Item.VarItem) atm.get(field.getKey())).var, l);
+                            Item itm = atm.get(field.getKey());
+                            if (itm instanceof Item.VarItem) {
+                                var_theory.listen(((Item.VarItem) atm.get(field.getKey())).var, l);
+                            }
                     }
                 }
             }
