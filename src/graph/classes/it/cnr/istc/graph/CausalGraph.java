@@ -17,7 +17,6 @@
 package it.cnr.istc.graph;
 
 import it.cnr.istc.smt.LBool;
-import it.cnr.istc.smt.lra.Rational;
 import it.cnr.istc.solver.Flaw;
 import it.cnr.istc.solver.Resolver;
 import prefuse.Display;
@@ -244,7 +243,7 @@ public class CausalGraph extends Display implements SolverListener {
             Node flaw_node = g.addNode();
             flaw_node.set(VisualItem.LABEL, f.getLabel());
             flaw_node.set(NODE_TYPE, "flaw");
-            flaw_node.set(NODE_COST, Double.NEGATIVE_INFINITY);
+            flaw_node.set(NODE_COST, -f.getEstimatedCost().doubleValue());
             flaw_node.set(NODE_STATE, f.getSolver().sat_core.value(f.getPhi()).ordinal());
             flaws.put(f, flaw_node);
             for (Resolver cause : f.getCauses()) {
@@ -287,13 +286,12 @@ public class CausalGraph extends Display implements SolverListener {
             Node resolver_node = g.addNode();
             resolver_node.set(VisualItem.LABEL, r.getLabel());
             resolver_node.set(NODE_TYPE, "resolver");
-            Rational est_cst = r.getEstimatedCost();
-            resolver_node.set(NODE_COST, -(double) est_cst.num / est_cst.den);
+            resolver_node.set(NODE_COST, -r.getEstimatedCost().doubleValue());
             resolver_node.set(NODE_STATE, r.getSolver().sat_core.value(r.rho).ordinal());
             resolvers.put(r, resolver_node);
             Edge c_edge = g.addEdge(resolver_node, flaws.get(r.getEffect()));
             c_edge.set(EDGE_STATE, r.getSolver().sat_core.value(r.rho).ordinal());
-            flaws.get(r.getEffect()).set(NODE_COST, r.getEffect().getResolvers().stream().mapToDouble(res -> (Double) resolvers.get(res).get(NODE_COST)).max().getAsDouble());
+            flaws.get(r.getEffect()).set(NODE_COST, -r.getEffect().getEstimatedCost().doubleValue());
         }
     }
 
@@ -315,9 +313,8 @@ public class CausalGraph extends Display implements SolverListener {
         synchronized (m_vis) {
             assert resolvers.containsKey(r) : "the resolver does not yet exist..";
             Node resolver_node = resolvers.get(r);
-            Rational est_cst = r.getEstimatedCost();
-            resolver_node.set(NODE_COST, -(double) est_cst.num / est_cst.den);
-            flaws.get(r.getEffect()).set(NODE_COST, r.getEffect().getResolvers().stream().mapToDouble(res -> (Double) resolvers.get(res).get(NODE_COST)).max().getAsDouble());
+            resolver_node.set(NODE_COST, -r.getEstimatedCost().doubleValue());
+            flaws.get(r.getEffect()).set(NODE_COST, -r.getEffect().getEstimatedCost().doubleValue());
         }
     }
 
@@ -337,7 +334,7 @@ public class CausalGraph extends Display implements SolverListener {
             assert resolvers.containsKey(r) : "the resolver does not exist..";
             Edge c_edge = g.addEdge(flaws.get(f), resolvers.get(r));
             c_edge.set(EDGE_STATE, resolvers.get(r).get(NODE_STATE));
-            flaws.get(r.getEffect()).set(NODE_COST, r.getEffect().getResolvers().stream().mapToDouble(res -> (Double) resolvers.get(res).get(NODE_COST)).max().getAsDouble());
+            flaws.get(r.getEffect()).set(NODE_COST, -r.getEffect().getEstimatedCost().doubleValue());
         }
     }
 

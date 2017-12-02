@@ -26,6 +26,7 @@ import static it.cnr.istc.smt.lra.Rational.POSITIVE_INFINITY;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  *
@@ -40,7 +41,7 @@ public abstract class Flaw {
     private int phi; // the propositional variable indicates whether the flaw is active or not..
     final Collection<Resolver> resolvers = new ArrayList<>(); // the resolvers for this flaw..
     final Collection<Resolver> causes; // the causes for having this flaw..
-    final Collection<Resolver> supports = new ArrayList<>(); // the resolvers supported by this flaw..
+    final Collection<Resolver> supports; // the resolvers supported by this flaw..
 
     public Flaw(final Solver slv, final Collection<Resolver> causes) {
         this(slv, causes, false, false);
@@ -49,6 +50,7 @@ public abstract class Flaw {
     Flaw(final Solver slv, final Collection<Resolver> causes, final boolean exclusive, final boolean structural) {
         this.slv = slv;
         this.causes = causes;
+        this.supports = new ArrayList<>(causes);
         this.exclusive = exclusive;
         this.structural = structural;
         for (Resolver cause : causes) {
@@ -138,19 +140,19 @@ public abstract class Flaw {
     }
 
     public Rational getEstimatedCost() {
-        return expanded ? getBestResolver().getEstimatedCost() : POSITIVE_INFINITY;
+        Optional<Resolver> best_resolver = getBestResolver();
+        return best_resolver.isPresent() ? best_resolver.get().getEstimatedCost() : POSITIVE_INFINITY;
     }
 
     /**
-     * Returns the least expensive resolver according to their estimated cost.
-     * This method can be overridden in order to further refine the resolver
-     * selection procedure.
+     * Returns an optional representing the least expensive resolver, if any,
+     * according to their estimated cost. This method can be overridden in order
+     * to further refine the resolver selection procedure.
      *
-     * @return the least expensive resolver.
+     * @return an optional representing the least expensive resolver.
      */
-    public Resolver getBestResolver() {
-        assert expanded;
-        return resolvers.stream().min((Resolver r0, Resolver r1) -> r0.getEstimatedCost().compareTo(r1.getEstimatedCost())).get();
+    public Optional<Resolver> getBestResolver() {
+        return resolvers.stream().filter(res -> slv.sat_core.value(res.rho) != False).min((Resolver r0, Resolver r1) -> r0.getEstimatedCost().compareTo(r1.getEstimatedCost()));
     }
 
     public abstract String getLabel();

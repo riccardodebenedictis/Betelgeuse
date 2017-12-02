@@ -155,7 +155,7 @@ public class Solver extends Core implements Theory {
                 assert !f_next.getEstimatedCost().isPositiveInfinite();
                 if (!f_next.structural || !hasInconsistencies()) { // we run out of structural flaws, thus, we renew them..
                     // this is the next resolver to be assumed..
-                    res = f_next.getBestResolver();
+                    res = f_next.getBestResolver().get();
                     for (SolverListener l : listeners) {
                         l.currentResolver(res);
                     }
@@ -357,7 +357,7 @@ public class Solver extends Core implements Theory {
                 resolver_q.addAll(r.effect.supports);
                 while (!resolver_q.isEmpty()) {
                     Resolver c_res = resolver_q.poll(); // the current resolver whose cost might require an update..
-                    Rational c_cost = c_res.preconditions.stream().map(prec -> prec.resolvers.stream().map(prec_res -> prec_res.est_cost).min((Rational r0, Rational r1) -> r0.compareTo(r1)).get()).max((Rational r0, Rational r1) -> r0.compareTo(r1)).get();
+                    Rational c_cost = c_res.preconditions.stream().map(prec -> prec.getEstimatedCost()).max((Rational r0, Rational r1) -> r0.compareTo(r1)).get();
                     if (!c_res.est_cost.eq(c_cost)) {
                         if (!trail.isEmpty()) {
                             trail.peekLast().old_costs.putIfAbsent(c_res, c_res.est_cost);
@@ -371,7 +371,7 @@ public class Solver extends Core implements Theory {
 
                         // we notify the listeners that a resolver's cost has changed..
                         for (SolverListener l : listeners) {
-                            l.resolverCostChanged(r);
+                            l.resolverCostChanged(c_res);
                         }
 
                         // we check if the cost of the resolver's effect has changed as a consequence of the resolver's cost update..
