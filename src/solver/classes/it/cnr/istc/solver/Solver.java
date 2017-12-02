@@ -414,7 +414,7 @@ public class Solver extends Core implements Theory {
     public boolean propagate(Lit p, Collection<Lit> cnfl) {
         assert cnfl.isEmpty();
 
-        if (res == null) {
+        if (res != null) {
             Collection<Flaw> fs = phis.get(p.v);
             if (fs != null) {
                 // a decision has been taken about the presence of some flaws within the current partial solution..
