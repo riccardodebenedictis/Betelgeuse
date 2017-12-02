@@ -210,9 +210,9 @@ public abstract class Core implements IScope, IEnv {
     public ArithItem add(final ArithItem... ais) {
         Lin l = new Lin();
         boolean is_real = false;
-        for (ArithItem ai : ais) {
-            l.add(ai.l);
-            if (ai.type.name.equals(REAL)) {
+        for (int i = 0; i < ais.length; i++) {
+            l.add(ais[i].l);
+            if (ais[i].type.name.equals(REAL)) {
                 is_real = true;
             }
         }
@@ -221,10 +221,11 @@ public abstract class Core implements IScope, IEnv {
 
     public ArithItem sub(final ArithItem... ais) {
         Lin l = new Lin();
-        boolean is_real = false;
-        for (ArithItem ai : ais) {
-            l.sub(ai.l);
-            if (ai.type.name.equals(REAL)) {
+        l.add(ais[0].l);
+        boolean is_real = ais[0].type.name.equals(REAL);
+        for (int i = 1; i < ais.length; i++) {
+            l.sub(ais[i].l);
+            if (ais[i].type.name.equals(REAL)) {
                 is_real = true;
             }
         }
@@ -247,12 +248,13 @@ public abstract class Core implements IScope, IEnv {
 
     public ArithItem div(final ArithItem... ais) {
         Lin l = new Lin();
-        boolean is_real = false;
-        for (ArithItem ai : ais) {
-            assert la_theory.lb(ai.l).eq(la_theory.ub(ai.l)) : "non-linear expression..";
-            assert la_theory.value(ai.l).inf.eq(0);
-            l.div(la_theory.value(ai.l).rat);
-            if (ai.type.name.equals(REAL)) {
+        l.add(ais[0].l);
+        boolean is_real = ais[0].type.name.equals(REAL);
+        for (int i = 1; i < ais.length; i++) {
+            assert la_theory.lb(ais[i].l).eq(la_theory.ub(ais[i].l)) : "non-linear expression..";
+            assert la_theory.value(ais[i].l).inf.eq(0);
+            l.div(la_theory.value(ais[i].l).rat);
+            if (ais[i].type.name.equals(REAL)) {
                 is_real = true;
             }
         }
