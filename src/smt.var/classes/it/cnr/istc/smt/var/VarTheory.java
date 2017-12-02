@@ -50,6 +50,7 @@ public class VarTheory implements Theory {
 
     public VarTheory(final SatCore core) {
         this.sat_core = core;
+        core.addTheory(this);
     }
 
     /**
