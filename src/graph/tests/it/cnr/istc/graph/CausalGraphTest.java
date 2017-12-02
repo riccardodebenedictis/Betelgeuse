@@ -30,7 +30,7 @@ import org.junit.Test;
 public class CausalGraphTest {
 
     @Test
-    public void testGraph() {
+    public void testGraph() throws Exception {
         Solver s = new Solver();
 
         if (!GraphicsEnvironment.isHeadless()) {
@@ -46,26 +46,7 @@ public class CausalGraphTest {
         }
 
         s.init();
-    }
-
-    @Test
-    public void testRR0() throws Exception {
-        Solver s = new Solver();
-
-        if (!GraphicsEnvironment.isHeadless()) {
-            CausalGraph graph = new CausalGraph();
-            s.listen(graph);
-
-            JFrame frame = new JFrame("Causal graph");
-            frame.setSize(new Dimension(640, 480));
-            frame.setLocationRelativeTo(null);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(graph);
-            frame.setVisible(true);
-        }
-
-        s.init();
-        s.read(new FileReader("domains/test_rr_0.rddl"));
+        s.read(new FileReader("domains/test_sv_0.rddl"));
         s.solve();
     }
 }

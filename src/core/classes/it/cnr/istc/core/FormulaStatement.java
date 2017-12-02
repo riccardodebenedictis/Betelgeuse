@@ -65,7 +65,7 @@ public class FormulaStatement implements Statement {
             // we inherit the scope..
             p = scp.getPredicate(predicate_name);
             if (p.getScope() != p.getCore()) {
-                assignmnts.put(TAU, (Item) env);
+                assignmnts.put(TAU, env.get(TAU));
             }
         }
 

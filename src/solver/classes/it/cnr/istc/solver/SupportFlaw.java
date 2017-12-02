@@ -124,7 +124,7 @@ public class SupportFlaw extends Flaw {
                     Unify unify = new Unify(slv, this, atom, target_atom, unif_lits_arr);
                     assert slv.sat_core.value(unify.rho) != False;
                     add_resolver(unify);
-                    slv.newCausalLink(this, unify);
+                    slv.newCausalLink(target_flaw, unify);
                     slv.setEstimatedCost(unify, unify.cost);
                 }
             }

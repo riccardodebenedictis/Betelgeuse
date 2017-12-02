@@ -61,4 +61,52 @@ public class SolverTest {
         Solver s = new Solver();
         s.read(new FileReader(new File(Solver.class.getResource("test_2.rddl").toURI())));
     }
+
+    @Test
+    public void testRR0() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/test_rr_0.rddl"));
+        s.solve();
+    }
+
+    @Test
+    public void testRR1() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/test_rr_1.rddl"));
+        s.solve();
+    }
+
+    @Test
+    public void testSV0() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/test_sv_0.rddl"));
+        s.solve();
+    }
+
+    @Test
+    public void testSV1() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/test_sv_1.rddl"));
+        s.solve();
+    }
+
+    @Test
+    public void testSV2() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/test_sv_2.rddl"));
+        s.solve();
+    }
+
+    @Test
+    public void testSV3() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/test_sv_3.rddl"));
+        s.solve();
+    }
 }
