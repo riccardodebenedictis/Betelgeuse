@@ -727,7 +727,9 @@ class Lexer {
     }
 
     private Token finishId(final StringBuilder str) throws ParsingException {
-        assert is_id_part((char) ch);
+        if (!is_id_part((char) ch)) {
+            return mkIdToken(str.toString());
+        }
         str.append((char) ch);
         while ((ch = nextChar()) != -1 && is_id_part((char) ch)) {
             str.append((char) ch);
