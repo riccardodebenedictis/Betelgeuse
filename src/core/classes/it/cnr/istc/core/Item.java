@@ -99,6 +99,11 @@ public class Item extends Env implements IVarVal {
         }
     }
 
+    @Override
+    public String toString() {
+        return type.name + " " + super.toString();
+    }
+
     public static class BoolItem extends Item {
 
         public final Lit l;

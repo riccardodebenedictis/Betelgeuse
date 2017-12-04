@@ -18,6 +18,7 @@ package it.cnr.istc.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -53,5 +54,10 @@ public class Env implements IEnv {
         }
         // if not here, check any enclosing environment
         return env.get(name);
+    }
+
+    @Override
+    public String toString() {
+        return items.entrySet().stream().map(entry -> entry.getKey() + ": " + entry.getValue()).collect(Collectors.joining(", "));
     }
 }

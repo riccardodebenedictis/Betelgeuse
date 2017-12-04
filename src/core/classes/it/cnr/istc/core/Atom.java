@@ -28,4 +28,18 @@ public class Atom extends Item {
         super(core, env, p);
         this.sigma = core.sat_core.newVar();
     }
+
+    @Override
+    public String toString() {
+        switch (core.sat_core.value(sigma)) {
+            case False:
+                return "Unified " + super.toString();
+            case True:
+                return "Active " + super.toString();
+            case Undefined:
+                return super.toString();
+            default:
+                throw new AssertionError(core.sat_core.value(sigma).name());
+        }
+    }
 }
