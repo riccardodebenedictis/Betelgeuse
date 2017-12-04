@@ -815,7 +815,7 @@ class Parser {
                                 throw new ParsingException(tk.start_line, tk.start_pos, "expected ']'..");
                             }
                         }
-                        disjs.add(new Pair<>(stmnts, e));
+                        disjs.add(new Pair<>(new ArrayList<>(stmnts), e));
                         while (match(OR)) {
                             stmnts.clear();
                             e = null;
