@@ -1,0 +1,33 @@
+class Location {
+}
+
+class QAgent : StateVariable {
+
+    predicate At(Location l) {
+    }
+
+    predicate Swap() {
+    }
+
+    predicate PS() {
+    }
+
+    predicate MIX() {
+        duration == 1;
+    }
+}
+
+class SAgent : Agent {
+
+    predicate Swap(QAgent a0, QAgent a1) {
+        
+    }
+}
+
+predicate Adiacent(Location l0, Location l1) {
+    false;
+}
+
+predicate PSDuration(Location l0, Location l1, real duration) {
+    false;
+}

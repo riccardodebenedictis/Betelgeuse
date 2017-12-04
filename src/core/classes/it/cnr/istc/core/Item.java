@@ -250,14 +250,14 @@ public class Item extends Env implements IVarVal {
                         return (T) vals.iterator().next();
                     }
                     int[] c_vars = new int[vals.size()];
-                    IVarVal[] c_vals = new IVarVal[vals.size()];
+                    Item[] c_vals = new Item[vals.size()];
                     int i = 0;
                     for (IVarVal val : vals) {
                         c_vars[i] = core.var_theory.allows(var, val);
                         c_vals[i] = ((Item) val).get(name);
                         i++;
                     }
-                    itm = new VarItem(core, type, core.var_theory.newVar(c_vars, c_vals));
+                    itm = core.newEnum(accessible_fields.get(name).type, c_vars, c_vals);
                     items.put(name, itm);
                 }
                 return (T) itm;
