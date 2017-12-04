@@ -142,6 +142,11 @@ public class SupportFlaw extends Flaw {
         return "φ" + getPhi() + (is_fact ? " fact σ" : " goal σ") + atom.sigma + " " + atom.type.name;
     }
 
+    @Override
+    public String toString() {
+        return "φ" + getPhi() + (is_fact ? " fact σ" : " goal σ") + atom.sigma + " " + atom;
+    }
+
     public class ActivateFact extends Resolver {
 
         private final Atom atom;

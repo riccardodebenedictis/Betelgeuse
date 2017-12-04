@@ -74,4 +74,9 @@ public abstract class Resolver {
     protected abstract void expand() throws CoreException;
 
     public abstract String getLabel();
+
+    @Override
+    public String toString() {
+        return getLabel();
+    }
 }

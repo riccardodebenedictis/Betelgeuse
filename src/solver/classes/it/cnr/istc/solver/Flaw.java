@@ -156,4 +156,9 @@ public abstract class Flaw {
     }
 
     public abstract String getLabel();
+
+    @Override
+    public String toString() {
+        return getLabel();
+    }
 }

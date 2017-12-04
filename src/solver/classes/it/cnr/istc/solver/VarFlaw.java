@@ -66,5 +66,10 @@ public class VarFlaw extends Flaw {
         public String getLabel() {
             return "ρ" + rho + " val";
         }
+
+        @Override
+        public String toString() {
+            return "ρ" + rho + " " + val;
+        }
     }
 }

@@ -70,6 +70,7 @@ public class CausalGraph extends Display implements SolverListener {
     private static final String NODE_TYPE = "node_type";
     private static final String NODE_COST = "node_cost";
     private static final String NODE_STATE = "node_state";
+    private static final String NODE_CONTENT = "node_content";
     private static final String EDGE_STATE = "edge_state";
     private static final String EDGE_DECORATORS = "edgeDeco";
     private static final String NODE_DECORATORS = "nodeDeco";
@@ -97,6 +98,7 @@ public class CausalGraph extends Display implements SolverListener {
         g.getNodeTable().addColumn(NODE_TYPE, String.class);
         g.getNodeTable().addColumn(NODE_COST, Double.class);
         g.getNodeTable().addColumn(NODE_STATE, Integer.class);
+        g.getNodeTable().addColumn(NODE_CONTENT, Object.class);
         g.getEdgeTable().addColumn(VisualItem.LABEL, String.class);
         g.getEdgeTable().addColumn(EDGE_STATE, Integer.class);
 
@@ -207,7 +209,8 @@ public class CausalGraph extends Display implements SolverListener {
                             break;
                     }
                     t_text += ", cost: " + (-(Double) nodeData.get(NODE_COST));
-                    d.setToolTipText(t_text);
+//                    d.setToolTipText(t_text);
+                    d.setToolTipText(nodeData.get(NODE_CONTENT).toString());
                 }
             }
 
