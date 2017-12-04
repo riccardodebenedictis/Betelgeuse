@@ -486,7 +486,6 @@ public class LRATheory implements Theory {
             if (row.x != x_i) {
                 // x_k += a_kj * theta..
                 vals.get(row.x).add(theta.times(row.l.vars.get(x_j)));
-                assert consistent();
                 Collection<LRAValueListener> x_k_ls = listeners.get(x_j);
                 if (x_k_ls != null) {
                     for (LRAValueListener l : x_k_ls) {
@@ -497,15 +496,6 @@ public class LRATheory implements Theory {
         }
 
         pivot(x_i, x_j);
-    }
-
-    private boolean consistent() {
-        for (int i = 0; i < vals.size(); i++) {
-            if (assigns.get(lb_index(i)).value.gt(assigns.get(ub_index(i)).value)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void pivot(final int x_i, final int x_j) {
