@@ -27,6 +27,7 @@ import it.cnr.istc.smt.var.IVarVal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -230,7 +231,15 @@ public class Item extends Env implements IVarVal {
 
         @Override
         public <T extends Item> T get(String name) {
-            if (!type.getFields().containsKey(name)) {
+            Map<String, Field> accessible_fields = new HashMap<>();
+            Queue<Type> q = new ArrayDeque<>();
+            q.add(type);
+            while (!q.isEmpty()) {
+                Type tp = q.poll();
+                accessible_fields.putAll(tp.getFields());
+                q.addAll(tp.getSupertypes());
+            }
+            if (!accessible_fields.containsKey(name)) {
                 return super.get(name);
             } else {
                 Item itm = items.get(name);
