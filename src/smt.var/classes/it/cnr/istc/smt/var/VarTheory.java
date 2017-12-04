@@ -24,6 +24,7 @@ import static it.cnr.istc.smt.SatCore.TRUE_var;
 import it.cnr.istc.smt.Theory;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -33,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -94,7 +94,7 @@ public class VarTheory implements Theory {
     public int newVar(final int[] vars, final IVarVal[] vals) {
         assert vars.length == vals.length;
         assert vars.length > 0;
-        assert Stream.of(vars).allMatch(v -> is_contained_in.containsKey(v));
+        assert Arrays.stream(vars).allMatch(v -> is_contained_in.containsKey(v));
         final int id = assigns.size();
         assigns.add(new IdentityHashMap<>());
         for (int i = 0; i < vars.length; i++) {
