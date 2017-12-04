@@ -159,13 +159,13 @@ public class VarTheory implements Theory {
             b_var = sat_core.newVar();
             boolean nc;
             for (IVarVal l_val : l_vals) {
-                if (intersection.contains(l_val)) {
+                if (!intersection.contains(l_val)) {
                     nc = sat_core.newClause(new Lit(b_var, false), new Lit(assigns.get(l).get(l_val), false));
                     assert nc;
                 }
             }
             for (IVarVal r_val : r_vals) {
-                if (intersection.contains(r_val)) {
+                if (!intersection.contains(r_val)) {
                     nc = sat_core.newClause(new Lit(b_var, false), new Lit(assigns.get(r).get(r_val), false));
                     assert nc;
                 }

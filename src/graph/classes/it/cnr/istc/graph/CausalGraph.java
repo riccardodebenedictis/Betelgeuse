@@ -248,6 +248,7 @@ public class CausalGraph extends Display implements SolverListener {
             flaw_node.set(NODE_TYPE, "flaw");
             flaw_node.set(NODE_COST, -f.getEstimatedCost().doubleValue());
             flaw_node.set(NODE_STATE, f.getSolver().sat_core.value(f.getPhi()).ordinal());
+            flaw_node.set(NODE_CONTENT, f);
             flaws.put(f, flaw_node);
             for (Resolver cause : f.getCauses()) {
                 Edge c_edge = g.addEdge(flaw_node, resolvers.get(cause));
@@ -291,6 +292,7 @@ public class CausalGraph extends Display implements SolverListener {
             resolver_node.set(NODE_TYPE, "resolver");
             resolver_node.set(NODE_COST, -r.getEstimatedCost().doubleValue());
             resolver_node.set(NODE_STATE, r.getSolver().sat_core.value(r.rho).ordinal());
+            resolver_node.set(NODE_CONTENT, r);
             resolvers.put(r, resolver_node);
             Edge c_edge = g.addEdge(resolver_node, flaws.get(r.getEffect()));
             c_edge.set(EDGE_STATE, r.getSolver().sat_core.value(r.rho).ordinal());
