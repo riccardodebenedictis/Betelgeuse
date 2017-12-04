@@ -294,9 +294,9 @@ public class LRATheory implements Theory {
         Assertion a = v_asrts.get(p.v);
         switch (a.op) {
             case LEq:
-                return p.sign ? assert_upper(a.x, a.v, p, cnfl) : assert_lower(a.x, a.v, p, cnfl);
+                return p.sign ? assert_upper(a.x, new InfRational(a.v), p, cnfl) : assert_lower(a.x, new InfRational(a.v), p, cnfl);
             case GEq:
-                return p.sign ? assert_lower(a.x, a.v, p, cnfl) : assert_upper(a.x, a.v, p, cnfl);
+                return p.sign ? assert_lower(a.x, new InfRational(a.v), p, cnfl) : assert_upper(a.x, new InfRational(a.v), p, cnfl);
             default:
                 throw new AssertionError(a.op.name());
         }
@@ -316,7 +316,7 @@ public class LRATheory implements Theory {
                 Optional<Map.Entry<Integer, Rational>> x_j = x_i.get().getValue().l.vars.entrySet().stream().filter(term -> (term.getValue().isPositive() && value(term.getKey()).lt(ub(term.getKey()))) || (term.getValue().isNegative() && value(term.getKey()).gt(lb(term.getKey())))).findFirst();
                 if (x_j.isPresent()) {
                     // var x_j can be used to increase the value of x_i..
-                    pivot_and_update(x_i.get().getKey(), x_j.get().getKey(), lb(x_i.get().getKey()));
+                    pivot_and_update(x_i.get().getKey(), x_j.get().getKey(), new InfRational(lb(x_i.get().getKey())));
                 } else {
                     // we generate an explanation for the conflict..
                     for (Map.Entry<Integer, Rational> term : x_i.get().getValue().l.vars.entrySet()) {
@@ -335,7 +335,7 @@ public class LRATheory implements Theory {
                 Optional<Map.Entry<Integer, Rational>> x_j = x_i.get().getValue().l.vars.entrySet().stream().filter(term -> (term.getValue().isNegative() && value(term.getKey()).lt(ub(term.getKey()))) || (term.getValue().isPositive() && value(term.getKey()).gt(lb(term.getKey())))).findFirst();
                 if (x_j.isPresent()) {
                     // var x_j can be used to decrease the value of x_i..
-                    pivot_and_update(x_i.get().getKey(), x_j.get().getKey(), ub(x_i.get().getKey()));
+                    pivot_and_update(x_i.get().getKey(), x_j.get().getKey(), new InfRational(ub(x_i.get().getKey())));
                 } else {
                     // we generate an explanation for the conflict..
                     for (Map.Entry<Integer, Rational> term : x_i.get().getValue().l.vars.entrySet()) {
@@ -380,7 +380,7 @@ public class LRATheory implements Theory {
             assigns.set(lb_index(x_i), new Bound(val, p));
 
             if (vals.get(x_i).lt(val) && !tableau.containsKey(x_i)) {
-                update(x_i, val);
+                update(x_i, new InfRational(val));
             }
 
             // unate propagation..
@@ -415,7 +415,7 @@ public class LRATheory implements Theory {
             assigns.set(ub_index(x_i), new Bound(val, p));
 
             if (vals.get(x_i).gt(val) && !tableau.containsKey(x_i)) {
-                update(x_i, val);
+                update(x_i, new InfRational(val));
             }
 
             // unate propagation..
@@ -486,6 +486,7 @@ public class LRATheory implements Theory {
             if (row.x != x_i) {
                 // x_k += a_kj * theta..
                 vals.get(row.x).add(theta.times(row.l.vars.get(x_j)));
+                assert consistent();
                 Collection<LRAValueListener> x_k_ls = listeners.get(x_j);
                 if (x_k_ls != null) {
                     for (LRAValueListener l : x_k_ls) {
@@ -496,6 +497,15 @@ public class LRATheory implements Theory {
         }
 
         pivot(x_i, x_j);
+    }
+
+    private boolean consistent() {
+        for (int i = 0; i < vals.size(); i++) {
+            if (assigns.get(lb_index(i)).value.gt(assigns.get(ub_index(i)).value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void pivot(final int x_i, final int x_j) {

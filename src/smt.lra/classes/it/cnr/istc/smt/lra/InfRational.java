@@ -42,6 +42,11 @@ public class InfRational implements Comparable<InfRational> {
         this.inf = new Rational();
     }
 
+    public InfRational(final InfRational inf_rat) {
+        this.rat = new Rational(inf_rat.rat);
+        this.inf = new Rational(inf_rat.inf);
+    }
+
     public InfRational(final long num, final long den) {
         this.rat = new Rational(num, den);
         this.inf = new Rational();
