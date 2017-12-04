@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -67,5 +68,16 @@ public class Predicate extends Type {
         for (Statement stmnt : statements) {
             stmnt.execute(this, c_env);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append("(").append(arguments.stream().map(arg -> arg.type.name + " " + arg.name).collect(Collectors.joining(", "))).append(") {").append("\n");
+        for (Statement stmnt : statements) {
+            sb.append(stmnt.toString()).append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

@@ -19,6 +19,7 @@ package it.cnr.istc.core;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -65,5 +66,21 @@ public class Method extends Scope {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (return_type != null) {
+            sb.append(return_type.name).append(" ");
+        } else {
+            sb.append("void ");
+        }
+        sb.append(name).append("(").append(arguments.stream().map(arg -> arg.type.name + " " + arg.name).collect(Collectors.joining(", "))).append(") {").append("\n");
+        for (Statement stmnt : statements) {
+            sb.append(stmnt.toString()).append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

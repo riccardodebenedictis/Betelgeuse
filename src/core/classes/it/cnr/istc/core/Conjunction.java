@@ -44,4 +44,14 @@ public class Conjunction extends Scope {
             stmnt.execute(this, c_env);
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[").append(cost.toString()).append("]").append("\n");
+        for (Statement stmnt : statements) {
+            sb.append(stmnt.toString()).append("\n");
+        }
+        return sb.toString();
+    }
 }

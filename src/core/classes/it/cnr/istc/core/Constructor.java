@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -108,5 +109,16 @@ public class Constructor extends Scope {
         for (Statement stmnt : statements) {
             stmnt.execute(this, e);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(((Type) scope).name).append("(").append(arguments.stream().map(arg -> arg.type.name + " " + arg.name).collect(Collectors.joining(", "))).append(") {").append("\n");
+        for (Statement stmnt : statements) {
+            sb.append(stmnt.toString()).append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

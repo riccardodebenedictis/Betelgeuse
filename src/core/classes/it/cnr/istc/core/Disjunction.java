@@ -18,6 +18,7 @@ package it.cnr.istc.core;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -34,5 +35,10 @@ public class Disjunction extends Scope {
 
     public List<Conjunction> getConjunctions() {
         return Collections.unmodifiableList(conjunctions);
+    }
+
+    @Override
+    public String toString() {
+        return conjunctions.stream().map(cnj -> "{" + cnj.toString() + "}").collect(Collectors.joining(" or "));
     }
 }
