@@ -67,6 +67,10 @@ public class Solver extends Core implements Theory {
     private final Deque<Layer> trail = new ArrayDeque<>(); // the list of resolvers in chronological order..
     private final Collection<SolverListener> listeners = new ArrayList<>();
 
+    public Solver() {
+        sat_core.addTheory(this);
+    }
+
     public void init() {
         try {
             read(new FileReader(new File(Solver.class.getResource("init.rddl").toURI())));
