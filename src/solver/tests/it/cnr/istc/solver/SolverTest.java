@@ -109,4 +109,20 @@ public class SolverTest {
         s.read(new FileReader("domains/test_sv_3.rddl"));
         s.solve();
     }
+
+    @Test
+    public void testLogisticsSV0() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/logistics_state_variables/logistics_domain.rddl"), new FileReader("domains/logistics_state_variables/logistics_problem_0.rddl"));
+        s.solve();
+    }
+
+    @Test
+    public void testLogisticsSV1() throws Exception {
+        Solver s = new Solver();
+        s.init();
+        s.read(new FileReader("domains/logistics_state_variables/logistics_domain.rddl"), new FileReader("domains/logistics_state_variables/logistics_problem_1.rddl"));
+        s.solve();
+    }
 }
