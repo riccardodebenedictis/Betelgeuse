@@ -58,6 +58,8 @@ import java.util.Set;
 public class Solver extends Core implements Theory {
 
     private Resolver res = null;
+    private int accuracy = 1; // the current heuristic accuracy..
+    private final Map<Set<Flaw>, HyperFlaw> hyper_flaws = new HashMap<>(); // the enclosing flaws for each hyper-flaw..
     private int gamma; // this variable represents the validity of the current graph..
     private Queue<Flaw> flaw_q = new ArrayDeque<>();
     final Set<Flaw> flaws = new HashSet<>(); // the current active flaws..
@@ -78,6 +80,10 @@ public class Solver extends Core implements Theory {
         } catch (CoreException | FileNotFoundException | URISyntaxException ex) {
             throw new AssertionError("something went wrong..", ex);
         }
+    }
+
+    public int getAccuracy() {
+        return accuracy;
     }
 
     @Override
