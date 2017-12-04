@@ -246,6 +246,7 @@ public class Item extends Env implements IVarVal {
                     for (IVarVal val : vals) {
                         c_vars[i] = core.var_theory.allows(var, val);
                         c_vals[i] = ((Item) val).get(name);
+                        i++;
                     }
                     itm = new VarItem(core, type, core.var_theory.newVar(c_vars, c_vals));
                     items.put(name, itm);
