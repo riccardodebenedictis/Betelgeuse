@@ -67,7 +67,12 @@ public class HyperFlaw extends Flaw {
 
     @Override
     public String getLabel() {
-        return Arrays.stream(flaws).map(flaw -> flaw.getLabel()).collect(Collectors.joining("\n"));
+        return "φ" + getPhi() + " hyper-flaw {" + Arrays.stream(flaws).map(lf -> lf.getLabel()).collect(Collectors.joining(", ")) + "}";
+    }
+
+    @Override
+    public String toString() {
+        return "<html>φ" + getPhi() + " hyper-flaw<br>" + Arrays.stream(flaws).map(lf -> lf.toString()).collect(Collectors.joining("<br>")) + "</html>";
     }
 
     public class HyperResolver extends Resolver {
@@ -112,7 +117,12 @@ public class HyperFlaw extends Flaw {
 
         @Override
         public String getLabel() {
-            return Arrays.stream(ress).map(res -> res.getLabel()).collect(Collectors.joining("\n"));
+            return "ρ" + rho + " hyper-resolver {" + Arrays.stream(ress).map(res -> res.getLabel()).collect(Collectors.joining(", ")) + "}";
+        }
+
+        @Override
+        public String toString() {
+            return "<html>ρ" + rho + " hyper-resolver<br>" + Arrays.stream(ress).map(res -> res.toString()).collect(Collectors.joining("<br>")) + "</html>";
         }
     }
 }

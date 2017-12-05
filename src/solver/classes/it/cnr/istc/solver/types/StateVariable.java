@@ -37,6 +37,7 @@ import it.cnr.istc.solver.SmartType;
 import it.cnr.istc.solver.Solver;
 import it.cnr.istc.solver.SupportFlaw;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -259,6 +260,11 @@ public class StateVariable extends SmartType {
         @Override
         public String getLabel() {
             return "φ" + getPhi() + " sv-flaw";
+        }
+
+        @Override
+        public String toString() {
+            return "<html>φ" + getPhi() + " sv-flaw<br>" + Arrays.stream(overlapping_atoms).map(atm -> atm.toString()).collect(Collectors.joining("<br>")) + "</html>";
         }
     }
 

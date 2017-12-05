@@ -266,6 +266,11 @@ public class ReusableResource extends SmartType {
         public String getLabel() {
             return "φ" + getPhi() + " rr-flaw";
         }
+
+        @Override
+        public String toString() {
+            return "<html>φ" + getPhi() + " sv-flaw<br>" + Arrays.stream(overlapping_atoms).map(atm -> atm.toString()).collect(Collectors.joining("<br>")) + "</html>";
+        }
     }
 
     private static class OrderResolver extends Resolver {
