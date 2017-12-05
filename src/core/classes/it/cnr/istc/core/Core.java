@@ -464,12 +464,12 @@ public abstract class Core implements IScope, IEnv {
 
     public void listen(final Atom atm, final AtomListener l) {
         Queue<Type> q = new ArrayDeque<>();
-        q.add((Type) atm.type.getScope());
+        q.add(atm.type);
         while (!q.isEmpty()) {
             Type tp = q.poll();
             for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
                 if (!field.getValue().synthetic) {
-                    switch (field.getValue().name) {
+                    switch (field.getValue().type.name) {
                         case Type.BOOL:
                             sat_core.listen(((Item.BoolItem) atm.get(field.getKey())).l.v, l);
                             break;
@@ -495,12 +495,12 @@ public abstract class Core implements IScope, IEnv {
 
     public void forget(final Atom atm, final AtomListener l) {
         Queue<Type> q = new ArrayDeque<>();
-        q.add((Type) atm.type.getScope());
+        q.add(atm.type);
         while (!q.isEmpty()) {
             Type tp = q.poll();
             for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
                 if (!field.getValue().synthetic) {
-                    switch (field.getValue().name) {
+                    switch (field.getValue().type.name) {
                         case Type.BOOL:
                             sat_core.forget(((Item.BoolItem) atm.get(field.getKey())).l.v, l);
                             break;

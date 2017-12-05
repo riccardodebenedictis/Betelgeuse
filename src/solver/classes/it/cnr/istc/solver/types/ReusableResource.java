@@ -141,14 +141,16 @@ public class ReusableResource extends SmartType {
                     if (tau instanceof Item.VarItem) {
                         for (IVarVal val : core.var_theory.value(((Item.VarItem) tau).var)) {
                             Item c_val = (Item) val;
-                            Collection<Atom> atms = rr_atoms.get(c_val);
-                            if (atms == null) {
-                                atms = new ArrayList<>();
-                                rr_atoms.put(c_val, atms);
+                            if (to_check.contains(c_val)) {
+                                Collection<Atom> atms = rr_atoms.get(c_val);
+                                if (atms == null) {
+                                    atms = new ArrayList<>();
+                                    rr_atoms.put(c_val, atms);
+                                }
+                                atms.add(atom);
                             }
-                            atms.add(atom);
                         }
-                    } else {
+                    } else if (to_check.contains(tau)) {
                         Collection<Atom> atms = rr_atoms.get(tau);
                         if (atms == null) {
                             atms = new ArrayList<>();
@@ -158,6 +160,7 @@ public class ReusableResource extends SmartType {
                     }
                 }
             }
+            to_check.clear();
 
             // we collect the peaks..
             Collection<Flaw> peaks = new ArrayList<>();
