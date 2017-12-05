@@ -61,9 +61,12 @@ public abstract class Resolver {
             if (ress == null) {
                 ress = new ArrayList<>();
                 slv.rhos.put(rho, ress);
+                if (!slv.phis.containsKey(rho)) {
+                    // the rho variable is neither in the rhos nor in the phis..
+                    slv.sat_core.bind(rho, slv);
+                }
             }
             ress.add(this);
-            slv.sat_core.bind(rho, slv);
         }
     }
 

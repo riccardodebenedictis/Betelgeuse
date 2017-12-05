@@ -93,9 +93,12 @@ public abstract class Flaw {
                 if (fls == null) {
                     fls = new ArrayList<>();
                     slv.phis.put(phi, fls);
+                    if (!slv.rhos.containsKey(phi)) {
+                        // the rho variable is neither in the phis nor in the rhos..
+                        slv.sat_core.bind(phi, slv);
+                    }
                 }
                 fls.add(this);
-                slv.sat_core.bind(phi, slv);
                 break;
             default:
                 throw new AssertionError(slv.sat_core.value(phi).name());

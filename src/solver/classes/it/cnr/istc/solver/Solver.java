@@ -480,28 +480,27 @@ public class Solver extends Core implements Theory {
     public boolean propagate(Lit p, Collection<Lit> cnfl) {
         assert cnfl.isEmpty();
 
-        if (res != null) {
-            Collection<Flaw> fs = phis.get(p.v);
-            if (fs != null) {
-                // a decision has been taken about the presence of some flaws within the current partial solution..
-                for (Flaw f : fs) {
-                    assert !flaws.contains(f);
-                    if (p.sign) {
-                        // this flaw has been added to the current partial solution..
-                        flaws.add(f);
-                        if (!trail.isEmpty()) {
-                            trail.peekLast().new_flaws.add(f);
-                        }
+        Collection<Flaw> fs;
+        if ((fs = phis.get(p.v)) != null) {
+            // a decision has been taken about the presence of some flaws within the current partial solution..
+            for (Flaw f : fs) {
+                assert !flaws.contains(f);
+                if (p.sign) {
+                    // this flaw has been added to the current partial solution..
+                    flaws.add(f);
+                    if (!trail.isEmpty()) {
+                        trail.peekLast().new_flaws.add(f);
                     }
                 }
             }
+        }
 
-            Collection<Resolver> rs;
-            if ((rs = rhos.get(p.v)) != null) {
-                for (Resolver r : rs) {
-                    if (!p.sign) {
-                        setEstimatedCost(r, POSITIVE_INFINITY);
-                    }
+        Collection<Resolver> rs;
+        if ((rs = rhos.get(p.v)) != null) {
+            // a decision has been taken about the presence of some resolvers within the current partial solution..
+            for (Resolver r : rs) {
+                if (!p.sign) {
+                    setEstimatedCost(r, POSITIVE_INFINITY);
                 }
             }
         }
@@ -517,35 +516,35 @@ public class Solver extends Core implements Theory {
 
     @Override
     public void push() {
+        Layer layer = new Layer(res);
+        trail.push(layer);
         if (res != null) {
-            Layer layer = new Layer(res);
             layer.solved_flaws.add(res.effect);
             flaws.remove(res.effect);
-            trail.push(layer);
         }
     }
 
     @Override
     public void pop() {
-        if (res != null) {
-            // we reintroduce the solved flaw..
-            Layer layer = trail.pop();
+        // we reintroduce the solved flaw..
+        Layer layer = trail.pop();
+        if (layer.res != null) {
             for (SolverListener l : listeners) {
                 l.currentResolver(layer.res);
             }
-            // we reintroduce the solved flaw..
-            flaws.addAll(layer.solved_flaws);
-            // we erase the new flaws..
-            flaws.removeAll(layer.new_flaws);
-            // we restore the resolvers' estimated costs..
+        }
+        // we reintroduce the solved flaw..
+        flaws.addAll(layer.solved_flaws);
+        // we erase the new flaws..
+        flaws.removeAll(layer.new_flaws);
+        // we restore the resolvers' estimated costs..
+        for (Map.Entry<Resolver, Rational> cost : layer.old_costs.entrySet()) {
+            cost.getKey().est_cost = cost.getValue();
+        }
+        // we notify the listeners that the cost of some resolvers has been restored..
+        for (SolverListener l : listeners) {
             for (Map.Entry<Resolver, Rational> cost : layer.old_costs.entrySet()) {
-                cost.getKey().est_cost = cost.getValue();
-            }
-            // we notify the listeners that the cost of some resolvers has been restored..
-            for (SolverListener l : listeners) {
-                for (Map.Entry<Resolver, Rational> cost : layer.old_costs.entrySet()) {
-                    l.resolverCostChanged(cost.getKey());
-                }
+                l.resolverCostChanged(cost.getKey());
             }
         }
     }
