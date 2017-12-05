@@ -452,7 +452,7 @@ public class Solver extends Core implements Theory {
     }
 
     private Flaw select_flaw() {
-        assert flaws.stream().allMatch(flaw -> flaw.isExpanded() && sat_core.value(flaw.getPhi()) == True);
+        assert flaws.stream().allMatch(flaw -> flaw.isExpanded() && sat_core.value(flaw.getPhi()) == True && !flaw.getEstimatedCost().isPositiveInfinite());
         // this is the next flaw to be solved (i.e., the most expensive one)..
         Flaw f_next = null;
         Iterator<Flaw> f_it = flaws.iterator();
