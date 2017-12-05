@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 public class HyperFlaw extends Flaw {
 
-    private final Flaw[] flaws;
+    final Flaw[] flaws;
 
     HyperFlaw(Solver slv, final Resolver cause, Flaw... flaws) {
         super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause));
@@ -89,9 +89,24 @@ public class HyperFlaw extends Flaw {
             if (precs.size() > slv.getAccuracy()) {
                 // we create sets having the size of the accuracy..
                 for (Flaw[] c_precs : new CombinationGenerator<>(slv.getAccuracy(), precs.toArray(new Flaw[precs.size()]))) {
+                    HyperFlaw hf = slv.getHyperFlaw(c_precs);
+                    if (hf != null) {
+                        slv.newCausalLink(hf, this);
+                        slv.setEstimatedCost(this, hf.getEstimatedCost());
+                    } else {
+                        slv.newFlaw(new HyperFlaw(slv, this, c_precs));
+                    }
                 }
             } else if (!precs.isEmpty()) {
                 // we create a new super flaw including all the preconditions of this resolver..
+                Flaw[] c_precs = precs.toArray(new Flaw[precs.size()]);
+                HyperFlaw hf = slv.getHyperFlaw(c_precs);
+                if (hf != null) {
+                    slv.newCausalLink(hf, this);
+                    slv.setEstimatedCost(this, hf.getEstimatedCost());
+                } else {
+                    slv.newFlaw(new HyperFlaw(slv, this, c_precs));
+                }
             }
         }
 

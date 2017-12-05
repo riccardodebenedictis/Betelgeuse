@@ -16,6 +16,7 @@
  */
 package it.cnr.istc.solver;
 
+import it.cnr.istc.common.CombinationGenerator;
 import it.cnr.istc.smt.lra.Rational;
 import static it.cnr.istc.smt.lra.Rational.POSITIVE_INFINITY;
 import it.cnr.istc.core.Atom;
@@ -41,6 +42,7 @@ import java.io.FileReader;
 import java.net.URISyntaxException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -249,31 +251,76 @@ public class Solver extends Core implements Theory {
         }
     }
 
+    private void increase_accuracy() throws CoreException {
+        assert sat_core.rootLevel();
+        accuracy++;
+
+        // we clean up hyper-flaws, trivial and already solved flaws..
+        Iterator<Flaw> f_it = flaws.iterator();
+        while (f_it.hasNext()) {
+            Flaw next = f_it.next();
+            if (next instanceof HyperFlaw || next.resolvers.stream().anyMatch(c_res -> sat_core.value(c_res.rho) == True)) {
+                // we have either a trivial (i.e. has only one resolver) or an already solved flaw..
+                if (!trail.isEmpty()) {
+                    trail.peekLast().solved_flaws.add(next);
+                }
+                f_it.remove();
+            }
+        }
+
+        if (flaws.size() >= accuracy) {
+            for (Flaw[] fs : new CombinationGenerator<>(accuracy, flaws.toArray(new Flaw[flaws.size()]))) {
+                newFlaw(new HyperFlaw(this, res, fs));
+            }
+        } else {
+            newFlaw(new HyperFlaw(this, res, flaws.toArray(new Flaw[flaws.size()])));
+        }
+
+        // we restart the building graph procedure..
+        build();
+    }
+
     private void expandFlaw(final Flaw f) throws CoreException {
         assert !f.isExpanded();
         // we expand the flaw..
+        if (f instanceof HyperFlaw) {
+            // we expand the unexpanded enclosing flaws..
+            for (Flaw flaw : ((HyperFlaw) f).flaws) {
+                if (!flaw.isExpanded()) {
+                    // we expand the enclosing flaw..
+                    flaw.expand();
+                    // ..and remove it from the flaw queue..
+                    flaw_q.remove(flaw);
+                    // we also apply the enclosing flaw's resolvers..
+                    for (Resolver r : flaw.resolvers) {
+                        applyResolver(r);
+                    }
+                }
+            }
+        }
         f.expand();
+        for (Resolver r : f.resolvers) {
+            applyResolver(r);
+        }
         if (!sat_core.check()) {
             throw new UnsolvableException();
         }
-        for (Resolver r : f.resolvers) {
-            res = r;
-            setVar(r.rho);
-            try {
-                r.expand();
-            } catch (InconsistencyException e) {
-                if (!sat_core.newClause(new Lit(r.rho, false))) {
-                    throw new UnsolvableException();
-                }
-            }
-            if (!sat_core.check()) {
+    }
+
+    private void applyResolver(final Resolver r) throws CoreException {
+        res = r;
+        setVar(r.rho);
+        try {
+            r.expand();
+        } catch (InconsistencyException e) {
+            if (!sat_core.newClause(new Lit(r.rho, false))) {
                 throw new UnsolvableException();
             }
-            restoreVar();
-            res = null;
-            if (r.preconditions.isEmpty() && sat_core.value(r.rho) != False) {
-                setEstimatedCost(r, new Rational());
-            }
+        }
+        restoreVar();
+        res = null;
+        if (r.preconditions.isEmpty() && sat_core.value(r.rho) != False) {
+            setEstimatedCost(r, new Rational());
         }
     }
 
@@ -313,13 +360,22 @@ public class Solver extends Core implements Theory {
         }
     }
 
-    private void newFlaw(final Flaw f) {
+    void newFlaw(final Flaw f) {
+        if (f instanceof HyperFlaw) {
+            HashSet<Flaw> c_flaws = new HashSet<>(Arrays.asList(((HyperFlaw) f).flaws));
+            assert !hyper_flaws.containsKey(c_flaws);
+            hyper_flaws.put(c_flaws, (HyperFlaw) f);
+        }
         f.init(); // flaws' initialization requires being at root-level..
         flaw_q.add(f);
         // we notify the listeners that a new flaw has arised..
         for (SolverListener l : listeners) {
             l.newFlaw(f);
         }
+    }
+
+    HyperFlaw getHyperFlaw(Flaw[] fs) {
+        return hyper_flaws.get(new HashSet<>(Arrays.asList(fs)));
     }
 
     void newResolver(final Resolver r) {
@@ -402,7 +458,7 @@ public class Solver extends Core implements Theory {
         Iterator<Flaw> f_it = flaws.iterator();
         while (f_it.hasNext()) {
             Flaw next = f_it.next();
-            if (next.resolvers.stream().anyMatch(res -> sat_core.value(res.rho) == True)) {
+            if (next.resolvers.stream().anyMatch(c_res -> sat_core.value(c_res.rho) == True)) {
                 // we have either a trivial (i.e. has only one resolver) or an already solved flaw..
                 if (!trail.isEmpty()) {
                     trail.peekLast().solved_flaws.add(next);
