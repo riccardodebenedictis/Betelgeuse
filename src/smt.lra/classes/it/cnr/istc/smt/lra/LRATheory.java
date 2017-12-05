@@ -354,13 +354,13 @@ public class LRATheory implements Theory {
 
     @Override
     public void push() {
-        layers.add(new HashMap<>());
+        layers.addFirst(new HashMap<>());
     }
 
     @Override
     public void pop() {
         // we restore the variables' bounds and their reason..
-        for (Map.Entry<Integer, Bound> bound : layers.pollLast().entrySet()) {
+        for (Map.Entry<Integer, Bound> bound : layers.pollFirst().entrySet()) {
             assigns.set(bound.getKey(), bound.getValue());
         }
     }
@@ -374,8 +374,8 @@ public class LRATheory implements Theory {
             cnfl.add(assigns.get(ub_index(x_i)).reason.not()); // or what asserted the upper bound is false..
             return false;
         } else {
-            if (!layers.isEmpty() && !layers.getLast().containsKey(lb_index(x_i))) {
-                layers.getLast().put(lb_index(x_i), new Bound(lb(x_i), assigns.get(lb_index(x_i)).reason));
+            if (!layers.isEmpty() && !layers.peekFirst().containsKey(lb_index(x_i))) {
+                layers.peekFirst().put(lb_index(x_i), new Bound(lb(x_i), assigns.get(lb_index(x_i)).reason));
             }
             assigns.set(lb_index(x_i), new Bound(val, p));
 
@@ -409,8 +409,8 @@ public class LRATheory implements Theory {
             cnfl.add(assigns.get(lb_index(x_i)).reason.not()); // or what asserted the lower bound is false..
             return false;
         } else {
-            if (!layers.isEmpty() && !layers.getLast().containsKey(ub_index(x_i))) {
-                layers.getLast().put(ub_index(x_i), new Bound(ub(x_i), assigns.get(ub_index(x_i)).reason));
+            if (!layers.isEmpty() && !layers.peekFirst().containsKey(ub_index(x_i))) {
+                layers.peekFirst().put(ub_index(x_i), new Bound(ub(x_i), assigns.get(ub_index(x_i)).reason));
             }
             assigns.set(ub_index(x_i), new Bound(val, p));
 

@@ -209,12 +209,12 @@ public class VarTheory implements Theory {
 
     @Override
     public void push() {
-        layers.add(new HashSet<>());
+        layers.addFirst(new HashSet<>());
     }
 
     @Override
     public void pop() {
-        for (Integer v : layers.pollLast()) {
+        for (Integer v : layers.pollFirst()) {
             Collection<VarValueListener> ls = listeners.get(v);
             if (ls != null) {
                 for (VarValueListener l : ls) {

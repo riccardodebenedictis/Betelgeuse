@@ -41,9 +41,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -463,10 +463,10 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public void listen(final Atom atm, final AtomListener l) {
-        Queue<Type> q = new ArrayDeque<>();
-        q.add(atm.type);
+        Deque<Type> q = new ArrayDeque<>();
+        q.addLast(atm.type);
         while (!q.isEmpty()) {
-            Type tp = q.poll();
+            Type tp = q.pollFirst();
             for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
                 if (!field.getValue().synthetic) {
                     switch (field.getValue().type.name) {
@@ -494,10 +494,10 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public void forget(final Atom atm, final AtomListener l) {
-        Queue<Type> q = new ArrayDeque<>();
-        q.add(atm.type);
+        Deque<Type> q = new ArrayDeque<>();
+        q.addFirst(atm.type);
         while (!q.isEmpty()) {
-            Type tp = q.poll();
+            Type tp = q.pollFirst();
             for (Map.Entry<String, Field> field : tp.getFields().entrySet()) {
                 if (!field.getValue().synthetic) {
                     switch (field.getValue().type.name) {

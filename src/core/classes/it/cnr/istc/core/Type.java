@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Stream;
 
 /**
@@ -75,10 +75,10 @@ public class Type extends Scope {
     }
 
     public boolean isAssignableFrom(final Type t) {
-        Queue<Type> q = new ArrayDeque<>();
-        q.add(t);
+        Deque<Type> q = new ArrayDeque<>();
+        q.addLast(t);
         while (!q.isEmpty()) {
-            Type tp = q.poll();
+            Type tp = q.pollFirst();
             if (tp == this) {
                 return true;
             }
@@ -250,10 +250,10 @@ public class Type extends Scope {
 
     public Item newInstance(final IEnv env) throws CoreException {
         Item i = new Item(core, env, this);
-        Queue<Type> q = new ArrayDeque<>();
-        q.add(this);
+        Deque<Type> q = new ArrayDeque<>();
+        q.addLast(this);
         while (!q.isEmpty()) {
-            Type type = q.poll();
+            Type type = q.pollFirst();
             type.instances.add(i);
             q.addAll(type.supertypes);
         }

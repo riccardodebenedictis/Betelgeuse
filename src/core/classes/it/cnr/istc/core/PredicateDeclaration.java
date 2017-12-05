@@ -19,8 +19,8 @@ package it.cnr.istc.core;
 import it.cnr.istc.common.Pair;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 
 /**
  *
@@ -64,10 +64,10 @@ class PredicateDeclaration {
             ((Core) scp).newPredicates(p);
         } else {
             ((Type) scp).newPredicates(p);
-            Queue<Type> q = new ArrayDeque<>();
-            q.add((Type) scp);
+            Deque<Type> q = new ArrayDeque<>();
+            q.addLast((Type) scp);
             while (!q.isEmpty()) {
-                Type tp = q.poll();
+                Type tp = q.pollFirst();
                 tp.newPredicate(p);
                 q.addAll(tp.getSupertypes());
             }

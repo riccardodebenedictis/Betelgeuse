@@ -21,11 +21,11 @@ import static it.cnr.istc.core.IScope.TAU;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.var.IVarVal;
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -115,10 +115,10 @@ public class FormulaStatement implements Statement {
         // we assign fields..
         a.items.putAll(assignmnts);
 
-        Queue<Predicate> q = new ArrayDeque<>();
-        q.add(p);
+        Deque<Predicate> q = new ArrayDeque<>();
+        q.addLast(p);
         while (!q.isEmpty()) {
-            Predicate pred = q.poll();
+            Predicate pred = q.pollFirst();
             for (Field arg : pred.arguments) {
                 if (!a.items.containsKey(arg.name)) {
                     // the field is uninstantiated..

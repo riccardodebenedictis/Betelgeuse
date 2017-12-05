@@ -27,9 +27,9 @@ import it.cnr.istc.smt.var.IVarVal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -54,10 +54,10 @@ public class Item extends Env implements IVarVal {
             return i.eq(this);
         } else {
             Collection<Lit> eqs = new ArrayList<>();
-            Queue<Type> q = new ArrayDeque<>();
-            q.add(type);
+            Deque<Type> q = new ArrayDeque<>();
+            q.addLast(type);
             while (!q.isEmpty()) {
-                Type tp = q.poll();
+                Type tp = q.pollFirst();
                 for (Map.Entry<String, Field> fld : tp.getFields().entrySet()) {
                     if (!fld.getValue().synthetic) {
                         eqs.add(new Lit(items.get(fld.getKey()).eq(i.items.get(fld.getKey()))));
@@ -84,10 +84,10 @@ public class Item extends Env implements IVarVal {
         } else if (i instanceof VarItem) {
             return i.equates(this);
         } else {
-            Queue<Type> q = new ArrayDeque<>();
-            q.add(type);
+            Deque<Type> q = new ArrayDeque<>();
+            q.addLast(type);
             while (!q.isEmpty()) {
-                Type tp = q.poll();
+                Type tp = q.pollFirst();
                 for (Map.Entry<String, Field> fld : tp.getFields().entrySet()) {
                     if (!fld.getValue().synthetic && !items.get(fld.getKey()).equates(i.items.get(fld.getKey()))) {
                         return false;
@@ -237,10 +237,10 @@ public class Item extends Env implements IVarVal {
         @Override
         public <T extends Item> T get(String name) {
             Map<String, Field> accessible_fields = new HashMap<>();
-            Queue<Type> q = new ArrayDeque<>();
-            q.add(type);
+            Deque<Type> q = new ArrayDeque<>();
+            q.addLast(type);
             while (!q.isEmpty()) {
-                Type tp = q.poll();
+                Type tp = q.pollFirst();
                 accessible_fields.putAll(tp.getFields());
                 q.addAll(tp.getSupertypes());
             }

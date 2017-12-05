@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +42,7 @@ public class SatCore {
     public static final int TRUE_var = 1;
     final List<Clause> clauses = new ArrayList<>(); // collection of problem constraints..
     final List<List<Clause>> watches = new ArrayList<>(); // for each literal 'p', a list of constraints watching 'p'..
-    final Queue<Lit> prop_q = new ArrayDeque<>(); // propagation queue..
+    final Deque<Lit> prop_q = new ArrayDeque<>(); // propagation queue..
     final List<LBool> assigns = new ArrayList<>(); // the current assignments..
     final Deque<Lit> trail = new ArrayDeque<>(); // the list of assignment in chronological order..
     final List<Integer> trail_lim = new ArrayList<>(); // separator indices for different decision levels in 'trail'..
@@ -313,7 +312,7 @@ public class SatCore {
     private boolean propagate(final List<Lit> cnfl) {
         while (!prop_q.isEmpty()) {
             // we propagate sat constraints..
-            Lit p = prop_q.poll();
+            Lit p = prop_q.pollFirst();
             final List<Clause> tmp = watches.set(index(p), new ArrayList<>());
             for (int i = 0; i < tmp.size(); i++) {
                 final Clause cl = tmp.get(i);
@@ -377,7 +376,7 @@ public class SatCore {
             }
             // select next literal to look at..
             do {
-                p = trail.peekLast();
+                p = trail.peekFirst();
                 assert level.get(p.v) == decisionLevel(); // this variable must have been assigned at the current decision level..
                 if (reason.get(p.v) != null) // 'p' can be the asserting literal..
                 {
@@ -426,8 +425,8 @@ public class SatCore {
                 assigns.set(p.v, p.sign ? True : False);
                 level.set(p.v, decisionLevel());
                 reason.set(p.v, c);
-                trail.add(p);
-                prop_q.add(p);
+                trail.addFirst(p);
+                prop_q.addLast(p);
                 Collection<SatValueListener> ls = listeners.get(p.v);
                 if (ls != null) {
                     for (SatValueListener l : ls) {
@@ -441,7 +440,7 @@ public class SatCore {
     }
 
     public void popOne() {
-        int v = trail.pollLast().v;
+        int v = trail.pollFirst().v;
         assigns.set(v, Undefined);
         reason.set(v, null);
         level.set(v, -1);

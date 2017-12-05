@@ -19,8 +19,8 @@ package it.cnr.istc.core;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 /**
@@ -49,10 +49,10 @@ public class Predicate extends Type {
     @Override
     public Atom newInstance(IEnv env) throws CoreException {
         Atom atm = new Atom(core, env, this);
-        Queue<Type> q = new ArrayDeque<>();
-        q.add(this);
+        Deque<Type> q = new ArrayDeque<>();
+        q.addLast(this);
         while (!q.isEmpty()) {
-            Type pred = q.poll();
+            Type pred = q.pollFirst();
             pred.instances.add(atm);
             q.addAll(pred.getSupertypes());
         }

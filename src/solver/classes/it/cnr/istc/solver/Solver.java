@@ -50,7 +50,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -63,7 +62,7 @@ public class Solver extends Core implements Theory {
     private int accuracy = 1; // the current heuristic accuracy..
     private final Map<Set<Flaw>, HyperFlaw> hyper_flaws = new HashMap<>(); // the enclosing flaws for each hyper-flaw..
     private int gamma; // this variable represents the validity of the current graph..
-    private Queue<Flaw> flaw_q = new ArrayDeque<>();
+    private Deque<Flaw> flaw_q = new ArrayDeque<>();
     final Set<Flaw> flaws = new HashSet<>(); // the current active flaws..
     private final Map<Atom, SupportFlaw> reason = new IdentityHashMap<>(); // the reason for having introduced an atom..
     final Map<Integer, Collection<Flaw>> phis = new HashMap<>(); // the phi variables (boolean variable to flaws) of the flaws..
@@ -107,10 +106,10 @@ public class Solver extends Core implements Theory {
         reason.put(atom, sf);
         newFlaw(sf);
         if (atom.type.getScope() != this) {
-            Queue<Type> q = new ArrayDeque<>();
-            q.add((Type) atom.type.getScope());
+            Deque<Type> q = new ArrayDeque<>();
+            q.addLast((Type) atom.type.getScope());
             while (!q.isEmpty()) {
-                Type tp = q.poll();
+                Type tp = q.pollFirst();
                 if (tp instanceof SmartType) {
                     ((SmartType) tp).newFact(sf);
                 }
@@ -126,10 +125,10 @@ public class Solver extends Core implements Theory {
         reason.put(atom, sf);
         newFlaw(sf);
         if (atom.type.getScope() != this) {
-            Queue<Type> q = new ArrayDeque<>();
-            q.add((Type) atom.type.getScope());
+            Deque<Type> q = new ArrayDeque<>();
+            q.addLast((Type) atom.type.getScope());
             while (!q.isEmpty()) {
-                Type tp = q.poll();
+                Type tp = q.pollFirst();
                 if (tp instanceof SmartType) {
                     ((SmartType) tp).newGoal(sf);
                 }
@@ -203,7 +202,7 @@ public class Solver extends Core implements Theory {
             if (flaw_q.isEmpty()) {
                 throw new UnsolvableException("no more flaws to expand..");
             }
-            Queue<Flaw> c_q = flaw_q;
+            Deque<Flaw> c_q = flaw_q;
             flaw_q = new ArrayDeque<>();
             for (Flaw flaw : c_q) {
                 expandFlaw(flaw);
@@ -230,7 +229,7 @@ public class Solver extends Core implements Theory {
             if (flaw_q.isEmpty()) {
                 throw new UnsolvableException("no more flaws to expand..");
             }
-            Queue<Flaw> c_q = flaw_q;
+            Deque<Flaw> c_q = flaw_q;
             flaw_q = new ArrayDeque<>();
             for (Flaw flaw : c_q) {
                 expandFlaw(flaw);
@@ -262,7 +261,7 @@ public class Solver extends Core implements Theory {
             if (next instanceof HyperFlaw || next.resolvers.stream().anyMatch(c_res -> sat_core.value(c_res.rho) == True)) {
                 // we have either a trivial (i.e. has only one resolver) or an already solved flaw..
                 if (!trail.isEmpty()) {
-                    trail.peekLast().solved_flaws.add(next);
+                    trail.peekFirst().solved_flaws.add(next);
                 }
                 f_it.remove();
             }
@@ -326,10 +325,10 @@ public class Solver extends Core implements Theory {
 
     private boolean hasInconsistencies() throws CoreException {
         Collection<Flaw> incs = new ArrayList<>();
-        Queue<Type> q = new ArrayDeque<>();
+        Deque<Type> q = new ArrayDeque<>();
         q.addAll(getTypes().values());
         while (!q.isEmpty()) {
-            Type tp = q.poll();
+            Type tp = q.pollFirst();
             if (tp instanceof SmartType) {
                 incs.addAll(((SmartType) tp).getFlaws());
             }
@@ -367,7 +366,7 @@ public class Solver extends Core implements Theory {
             hyper_flaws.put(c_flaws, (HyperFlaw) f);
         }
         f.init(); // flaws' initialization requires being at root-level..
-        flaw_q.add(f);
+        flaw_q.addLast(f);
         // we notify the listeners that a new flaw has arised..
         for (SolverListener l : listeners) {
             l.newFlaw(f);
@@ -401,7 +400,7 @@ public class Solver extends Core implements Theory {
     void setEstimatedCost(final Resolver r, final Rational cost) {
         if (!r.getEstimatedCost().eq(cost)) {
             if (!trail.isEmpty()) {
-                trail.peekLast().old_costs.putIfAbsent(r, r.est_cost);
+                trail.peekFirst().old_costs.putIfAbsent(r, r.est_cost);
             }
 
             // this is the current cost of the resolver's effect..
@@ -419,14 +418,14 @@ public class Solver extends Core implements Theory {
             if (!f_cost.eq(r.effect.getEstimatedCost())) {
                 // we propagate the update to all the supports of the resolver's effect..
                 // the resolver costs queue (for resolver cost propagation)..
-                Queue<Resolver> resolver_q = new ArrayDeque<>();
+                Deque<Resolver> resolver_q = new ArrayDeque<>();
                 resolver_q.addAll(r.effect.supports);
                 while (!resolver_q.isEmpty()) {
-                    Resolver c_res = resolver_q.poll(); // the current resolver whose cost might require an update..
+                    Resolver c_res = resolver_q.pollFirst(); // the current resolver whose cost might require an update..
                     Rational c_cost = c_res.preconditions.stream().map(prec -> prec.getEstimatedCost()).max((Rational r0, Rational r1) -> r0.compareTo(r1)).get();
                     if (!c_res.est_cost.eq(c_cost)) {
                         if (!trail.isEmpty()) {
-                            trail.peekLast().old_costs.putIfAbsent(c_res, c_res.est_cost);
+                            trail.peekFirst().old_costs.putIfAbsent(c_res, c_res.est_cost);
                         }
 
                         // this is the current cost of the resolver's effect..
@@ -461,7 +460,7 @@ public class Solver extends Core implements Theory {
             if (next.resolvers.stream().anyMatch(c_res -> sat_core.value(c_res.rho) == True)) {
                 // we have either a trivial (i.e. has only one resolver) or an already solved flaw..
                 if (!trail.isEmpty()) {
-                    trail.peekLast().solved_flaws.add(next);
+                    trail.peekFirst().solved_flaws.add(next);
                 }
                 f_it.remove();
             } else {
@@ -489,7 +488,7 @@ public class Solver extends Core implements Theory {
                     // this flaw has been added to the current partial solution..
                     flaws.add(f);
                     if (!trail.isEmpty()) {
-                        trail.peekLast().new_flaws.add(f);
+                        trail.peekFirst().new_flaws.add(f);
                     }
                 }
             }
@@ -517,7 +516,7 @@ public class Solver extends Core implements Theory {
     @Override
     public void push() {
         Layer layer = new Layer(res);
-        trail.push(layer);
+        trail.addFirst(layer);
         if (res != null) {
             layer.solved_flaws.add(res.effect);
             flaws.remove(res.effect);
@@ -527,7 +526,7 @@ public class Solver extends Core implements Theory {
     @Override
     public void pop() {
         // we reintroduce the solved flaw..
-        Layer layer = trail.pop();
+        Layer layer = trail.pollFirst();
         if (layer.res != null) {
             for (SolverListener l : listeners) {
                 l.currentResolver(layer.res);
