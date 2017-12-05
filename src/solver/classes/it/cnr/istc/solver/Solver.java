@@ -492,18 +492,16 @@ public class Solver extends Core implements Theory {
                         if (!trail.isEmpty()) {
                             trail.peekLast().new_flaws.add(f);
                         }
-                        // we notify the listeners that the state of the flaw has changed..
-                        for (SolverListener l : listeners) {
-                            l.flawStateChanged(f);
-                        }
                     }
                 }
             }
 
             Collection<Resolver> rs;
-            if (p.sign && (rs = rhos.get(p.v)) != null) {
+            if ((rs = rhos.get(p.v)) != null) {
                 for (Resolver r : rs) {
-                    setEstimatedCost(r, POSITIVE_INFINITY);
+                    if (!p.sign) {
+                        setEstimatedCost(r, POSITIVE_INFINITY);
+                    }
                 }
             }
         }
