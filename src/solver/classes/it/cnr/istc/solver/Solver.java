@@ -286,6 +286,9 @@ public class Solver extends Core implements Theory {
         for (SolverListener l : listeners) {
             l.currentFlaw(f);
         }
+        if (sat_core.value(f.getPhi()) == False) {
+            return;
+        }
         // we expand the flaw..
         if (f instanceof HyperFlaw) {
             // we expand the unexpanded enclosing flaws..

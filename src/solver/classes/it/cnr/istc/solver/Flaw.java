@@ -111,6 +111,7 @@ public abstract class Flaw {
 
     void expand() throws CoreException {
         assert !expanded;
+        assert slv.sat_core.value(getPhi()) != False;
 
         // we compute the resolvers..
         compute_resolvers();

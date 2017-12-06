@@ -52,15 +52,23 @@ public class SupportFlaw extends Flaw {
 
     @Override
     protected void compute_resolvers() throws UnsolvableException {
-        assert slv.sat_core.value(getPhi()) != False;
         assert slv.sat_core.value(atom.sigma) != False;
 
         // we check if the atom can unify..
         if (slv.sat_core.value(atom.sigma) == Undefined) {
-            // we collect the ancestors of this flaw, so as to avoid cyclic causality..
-            Set<Flaw> ancestors = new HashSet<>();
 
             Deque<Flaw> q = new ArrayDeque<>();
+            q.addLast(this);
+            while (!q.isEmpty()) {
+                Flaw f = q.pollFirst();
+                if (slv.sat_core.value(f.getPhi()) == False) {
+                    return;
+                }
+                q.addAll(f.causes.stream().map(sup -> sup.effect).collect(Collectors.toList()));
+            }
+
+            // we collect the ancestors of this flaw, so as to avoid cyclic causality..
+            Set<Flaw> ancestors = new HashSet<>();
             q.addLast(this);
             while (!q.isEmpty()) {
                 Flaw f = q.pollFirst();
@@ -106,10 +114,8 @@ public class SupportFlaw extends Flaw {
                     Flaw f = q.poll();
                     if (seen.add(f)) {
                         for (Resolver cause : f.causes) {
-                            if (slv.sat_core.value(cause.rho) != True) {
-                                unif_lits.add(new Lit(cause.rho)); // we add the resolver's variable to the unification literals..
-                                q.addLast(cause.effect); // we push its effect..
-                            }
+                            unif_lits.add(new Lit(cause.rho)); // we add the resolver's variable to the unification literals..
+                            q.addLast(cause.effect); // we push its effect..
                         }
                     }
                 }

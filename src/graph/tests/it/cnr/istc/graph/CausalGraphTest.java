@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.io.FileReader;
 import javax.swing.JFrame;
+import javax.swing.ToolTipManager;
 import org.junit.Test;
 
 /**
@@ -43,6 +44,8 @@ public class CausalGraphTest {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(graph);
             frame.setVisible(true);
+
+            ToolTipManager.sharedInstance().setDismissDelay(60000);
         }
 
         s.init();

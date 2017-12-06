@@ -19,12 +19,15 @@ package it.cnr.istc.solver;
 import it.cnr.istc.common.CartesianProductGenerator;
 import it.cnr.istc.common.CombinationGenerator;
 import it.cnr.istc.core.CoreException;
+import static it.cnr.istc.smt.LBool.False;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.Rational;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +49,19 @@ public class HyperFlaw extends Flaw {
         for (int i = 0; i < all_res.length; i++) {
             all_res[i] = flaws[i].resolvers.toArray(new Resolver[flaws[i].resolvers.size()]);
         }
+        Deque<Lit> check_lits = new ArrayDeque<>();
+        Deque<Flaw> q = new ArrayDeque<>();
+        q.addLast(this);
+        while (!q.isEmpty()) {
+            Flaw f = q.pollFirst();
+            if (slv.sat_core.value(f.getPhi()) == False) {
+                return;
+            }
+            for (Resolver cause : f.causes) {
+                check_lits.addLast(new Lit(cause.rho));
+                q.addLast(cause.effect);
+            }
+        }
         for (Resolver[] c_res : new CartesianProductGenerator<>(all_res)) {
             // the resolver's intrinsic cost is given by the maximum of the enclosing resolvers' intrinsic costs..
             Rational cst = Rational.NEGATIVE_INFINITY;
@@ -59,9 +75,11 @@ public class HyperFlaw extends Flaw {
                 }
             }
             int cnj_var = slv.sat_core.newConj(cnj);
-            if (slv.sat_core.check(new Lit(cnj_var))) {
+            check_lits.addLast(new Lit(cnj_var));
+            if (slv.sat_core.check(check_lits.toArray(new Lit[check_lits.size()]))) {
                 add_resolver(new HyperResolver(slv, cnj_var, cst, this, c_res));
             }
+            check_lits.pollLast();
         }
     }
 
