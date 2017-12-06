@@ -327,6 +327,9 @@ public class CausalGraph extends Display implements SolverListener {
     public void currentResolver(Resolver r) {
         assert resolvers.containsKey(r) : "the resolver does not exist..";
         synchronized (m_vis) {
+            if (current_resolver != null) {
+                m_vis.getVisualItem(NODES, resolvers.get(current_resolver)).setHighlighted(false);
+            }
             current_resolver = r;
             m_vis.getVisualItem(NODES, resolvers.get(r)).setHighlighted(true);
         }
