@@ -19,6 +19,7 @@ package it.cnr.istc.smt.lra;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.SatCore;
 import static it.cnr.istc.smt.lra.Rational.NEGATIVE_INFINITY;
+import static it.cnr.istc.smt.lra.Rational.POSITIVE_INFINITY;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,6 +40,14 @@ public class LRATheoryTest {
         r2.add(2);
         r2.sub(-2);
         r2.mult(2);
+    }
+
+    @Test
+    public void testRational1() {
+        Assert.assertTrue(NEGATIVE_INFINITY.lt(POSITIVE_INFINITY));
+        Assert.assertTrue(NEGATIVE_INFINITY.leq(POSITIVE_INFINITY));
+        Assert.assertTrue(POSITIVE_INFINITY.geq(NEGATIVE_INFINITY));
+        Assert.assertTrue(POSITIVE_INFINITY.gt(NEGATIVE_INFINITY));
     }
 
     @Test

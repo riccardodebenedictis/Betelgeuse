@@ -73,7 +73,7 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     public boolean lt(final Rational rhs) {
-        return num * rhs.den < den * rhs.num;
+        return (den == 0 && rhs.den == 0) ? num < rhs.num : num * rhs.den < den * rhs.num;
     }
 
     public boolean leq(final Rational rhs) {
@@ -89,7 +89,7 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     public boolean gt(final Rational rhs) {
-        return num * rhs.den > den * rhs.num;
+        return (den == 0 && rhs.den == 0) ? num > rhs.num : num * rhs.den > den * rhs.num;
     }
 
     public boolean neq(final long rhs) {

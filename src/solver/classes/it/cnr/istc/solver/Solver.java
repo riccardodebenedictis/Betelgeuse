@@ -153,7 +153,8 @@ public class Solver extends Core implements Theory {
 
         while (sat_core.rootLevel()) {
             // we have exhausted the search within the graph: we extend the graph..
-            add_layer();
+            increase_accuracy();
+//            add_layer();
         }
 
         while (true) {
@@ -267,6 +268,7 @@ public class Solver extends Core implements Theory {
             }
         }
 
+        flaw_q.clear();
         if (flaws.size() >= accuracy) {
             for (Flaw[] fs : new CombinationGenerator<>(accuracy, flaws.toArray(new Flaw[flaws.size()]))) {
                 newFlaw(new HyperFlaw(this, res, fs));
