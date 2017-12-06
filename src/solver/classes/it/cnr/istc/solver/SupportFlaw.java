@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
-import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,10 +60,10 @@ public class SupportFlaw extends Flaw {
             // we collect the ancestors of this flaw, so as to avoid cyclic causality..
             Set<Flaw> ancestors = new HashSet<>();
 
-            Queue<Flaw> q = new ArrayDeque<>();
-            q.add(this);
+            Deque<Flaw> q = new ArrayDeque<>();
+            q.addLast(this);
             while (!q.isEmpty()) {
-                Flaw f = q.poll();
+                Flaw f = q.pollFirst();
                 if (ancestors.add(f)) {
                     q.addAll(f.supports.stream().filter(sup -> slv.sat_core.value(sup.rho) != False).map(sup -> sup.effect).collect(Collectors.toList()));
                 }
@@ -97,8 +97,8 @@ public class SupportFlaw extends Flaw {
 
                 // since atom 'target_atom' is a good candidate for unification, we build the unification literals..
                 Collection<Lit> unif_lits = new ArrayList<>();
-                q.add(this);
-                q.add(target_flaw);
+                q.addLast(this);
+                q.addLast(target_flaw);
                 unif_lits.add(new Lit(atom.sigma, false)); // we force the state of this atom to be 'unified' within the unification literals..
                 unif_lits.add(new Lit(target_atom.sigma)); // we force the state of the target atom to be 'active' within the unification literals..
                 Set<Flaw> seen = new HashSet<>(); // we avoid some repetition of literals..
@@ -108,7 +108,7 @@ public class SupportFlaw extends Flaw {
                         for (Resolver cause : f.causes) {
                             if (slv.sat_core.value(cause.rho) != True) {
                                 unif_lits.add(new Lit(cause.rho)); // we add the resolver's variable to the unification literals..
-                                q.add(cause.effect); // we push its effect..
+                                q.addLast(cause.effect); // we push its effect..
                             }
                         }
                     }
