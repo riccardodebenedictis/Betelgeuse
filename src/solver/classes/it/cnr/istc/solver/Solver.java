@@ -283,6 +283,9 @@ public class Solver extends Core implements Theory {
 
     private void expandFlaw(final Flaw f) throws CoreException {
         assert !f.isExpanded();
+        for (SolverListener l : listeners) {
+            l.currentFlaw(f);
+        }
         // we expand the flaw..
         if (f instanceof HyperFlaw) {
             // we expand the unexpanded enclosing flaws..
@@ -309,6 +312,9 @@ public class Solver extends Core implements Theory {
     }
 
     private void applyResolver(final Resolver r) throws CoreException {
+        for (SolverListener l : listeners) {
+            l.currentResolver(r);
+        }
         res = r;
         setVar(r.rho);
         try {
