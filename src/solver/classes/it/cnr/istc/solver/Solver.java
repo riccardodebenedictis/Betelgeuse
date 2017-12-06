@@ -187,7 +187,8 @@ public class Solver extends Core implements Theory {
                         } else {
                             // we have exhausted the search within the graph: we extend the graph..
                             assert sat_core.value(gamma) == False;
-                            add_layer();
+                            increase_accuracy();
+//                            add_layer();
                         }
                     }
                 }

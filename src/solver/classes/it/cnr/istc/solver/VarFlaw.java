@@ -49,6 +49,11 @@ public class VarFlaw extends Flaw {
         return "φ" + getPhi() + " var";
     }
 
+    @Override
+    public String toString() {
+        return "φ" + getPhi() + " var " + var_item;
+    }
+
     private class ChooseVal extends Resolver {
 
         private final IVarVal val;
