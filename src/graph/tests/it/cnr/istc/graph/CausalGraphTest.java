@@ -38,7 +38,7 @@ public class CausalGraphTest {
             s.listen(graph);
 
             JFrame frame = new JFrame("Causal graph");
-            frame.setSize(new Dimension(640, 480));
+            frame.setSize(new Dimension(800, 600));
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(graph);

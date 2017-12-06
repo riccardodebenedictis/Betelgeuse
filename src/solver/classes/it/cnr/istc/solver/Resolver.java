@@ -30,7 +30,7 @@ public abstract class Resolver {
 
     protected final Solver slv; // the solver this resolver belongs to..
     public final int rho; // the propositional variable indicating whether the resolver is active or not..
-    final Rational cost; // the intrinsic cost of the resolver..
+    final Rational intrinsic_cost; // the intrinsic cost of the resolver..
     final Collection<Flaw> preconditions = new ArrayList<>(); // the preconditions of this resolver..
     final Flaw effect;  // the flaw solved by this resolver..
     Rational est_cost = new Rational(Rational.POSITIVE_INFINITY); // the estimated cost of the resolver..
@@ -42,7 +42,7 @@ public abstract class Resolver {
     public Resolver(Solver slv, int rho, Rational cost, Flaw effect) {
         this.slv = slv;
         this.rho = rho;
-        this.cost = cost;
+        this.intrinsic_cost = cost;
         this.effect = effect;
     }
 
@@ -71,7 +71,7 @@ public abstract class Resolver {
     }
 
     public Rational getEstimatedCost() {
-        return cost.plus(est_cost);
+        return intrinsic_cost.plus(est_cost);
     }
 
     protected abstract void expand() throws CoreException;

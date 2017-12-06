@@ -169,7 +169,7 @@ public class CausalGraph extends Display implements SolverListener {
         layout.add(colors);
         layout.add(new LabelLayout2(EDGE_DECORATORS));
         layout.add(new LabelLayout2(NODE_DECORATORS));
-        layout.add(new ForceDirectedLayout(GRAPH, true));
+        layout.add(new ForceDirectedLayout(GRAPH, false));
         layout.add(new RepaintAction());
         m_vis.putAction("layout", layout);
 

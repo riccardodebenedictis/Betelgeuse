@@ -47,15 +47,15 @@ public class HyperFlaw extends Flaw {
             all_res[i] = flaws[i].resolvers.toArray(new Resolver[flaws[i].resolvers.size()]);
         }
         for (Resolver[] c_res : new CartesianProductGenerator<>(all_res)) {
-            // the resolver's cost is given by the maximum of the enclosing resolvers' costs..
+            // the resolver's intrinsic cost is given by the maximum of the enclosing resolvers' intrinsic costs..
             Rational cst = Rational.NEGATIVE_INFINITY;
             Lit[] cnj = new Lit[c_res.length];
             for (int i = 0; i < c_res.length; i++) {
                 Resolver res = c_res[i];
                 cnj[i] = new Lit(res.rho);
-                Rational est_cst = res.getEstimatedCost();
-                if (est_cst.gt(cst)) {
-                    cst = est_cst;
+                Rational c_cst = res.intrinsic_cost;
+                if (c_cst.gt(cst)) {
+                    cst = c_cst;
                 }
             }
             int cnj_var = slv.sat_core.newConj(cnj);
