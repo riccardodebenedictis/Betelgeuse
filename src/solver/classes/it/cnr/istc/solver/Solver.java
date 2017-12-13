@@ -153,8 +153,7 @@ public class Solver extends Core implements Theory {
 
         while (sat_core.rootLevel()) {
             // we have exhausted the search within the graph: we extend the graph..
-            increase_accuracy();
-//            add_layer();
+            add_layer();
         }
 
         while (true) {
@@ -187,8 +186,7 @@ public class Solver extends Core implements Theory {
                         } else {
                             // we have exhausted the search within the graph: we extend the graph..
                             assert sat_core.value(gamma) == False;
-                            increase_accuracy();
-//                            add_layer();
+                            add_layer();
                         }
                     }
                 }

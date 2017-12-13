@@ -69,22 +69,14 @@ public abstract class Core implements IScope, IEnv {
     }
 
     public void read(final String script) throws CoreException {
-        try {
-            Parser p = new Parser(new Lexer(new StringReader(script)));
-            CompilationUnit cu = p.compilation_unit();
-            cu.declare(this);
-            cu.refine(this);
-            cu.execute(this, this);
-
-            if (!sat_core.check()) {
-                throw new UnsolvableException("the input problem is inconsistent");
-            }
-        } catch (IOException ex) {
-            throw new ParsingException(ex.getLocalizedMessage());
-        }
+        read(this, this, new StringReader(script));
     }
 
     public void read(final Reader... readers) throws CoreException {
+        read(this, this, readers);
+    }
+
+    void read(final IScope scp, final IEnv env, final Reader... readers) throws CoreException {
         try {
             CompilationUnit[] cus = new CompilationUnit[readers.length];
             for (int i = 0; i < readers.length; i++) {
@@ -92,13 +84,13 @@ public abstract class Core implements IScope, IEnv {
                 cus[i] = p.compilation_unit();
             }
             for (CompilationUnit cu : cus) {
-                cu.declare(this);
+                cu.declare(scp);
             }
             for (CompilationUnit cu : cus) {
-                cu.refine(this);
+                cu.refine(scp);
             }
             for (CompilationUnit cu : cus) {
-                cu.execute(this, this);
+                cu.execute(scp, env);
             }
 
             if (!sat_core.check()) {
@@ -454,6 +446,7 @@ public abstract class Core implements IScope, IEnv {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Item> T get(String name) {
         T it = (T) items.get(name);
         if (it != null) {

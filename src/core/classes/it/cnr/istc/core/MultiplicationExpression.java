@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class MultiplicationExpression implements Expression {
+class MultiplicationExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    public MultiplicationExpression(final Expression... xprs) {
+    MultiplicationExpression(final Expression... xprs) {
         this(Arrays.asList(xprs));
     }
 
-    public MultiplicationExpression(final List<Expression> xprs) {
+    MultiplicationExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

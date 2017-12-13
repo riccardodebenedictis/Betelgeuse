@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class HyperFlaw extends Flaw {
+class HyperFlaw extends Flaw {
 
     final Flaw[] flaws;
 
@@ -58,7 +58,7 @@ public class HyperFlaw extends Flaw {
                 return;
             }
             for (Resolver cause : f.causes) {
-                check_lits.addLast(new Lit(cause.rho));
+                check_lits.addFirst(new Lit(cause.rho));
                 q.addLast(cause.effect);
             }
         }

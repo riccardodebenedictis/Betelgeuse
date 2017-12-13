@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class IdExpression implements Expression {
+class IdExpression implements Expression {
 
     private final List<String> ids;
 
-    public IdExpression(final List<String> ids) {
+    IdExpression(final List<String> ids) {
         this.ids = ids;
     }
 

@@ -20,11 +20,11 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class PlusExpression implements Expression {
+class PlusExpression implements Expression {
 
     private final Expression xpr;
 
-    public PlusExpression(final Expression xpr) {
+    PlusExpression(final Expression xpr) {
         this.xpr = xpr;
     }
 

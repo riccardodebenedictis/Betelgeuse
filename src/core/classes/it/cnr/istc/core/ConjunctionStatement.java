@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class BlockStatement implements Statement {
+class ConjunctionStatement implements Statement {
 
     private final List<Statement> statements;
 
-    public BlockStatement(final Statement... stmnts) {
+    ConjunctionStatement(final Statement... stmnts) {
         this(Arrays.asList(stmnts));
     }
 
-    public BlockStatement(final List<Statement> stmnts) {
+    ConjunctionStatement(final List<Statement> stmnts) {
         this.statements = stmnts;
     }
 

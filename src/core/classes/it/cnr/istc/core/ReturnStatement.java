@@ -20,11 +20,11 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class ReturnStatement implements Statement {
+class ReturnStatement implements Statement {
 
     private final Expression xpr;
 
-    public ReturnStatement(final Expression xpr) {
+    ReturnStatement(final Expression xpr) {
         this.xpr = xpr;
     }
 

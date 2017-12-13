@@ -27,11 +27,11 @@ import java.util.Set;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class VarFlaw extends Flaw {
+class VarFlaw extends Flaw {
 
     private final VarItem var_item;
 
-    public VarFlaw(final Solver slv, final Resolver cause, final VarItem var_item) {
+    VarFlaw(final Solver slv, final Resolver cause, final VarItem var_item) {
         super(slv, cause == null ? Collections.emptyList() : Arrays.asList(cause), true, true);
         this.var_item = var_item;
     }

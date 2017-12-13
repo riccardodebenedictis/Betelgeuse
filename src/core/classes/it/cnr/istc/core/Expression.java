@@ -20,7 +20,7 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public interface Expression {
+interface Expression {
 
     Item evaluate(IScope scp, IEnv env) throws CoreException;
 }

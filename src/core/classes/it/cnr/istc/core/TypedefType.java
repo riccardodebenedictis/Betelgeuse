@@ -20,7 +20,7 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class TypedefType extends Type {
+class TypedefType extends Type {
 
     private final Type base_type;
     private final Expression xpr;

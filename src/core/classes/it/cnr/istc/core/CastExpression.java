@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class CastExpression implements Expression {
+class CastExpression implements Expression {
 
     private final List<String> type;
     private final Expression xpr;
 
-    public CastExpression(final List<String> ids, final Expression xpr) {
+    CastExpression(final List<String> ids, final Expression xpr) {
         this.type = ids;
         this.xpr = xpr;
     }

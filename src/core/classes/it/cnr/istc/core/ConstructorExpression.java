@@ -25,12 +25,12 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class ConstructorExpression implements Expression {
+class ConstructorExpression implements Expression {
 
     private final Collection<String> type;
     private final Collection<Expression> xprs;
 
-    public ConstructorExpression(final Collection<String> ids, final Collection<Expression> xprs) {
+    ConstructorExpression(final Collection<String> ids, final Collection<Expression> xprs) {
         this.type = ids;
         this.xprs = xprs;
     }

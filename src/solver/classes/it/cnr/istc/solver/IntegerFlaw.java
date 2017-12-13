@@ -22,7 +22,7 @@ import java.util.Collection;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class IntegerFlaw extends Flaw {
+class IntegerFlaw extends Flaw {
 
     private final int var;
 

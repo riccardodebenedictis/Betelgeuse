@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class DivisionExpression implements Expression {
+class DivisionExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    public DivisionExpression(final Expression... xprs) {
+    DivisionExpression(final Expression... xprs) {
         this(Arrays.asList(xprs));
     }
 
-    public DivisionExpression(final List<Expression> xprs) {
+    DivisionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

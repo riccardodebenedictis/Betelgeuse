@@ -836,7 +836,7 @@ class Parser {
                         return new DisjunctionStatement(disjs);
                     }
                     default: // a block statement..
-                        return new BlockStatement(stmnts);
+                        return new ConjunctionStatement(stmnts);
                 }
             }
             case FACT:

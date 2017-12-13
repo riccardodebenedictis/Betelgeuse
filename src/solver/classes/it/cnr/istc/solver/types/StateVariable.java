@@ -25,7 +25,6 @@ import it.cnr.istc.core.Field;
 import static it.cnr.istc.core.IScope.TAU;
 import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Predicate;
-import it.cnr.istc.core.Type;
 import static it.cnr.istc.smt.LBool.True;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.InfRational;
@@ -66,7 +65,7 @@ public class StateVariable extends SmartType {
 
     @Override
     protected void newPredicate(Predicate p) {
-        Type.newSupertypes(p, core.getPredicate("IntervalPredicate"));
+        newSupertypes(p, new Predicate[]{getPredicate("IntervalPredicate")});
         newFields(p, new Field(this, TAU));
     }
 

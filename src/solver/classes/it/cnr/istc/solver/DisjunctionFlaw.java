@@ -27,7 +27,7 @@ import java.util.Collections;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-public class DisjunctionFlaw extends Flaw {
+class DisjunctionFlaw extends Flaw {
 
     private final IEnv env;
     private final Disjunction dsj;
