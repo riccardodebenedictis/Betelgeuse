@@ -51,6 +51,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -248,6 +249,22 @@ public class Solver extends Core implements Theory {
         if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
             throw new UnsolvableException();
         }
+    }
+
+    private boolean isDeferrable(final Flaw f) {
+        Deque<Flaw> q = new ArrayDeque<>();
+        q.addLast(f);
+        while (!q.isEmpty()) {
+            Flaw fl = q.pollFirst();
+            assert sat_core.value(fl.getPhi()) != False;
+            if (!fl.getEstimatedCost().isPositiveInfinite()) {
+                // we already have a possible solution for one of the ancestors of this flaw, thus we defer..
+                return true;
+            }
+            q.addAll(f.causes.stream().map(cause -> cause.effect).collect(Collectors.toList()));
+        }
+        // we cannot defer this flaw..
+        return false;
     }
 
     private void increase_accuracy() throws CoreException {
