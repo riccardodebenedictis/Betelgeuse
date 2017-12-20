@@ -26,6 +26,8 @@ import static it.cnr.istc.core.IScope.TAU;
 import it.cnr.istc.core.Item;
 import it.cnr.istc.core.Predicate;
 import it.cnr.istc.core.Type;
+import it.cnr.istc.core.UnsolvableException;
+import static it.cnr.istc.smt.LBool.False;
 import static it.cnr.istc.smt.LBool.True;
 import it.cnr.istc.smt.Lit;
 import it.cnr.istc.smt.lra.InfRational;
@@ -237,21 +239,12 @@ public class StateVariable extends SmartType {
                 add_resolver(new OrderResolver(slv, slv.leq(a1_end, a0_start).l.v, this, atms[1], atms[0]));
 
                 Item a0_tau = atms[0].get(TAU);
-                if (a0_tau instanceof Item.VarItem) {
-                    Set<IVarVal> vals = slv.value((Item.VarItem) a0_tau);
-                    if (vals.size() > 1) {
-                        for (IVarVal val : vals) {
-                            add_resolver(new DisplaceResolver(slv, this, atms[0], (Item.VarItem) a0_tau, (Item) val));
-                        }
-                    }
-                }
                 Item a1_tau = atms[1].get(TAU);
-                if (a1_tau instanceof Item.VarItem) {
-                    Set<IVarVal> vals = slv.value((Item.VarItem) a1_tau);
-                    if (vals.size() > 1) {
-                        for (IVarVal val : vals) {
-                            add_resolver(new DisplaceResolver(slv, this, atms[1], (Item.VarItem) a1_tau, (Item) val));
-                        }
+                if (a0_tau instanceof Item.VarItem || a1_tau instanceof Item.VarItem) {
+                    int eq_var = a0_tau.eq(a1_tau);
+                    assert slv.sat_core.value(eq_var) != False;
+                    if (slv.sat_core.value(eq_var) != True) {
+                        add_resolver(new DisplaceResolver(slv, this, atms[0], atms[1], eq_var));
                     }
                 }
             }
@@ -291,25 +284,27 @@ public class StateVariable extends SmartType {
 
     private static class DisplaceResolver extends Resolver {
 
-        private final Atom atom;
-        private final Item.VarItem tau;
-        private final Item sv;
+        private final Atom atm_0;
+        private final Atom atm_1;
+        private final int eq_var;
 
-        private DisplaceResolver(final Solver slv, final SVFlaw effect, final Atom atom, final Item.VarItem tau, final Item sv) {
+        private DisplaceResolver(final Solver slv, final SVFlaw effect, final Atom atm_0, final Atom atm_1, final int eq_var) {
             super(slv, new Rational(), effect);
-            this.atom = atom;
-            this.tau = tau;
-            this.sv = sv;
+            this.atm_0 = atm_0;
+            this.atm_1 = atm_1;
+            this.eq_var = eq_var;
         }
 
         @Override
         protected void expand() throws CoreException {
-            if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(slv.var_theory.allows(tau.var, sv), false)));
+            if (!slv.sat_core.newClause(new Lit(rho, false), new Lit(eq_var, false))) {
+                throw new UnsolvableException();
+            }
         }
 
         @Override
         public String getLabel() {
-            return "ρ" + rho + " displ (τ" + tau.var + ") != " + sv;
+            return "ρ" + rho + " displ σ" + atm_0.sigma + ".τ != σ" + atm_1.sigma + ".τ";
         }
     }
 }
