@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
  */
 public class Solver extends Core implements Theory {
 
-    private static final int MAX_ACCURACY = 2;
+    private static final int MAX_ACCURACY = 1;
     private Resolver res = null;
     private int accuracy = 1; // the current heuristic accuracy..
     private final Map<Set<Flaw>, HyperFlaw> hyper_flaws = new HashMap<>(); // the enclosing flaws for each hyper-flaw..
@@ -150,17 +150,10 @@ public class Solver extends Core implements Theory {
     }
 
     public void solve() throws CoreException {
-        // we build the causal graph..
+        // we build the initial causal graph..
         build();
-
-        while (sat_core.rootLevel()) {
-            // we have exhausted the search within the graph: we extend the graph..
-            if (accuracy < MAX_ACCURACY) {
-                increase_accuracy();
-            } else {
-                add_layer();
-            }
-        }
+        // we close the graph..
+        close_graph();
 
         while (true) {
             // this is the next flaw to be solved..
@@ -183,22 +176,7 @@ public class Solver extends Core implements Theory {
                     }
 
                     res = null;
-                    while (sat_core.rootLevel()) {
-                        if (sat_core.value(gamma) == Undefined) {
-                            // we have learnt a unit clause! thus, we reassume the graph var and restart the search..
-                            if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
-                                throw new UnsolvableException();
-                            }
-                        } else {
-                            // we have exhausted the search within the graph: we extend the graph..
-                            assert sat_core.value(gamma) == False;
-                            if (accuracy < MAX_ACCURACY) {
-                                increase_accuracy();
-                            } else {
-                                add_layer();
-                            }
-                        }
-                    }
+                    ensure_gamma();
                 }
             } else if (!hasInconsistencies()) { // we run out of structural flaws, we check for inconsistencies one last time..
                 // Hurray!! we have found a solution..
@@ -218,19 +196,6 @@ public class Solver extends Core implements Theory {
                 expandFlaw(flaw);
             }
         }
-
-        // we create a new graph var..
-        gamma = sat_core.newVar();
-        // these flaws have not been expanded, hence, cannot have a solution..
-        for (Flaw flaw : flaw_q) {
-            if (!sat_core.newClause(new Lit(gamma, false), new Lit(flaw.getPhi(), false))) {
-                throw new UnsolvableException();
-            }
-        }
-        // we assume the new graph var to allow search within the current graph..
-        if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
-            throw new UnsolvableException();
-        }
     }
 
     private void add_layer() throws CoreException {
@@ -245,7 +210,9 @@ public class Solver extends Core implements Theory {
                 expandFlaw(flaw);
             }
         }
+    }
 
+    private void close_graph() throws CoreException {
         // we create a new graph var..
         gamma = sat_core.newVar();
         // these flaws have not been expanded, hence, cannot have a solution..
@@ -255,8 +222,27 @@ public class Solver extends Core implements Theory {
             }
         }
         // we assume the new graph var to allow search within the current graph..
-        if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
-            throw new UnsolvableException();
+        ensure_gamma();
+    }
+
+    private void ensure_gamma() throws CoreException {
+        while (sat_core.value(gamma) != True) {
+            assert sat_core.rootLevel();
+            if (sat_core.value(gamma) == Undefined) {
+                // we have learnt a unit clause! thus, we reassume the graph var and restart the search..
+                if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
+                    throw new UnsolvableException();
+                }
+            } else {
+                // we have exhausted the search within the graph: we extend the graph..
+                if (accuracy < MAX_ACCURACY) {
+                    increase_accuracy();
+                } else {
+                    add_layer();
+                }
+                // we close the graph..
+                close_graph();
+            }
         }
     }
 
@@ -388,9 +374,7 @@ public class Solver extends Core implements Theory {
                 expandFlaw(f);
             }
             // we re-assume the current graph var to allow search within the current graph..
-            if (!sat_core.assume(new Lit(gamma)) || !sat_core.check()) {
-                throw new UnsolvableException();
-            }
+            ensure_gamma();
             return true;
         }
     }
@@ -487,6 +471,7 @@ public class Solver extends Core implements Theory {
     }
 
     private Flaw select_flaw() {
+        assert sat_core.value(gamma) != False;
         assert flaws.stream().allMatch(flaw -> flaw.isExpanded() && sat_core.value(flaw.getPhi()) == True && !flaw.getEstimatedCost().isPositiveInfinite());
         // this is the next flaw to be solved (i.e., the most expensive one)..
         Flaw f_next = null;
