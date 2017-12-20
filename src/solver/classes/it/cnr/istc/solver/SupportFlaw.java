@@ -22,13 +22,10 @@ import it.cnr.istc.core.CoreException;
 import it.cnr.istc.core.Predicate;
 import it.cnr.istc.core.UnsolvableException;
 import static it.cnr.istc.smt.LBool.False;
-import static it.cnr.istc.smt.LBool.True;
 import static it.cnr.istc.smt.LBool.Undefined;
 import it.cnr.istc.smt.Lit;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
@@ -103,36 +100,11 @@ public class SupportFlaw extends Flaw {
                     continue;
                 }
 
-                // since atom 'target_atom' is a good candidate for unification, we build the unification literals..
-                Collection<Lit> unif_lits = new ArrayList<>();
-                q.addLast(this);
-                q.addLast(target_flaw);
-                unif_lits.add(new Lit(atom.sigma, false)); // we force the state of this atom to be 'unified' within the unification literals..
-                unif_lits.add(new Lit(target_atom.sigma)); // we force the state of the target atom to be 'active' within the unification literals..
-                Set<Flaw> seen = new HashSet<>(); // we avoid some repetition of literals..
-                while (!q.isEmpty()) {
-                    Flaw f = q.poll();
-                    if (seen.add(f)) {
-                        for (Resolver cause : f.causes) {
-                            unif_lits.add(new Lit(cause.rho)); // we add the resolver's variable to the unification literals..
-                            q.addLast(cause.effect); // we push its effect..
-                        }
-                    }
-                }
-
-                if (slv.sat_core.value(eq_v) != True) {
-                    unif_lits.add(new Lit(eq_v));
-                }
-
-                Lit[] unif_lits_arr = unif_lits.toArray(new Lit[unif_lits.size()]);
-                if (slv.sat_core.check(unif_lits_arr)) {
-                    // unification is actually possible!
-                    Unify unify = new Unify(slv, this, atom, target_atom, unif_lits_arr);
-                    assert slv.sat_core.value(unify.rho) != False;
-                    add_resolver(unify);
-                    slv.newCausalLink(target_flaw, unify);
-                    slv.setEstimatedCost(unify, target_flaw.getEstimatedCost());
-                }
+                Unify unify = new Unify(slv, this, atom, target_atom, new Lit[]{new Lit(atom.sigma, false), new Lit(target_atom.sigma), new Lit(eq_v)});
+                assert slv.sat_core.value(unify.rho) != False;
+                add_resolver(unify);
+                slv.newCausalLink(target_flaw, unify);
+                slv.setEstimatedCost(unify, target_flaw.getEstimatedCost());
             }
         }
 
