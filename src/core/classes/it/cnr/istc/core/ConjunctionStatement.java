@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ConjunctionStatement implements Statement {
+public class ConjunctionStatement implements Statement {
 
     private final List<Statement> statements;
 
-    ConjunctionStatement(final Statement... stmnts) {
+    public ConjunctionStatement(final Statement... stmnts) {
         this(Arrays.asList(stmnts));
     }
 
-    ConjunctionStatement(final List<Statement> stmnts) {
+    public ConjunctionStatement(final List<Statement> stmnts) {
         this.statements = stmnts;
     }
 

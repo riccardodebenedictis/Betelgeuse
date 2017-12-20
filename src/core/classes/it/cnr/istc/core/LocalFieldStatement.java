@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class LocalFieldStatement implements Statement {
+public class LocalFieldStatement implements Statement {
 
     private final List<String> field_type;
     private final String name;
     private final Expression xpr;
 
-    LocalFieldStatement(final List<String> ids, final String n, final Expression e) {
+    public LocalFieldStatement(final List<String> ids, final String n, final Expression e) {
         this.field_type = ids;
         this.name = n;
         this.xpr = e;

@@ -17,11 +17,19 @@
 package it.cnr.istc.solver.types;
 
 import it.cnr.istc.common.CombinationGenerator;
+import it.cnr.istc.common.Pair;
 import it.cnr.istc.core.Atom;
 import it.cnr.istc.core.AtomListener;
+import it.cnr.istc.core.Constructor;
 import it.cnr.istc.core.CoreException;
+import it.cnr.istc.core.ExpressionStatement;
+import it.cnr.istc.core.Field;
+import it.cnr.istc.core.GeqExpression;
 import static it.cnr.istc.core.IScope.TAU;
+import it.cnr.istc.core.IdExpression;
 import it.cnr.istc.core.Item;
+import it.cnr.istc.core.Predicate;
+import it.cnr.istc.core.RealLiteralExpression;
 import it.cnr.istc.core.Type;
 import it.cnr.istc.core.UnsolvableException;
 import static it.cnr.istc.smt.LBool.True;
@@ -62,14 +70,14 @@ public class ReusableResource extends SmartType {
 
     public ReusableResource(final Solver slv) {
         super(slv, slv, REUSABLE_RESOURCE);
-        try {
-            // we add the constructor..
-            read(REUSABLE_RESOURCE + "(" + Type.REAL + " " + REUSABLE_RESOURCE_CAPACITY + "): " + REUSABLE_RESOURCE_CAPACITY + "(" + REUSABLE_RESOURCE_CAPACITY + ") {" + REUSABLE_RESOURCE_CAPACITY + " >= 0;}");
-            // we add the use predicate..
-            read("predicate " + REUSABLE_RESOURCE_USE + "(" + Type.REAL + " " + REUSABLE_RESOURCE_AMOUNT + ") : IntervalPredicate + {" + REUSABLE_RESOURCE_AMOUNT + " >= 0;}");
-        } catch (CoreException ex) {
-            throw new AssertionError();
-        }
+        newConstructors(new Constructor(core, this,
+                Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_CAPACITY)),
+                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)), new RealLiteralExpression(new Rational())))),
+                Arrays.asList(new Pair<>(REUSABLE_RESOURCE_CAPACITY, Arrays.asList(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_CAPACITY)))))));
+        newPredicates(new Predicate(core, this, REUSABLE_RESOURCE_USE,
+                Arrays.asList(new Field(core.getType(Type.REAL), REUSABLE_RESOURCE_AMOUNT)),
+                Arrays.asList(new ExpressionStatement(new GeqExpression(new IdExpression(Arrays.asList(REUSABLE_RESOURCE_AMOUNT)), new RealLiteralExpression(new Rational()))))));
+        newSupertypes(getPredicate(REUSABLE_RESOURCE_USE), new Predicate[]{getPredicate("IntervalPredicate")});
     }
 
     @Override

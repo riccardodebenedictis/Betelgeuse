@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class AssignmentStatement implements Statement {
+public class AssignmentStatement implements Statement {
 
     private final List<String> ids;
     private final String id;
     private final Expression xpr;
 
-    AssignmentStatement(final List<String> ids, final String id, final Expression xpr) {
+    public AssignmentStatement(final List<String> ids, final String id, final Expression xpr) {
         this.ids = ids;
         this.id = id;
         this.xpr = xpr;

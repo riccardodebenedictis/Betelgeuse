@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class FormulaStatement implements Statement {
+public class FormulaStatement implements Statement {
 
     private final boolean is_fact;
     private final String formula_name;
@@ -41,7 +41,7 @@ class FormulaStatement implements Statement {
     private final String predicate_name;
     private final List<Pair<String, Expression>> assignments;
 
-    FormulaStatement(final boolean f, final String fn, final List<String> scp, String pn, final List<Pair<String, Expression>> assgns) {
+    public FormulaStatement(final boolean f, final String fn, final List<String> scp, String pn, final List<Pair<String, Expression>> assgns) {
         this.is_fact = f;
         this.formula_name = fn;
         this.formula_scope = scp;

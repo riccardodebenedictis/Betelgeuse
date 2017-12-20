@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ExctOneExpression implements Expression {
+public class ExctOneExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    ExctOneExpression(final Expression... xprs) {
+    public ExctOneExpression(final Expression... xprs) {
         this(Arrays.asList(xprs));
     }
 
-    ExctOneExpression(final List<Expression> xprs) {
+    public ExctOneExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class FunctionExpression implements Expression {
+public class FunctionExpression implements Expression {
 
     private final List<String> ids;
     private final String function_name;
     private final List<Expression> xprs;
 
-    FunctionExpression(final List<String> is, final String fn, final List<Expression> xprs) {
+    public FunctionExpression(final List<String> is, final String fn, final List<Expression> xprs) {
         this.ids = is;
         this.function_name = fn;
         this.xprs = xprs;

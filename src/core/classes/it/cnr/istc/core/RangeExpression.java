@@ -20,12 +20,12 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class RangeExpression implements Expression {
+public class RangeExpression implements Expression {
 
     private final Expression min_e;
     private final Expression max_e;
 
-    RangeExpression(final Expression min_e, final Expression max_e) {
+    public RangeExpression(final Expression min_e, final Expression max_e) {
         this.min_e = min_e;
         this.max_e = max_e;
     }

@@ -235,7 +235,6 @@ public class Item extends Env implements IVarVal {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public <T extends Item> T get(String name) {
             Map<String, Field> accessible_fields = new HashMap<>();
             Deque<Type> q = new ArrayDeque<>();

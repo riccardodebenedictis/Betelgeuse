@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class AdditionExpression implements Expression {
+public class AdditionExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    AdditionExpression(final Expression... xprs) {
+    public AdditionExpression(final Expression... xprs) {
         this(Arrays.asList(xprs));
     }
 
-    AdditionExpression(final List<Expression> xprs) {
+    public AdditionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

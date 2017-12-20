@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class DisjunctionExpression implements Expression {
+public class DisjunctionExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    DisjunctionExpression(final Expression... xprs) {
+    public DisjunctionExpression(final Expression... xprs) {
         this(Arrays.asList(xprs));
     }
 
-    DisjunctionExpression(final List<Expression> xprs) {
+    public DisjunctionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

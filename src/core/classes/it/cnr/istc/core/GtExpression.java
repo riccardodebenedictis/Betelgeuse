@@ -20,12 +20,12 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class GtExpression implements Expression {
+public class GtExpression implements Expression {
 
     private final Expression xpr0;
     private final Expression xpr1;
 
-    GtExpression(final Expression xpr0, final Expression xpr1) {
+    public GtExpression(final Expression xpr0, final Expression xpr1) {
         this.xpr0 = xpr0;
         this.xpr1 = xpr1;
     }

@@ -22,11 +22,11 @@ import static it.cnr.istc.smt.LBool.False;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ExpressionStatement implements Statement {
+public class ExpressionStatement implements Statement {
 
     private final Expression xpr;
 
-    ExpressionStatement(final Expression xpr) {
+    public ExpressionStatement(final Expression xpr) {
         this.xpr = xpr;
     }
 

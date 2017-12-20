@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class ConjunctionExpression implements Expression {
+public class ConjunctionExpression implements Expression {
 
     private final List<Expression> xprs;
 
-    ConjunctionExpression(final Expression... xprs) {
+    public ConjunctionExpression(final Expression... xprs) {
         this(Arrays.asList(xprs));
     }
 
-    ConjunctionExpression(final List<Expression> xprs) {
+    public ConjunctionExpression(final List<Expression> xprs) {
         this.xprs = xprs;
     }
 

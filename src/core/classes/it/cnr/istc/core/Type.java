@@ -16,7 +16,6 @@
  */
 package it.cnr.istc.core;
 
-import java.io.StringReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,10 +54,6 @@ public class Type extends Scope {
         super(core, scope);
         this.name = name;
         this.primitive = primitive;
-    }
-
-    protected final void read(final String script) throws CoreException {
-        core.read(this, null, new StringReader(script));
     }
 
     protected static void newSupertypes(final Type base, final Type... super_types) {

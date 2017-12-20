@@ -20,11 +20,11 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class NegationExpression implements Expression {
+public class NegationExpression implements Expression {
 
     private final Expression xpr;
 
-    NegationExpression(final Expression xpr) {
+    public NegationExpression(final Expression xpr) {
         this.xpr = xpr;
     }
 

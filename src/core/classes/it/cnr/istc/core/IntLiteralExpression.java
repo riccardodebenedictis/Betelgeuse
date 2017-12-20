@@ -20,11 +20,11 @@ package it.cnr.istc.core;
  *
  * @author Riccardo De Benedictis <riccardo.debenedictis@istc.cnr.it>
  */
-class IntLiteralExpression implements Expression {
+public class IntLiteralExpression implements Expression {
 
     private final long val;
 
-    IntLiteralExpression(final long val) {
+    public IntLiteralExpression(final long val) {
         this.val = val;
     }
 
