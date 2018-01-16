@@ -1126,7 +1126,7 @@ class Parser {
                     List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
-                    while (match(BAR)) {
+                    while (match(AMP)) {
                         xprs.add(expression(2));
                     }
 
@@ -1138,7 +1138,7 @@ class Parser {
                     List<Expression> xprs = new ArrayList<>();
                     xprs.add(e);
 
-                    while (match(BAR)) {
+                    while (match(CARET)) {
                         xprs.add(expression(2));
                     }
 

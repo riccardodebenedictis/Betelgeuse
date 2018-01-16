@@ -112,7 +112,10 @@ class Lexer {
                 ch = nextChar();
                 return mkToken(PLUS);
             case '-':
-                ch = nextChar();
+                if ((ch = nextChar()) == '>') {
+                    ch = nextChar();
+                    return mkToken(IMPLICATION);
+                }
                 return mkToken(MINUS);
             case '*':
                 ch = nextChar();
